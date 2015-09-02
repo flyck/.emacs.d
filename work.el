@@ -10,5 +10,6 @@
 (if (eq system-type 'windows-nt)
     (setq org-agenda-files (list "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org")))
 (if (eq system-type 'gnu/linux)
-    (setq org-agenda-files (list "~/Documents/org/projects.org")))
+    (setq org-agenda-files (list "~/Documents/org/projects.org"
+				 "~/Documents/request-tracker/ticketsystem.org")))
 

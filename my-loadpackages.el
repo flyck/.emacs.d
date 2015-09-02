@@ -39,10 +39,19 @@
 (global-set-key [(control next)] 'next-buffer) 
 (global-set-key [(control prior)] 'previous-buffer)
 (setq org-export-with-sub-superscripts nil)
+;; org-babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (lisp . t)
+   (sh . t)
+   ))
 ;; orgmode archive done tasks
 (defun my-org-archive-done-tasks ()
   (interactive)
-  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+  (org-map-entries 'org-archive-subtree "/DONE" 'file)
+  (org-map-entries 'org-archive-subtree "/CANCELED" 'file)
+  (org-map-entries 'org-archive-subtree "/DELEGATED" 'file))
 (defun save-macro (name)
   "save a macro. Take a name as argument
    and save the last defined macro under
@@ -62,31 +71,17 @@
 ;;                 :strike-through t))))
  '(org-headline-done
             ((((class color) (min-colors 16) (background dark))
-               (:strike-through t)))))
+	      (:strike-through t)))))
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
 (require 'tramp)
-(setq tramp-verbose 10)
-;;(setq tramp-auto-save-directory "c:\\temp")
+(setq tramp-verbose 1)
 ;; sshx is the required for cygwin
-(setq tramp-default-method "sshx")
-;;(require 'fakecygpty)
-;;(fakecygpty-activate)
-
+(setq default-tramp-method "sshx")
 ;;When connecting to a remote server it usually does source the profile, but for some reason doesn't do that
 ;;for $PATH by default. You'll have to specifically tell tramp to do that from your .emacs. with
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-;; http://www.emacswiki.org/emacs/NTEmacsWithCygwin
-;;(eval-after-load "tramp"
-;;    '(progn
-;;       (add-to-list 'tramp-methods
-;;                    (mapcar
-;;                     (lambda (x)
-;;                       (cond
-;;                        ((equal x "sshx") "cygssh")
-;;                        ((eq (car x) 'tramp-login-program) (list 'tramp-login-program "fakecygpty ssh"))
-;;                        (t x)))
-;;                     (assoc "sshx" tramp-methods)))
-;;      (setq tramp-default-method "cygssh")))
+
 (define-minor-mode sensitive-mode
   "For sensitive files like password lists.
 It disables backup creation and auto saving.
@@ -143,3 +138,10 @@ Null prefix argument turns off the mode."
 
 (require 'rainbow-delimiters)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+
+;; eshell
+(add-hook
+ 'eshell-mode-hook
+ (lambda ()
+   (setq pcomplete-cycle-completions nil)))
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
