@@ -4,9 +4,9 @@
 (require 'color-theme-sanityinc-tomorrow)
 ;;(load "sanityinc-tomorrow-night-theme")
 ;;(load "sanityinc-tomorrow-day-theme")
-;;(load "sanityinc-tomorrow-night-theme")
+(load "sanityinc-tomorrow-night-theme")
 ;;(load "sanityinc-tomorrow-blue-theme")
-(load "sanityinc-tomorrow-bright-theme")
+;;(load "sanityinc-tomorrow-bright-theme")
 ;;(load "sanityinc-tomorrow-eighties-theme")
 
 (require 'helm-themes)
@@ -15,6 +15,10 @@
 ;;(helm-themes--load-theme "sanityinc-tomorrow-night")
 (helm-themes--load-theme "sanityinc-tomorrow-bright")
 ;;(helm-themes--load-theme "sanityinc-tomorrow-day")
+
+;; customize the cursor after the themes since tend to overwrite the cursor-color
+(setq-default cursor-type 'hbar)
+(set-cursor-color "#ffffff")
 
 (require 'smart-mode-line)
 (setq sml/no-confirm-load-theme t)
@@ -73,6 +77,9 @@
             ((((class color) (min-colors 16) (background dark))
 	      (:strike-through t)))))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
+
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 (require 'tramp)
 (setq tramp-verbose 1)

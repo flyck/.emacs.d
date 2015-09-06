@@ -12,4 +12,3 @@
 (if (eq system-type 'gnu/linux)
     (setq org-agenda-files (list "~/Documents/org/projects.org"
 				 "~/Documents/request-tracker/ticketsystem.org")))
-

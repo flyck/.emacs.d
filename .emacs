@@ -44,10 +44,6 @@
 (add-to-list 'default-frame-alist '(alpha 95 95))
 ;;(set-frame-font "Source Code Pro-16" nil t)
 
-;; customize the cursor
-(setq-default cursor-type 'hbar)
-(set-cursor-color "#ffffff")
-
 ;; customize the interface on windows
 (when window-system
   (tooltip-mode -1)
