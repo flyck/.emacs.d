@@ -131,8 +131,8 @@ Null prefix argument turns off the mode."
 (require 'yasnippet)
 ;; muss eventuell vor "require yasnippt"
 (add-to-list 'load-path
-	     "~/.emacs.d/elpa/yasnippet-20150415.244")
-(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+	     "~/.emacs.d/elpa/yasnippet-20150811.1222")
+(setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-20150811.1222/snippets/"))
 (yas-global-mode 1)
 (define-key global-map "\C-cy" 'yas/insert-snippet)
 
