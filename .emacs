@@ -11,10 +11,21 @@
 ;;(setq exec-path (append exec-path '("C:/Program Files (x86)/Git/bin")))
 ;;(setq load-path (append load-path '("C:/cygwin/fakecygpty")))
 (load "~/.emacs.d/my-loadpackages.el")
-(if (file-exists-p "~/.emacs.d/home.el")
-		   (load "~/.emacs.d/home.el"))
-(if (file-exists-p "~/.emacs.d/work.el")
-		   (load "~/.emacs.d/work.el"))
+;; working on this code:
+;; (let (environment ("home"))
+;;   (cond
+;;    ((eq 'environment "home")
+;;    (print "im in a home environment")    
+;;    (if (file-exists-p "~/.emacs.d/home.el") 
+;; 	(load "~/.emacs.d/home.el")))
+;;    ((eq 'environment "work")
+;;    (print "im in a work environment")
+;;    (if (file-exists-p "~/.emacs.d/work.el")
+;;        (load "~/.emacs.d/work.el")))))
+
+;; temporary code to fix ~the problem~
+(if (file-exists-p "~/.emacs.d/home.el") 
+    (load "~/.emacs.d/home.el"))
 
 ;; Coding System
 (prefer-coding-system 'utf-8)
