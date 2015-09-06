@@ -1,6 +1,0 @@
-#!/bin/bash
-cp -rf ~/.emacs .
-cp -rf ~/.emacs.d/my-packages.el .
-cp -rf ~/.emacs.d/my-loadpackages.el .
-cp -rf ~/.emacs.d/work.el .
-echo "configs of the current user copied to git directory"
