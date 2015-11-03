@@ -11,21 +11,14 @@
 ;;(setq exec-path (append exec-path '("C:/Program Files (x86)/Git/bin")))
 ;;(setq load-path (append load-path '("C:/cygwin/fakecygpty")))
 (load "~/.emacs.d/my-loadpackages.el")
-;; working on this code:
-;; (let (environment ("home"))
-;;   (cond
-;;    ((eq 'environment "home")
-;;    (print "im in a home environment")    
-;;    (if (file-exists-p "~/.emacs.d/home.el") 
-;; 	(load "~/.emacs.d/home.el")))
-;;    ((eq 'environment "work")
-;;    (print "im in a work environment")
-;;    (if (file-exists-p "~/.emacs.d/work.el")
-;;        (load "~/.emacs.d/work.el")))))
 
-;; temporary code to fix ~the problem~
-(if (file-exists-p "~/.emacs.d/home.el") 
-    (load "~/.emacs.d/home.el"))
+;; Set the environment-variable SYSENV for this to "home" or "work"
+(if (equal "home" (getenv "SYSENV"))
+    (if (file-exists-p "~/.emacs.d/home.el") 
+	(load "~/.emacs.d/home.el")))
+(if (equal "work" (getenv "SYSENV"))
+    (if (file-exists-p "~/.emacs.d/work.el") 
+	(load "~/.emacs.d/work.el")))
 
 ;; Coding System
 (prefer-coding-system 'utf-8)
@@ -81,17 +74,15 @@
  '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t)))))
 
 ;; Fonts
+;; "Select an Emacs font from a list of known good fonts and fontsets.
 (defun mouse-set-font (&rest fonts)
- ;; "Select an Emacs font from a list of known good fonts and fontsets.
- 
-;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
-;;font dialog to display the list of possible fonts.  Otherwise use a
-;;pop-up menu (like Emacs does on other platforms) initialized with
-;;the fonts in `w32-fixed-font-alist'.
-;;If `w32-list-proportional-fonts' is non-nil, add proportional fonts
-;;to the list in the font selection dialog (the fonts listed by the
-;;pop-up menu are unaffected by `w32-list-proportional-fonts')."
-
+  ;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
+  ;;font dialog to display the list of possible fonts.  Otherwise use a
+  ;;pop-up menu (like Emacs does on other platforms) initialized with
+  ;;the fonts in `w32-fixed-font-alist'.
+  ;;If `w32-list-proportional-fonts' is non-nil, add proportional fonts
+  ;;to the list in the font selection dialog (the fonts listed by the
+  ;;pop-up menu are unaffected by `w32-list-proportional-fonts')."
   (interactive
    (if w32-use-w32-font-dialog
        (let ((chosen-font (w32-select-font (selected-frame)
@@ -115,6 +106,7 @@
 	(if (null font)
 	    (error "Font not found")))))
 
+;; My favorite font on Windows
 (if (eq system-type 'windows-nt)
     (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
     )

@@ -4,8 +4,6 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
 	     '("melpa.org" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 ; defvar is the correct way to declare global variables
@@ -22,6 +20,7 @@
     smart-mode-line
     yasnippet
     rainbow-delimiters
+    rainbow-mode
     projectile
     org-beautify-theme
     ) "a list of packages to ensure are installed at launch.")

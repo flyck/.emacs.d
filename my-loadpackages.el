@@ -2,23 +2,14 @@
 (load "~/.emacs.d/my-packages.el")
 
 (require 'color-theme-sanityinc-tomorrow)
-;;(load "sanityinc-tomorrow-night-theme")
-;;(load "sanityinc-tomorrow-day-theme")
-(load "sanityinc-tomorrow-night-theme")
-;;(load "sanityinc-tomorrow-blue-theme")
-;;(load "sanityinc-tomorrow-bright-theme")
-;;(load "sanityinc-tomorrow-eighties-theme")
+(load "sanityinc-tomorrow-day-theme")
 
 (require 'helm-themes)
-;;(helm-themes--load-theme "sanityinc-tomorrow-eighties")
-;;(helm-themes--load-theme "sanityinc-tomorrow-blue")
-;;(helm-themes--load-theme "sanityinc-tomorrow-night")
-(helm-themes--load-theme "sanityinc-tomorrow-bright")
-;;(helm-themes--load-theme "sanityinc-tomorrow-day")
+(helm-themes--load-theme "sanityinc-tomorrow-day")
 
 ;; customize the cursor after the themes since tend to overwrite the cursor-color
 (setq-default cursor-type 'hbar)
-(set-cursor-color "#ffffff")
+(set-cursor-color "#ff3030")
 
 (require 'smart-mode-line)
 (setq sml/no-confirm-load-theme t)
@@ -30,6 +21,7 @@
 (define-key global-map (kbd "C-c m") 'magit-status)
 ;;C:\Users\Omega needs to be in some kind of path such that magit finds the .gitconfig in windows
 (setenv "GIT_ASKPASS" "git-gui--askpass")
+(add-to-list 'exec-path "C:/Program Files/Git/bin")
 
 (require 'org)
 (define-key global-map "\C-cl" 'org-store-link)
@@ -77,6 +69,7 @@
             ((((class color) (min-colors 16) (background dark))
 	      (:strike-through t)))))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
+(setq org-ellipsis "⤵")
 
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -137,9 +130,8 @@ Null prefix argument turns off the mode."
 
 (require 'yasnippet)
 ;; muss eventuell vor "require yasnippt"
-(add-to-list 'load-path
-	     "~/.emacs.d/elpa/yasnippet-20150811.1222")
-(setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-20150811.1222/snippets/"))
+(setq yas-snippet-dirs (append yas-snippet-dirs
+ 				 "~/.emacs.d/elpa/yasnippet-20150912.1330/snippets/"))
 (yas-global-mode 1)
 (define-key global-map "\C-cy" 'yas/insert-snippet)
 

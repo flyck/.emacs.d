@@ -1,1 +1,1 @@
-(setq org-agenda-files (list "D:/Documents/org/tasks.org"))
+(setq org-agenda-files (list "E:/Documents/org/tasks.org"))

@@ -1,0 +1,30 @@
+# -*- mode: snippet -*-
+# name: daytoday
+# key: daytoday
+# --
+* Daytoday $0
+  ~Notizen~
+** Gewohnheiten
+   - [ ] Entspannen
+   - [ ] Musik hören
+   - [ ] Sport
+   - [ ] Lernen
+   - [ ] Uni Status überprüfen   
+   - [ ] PC Spielen   
+** Neuigkeiten 
+   - [ ] Browser/Readme.Blogs
+   - [ ] Browser/Youtube.Abbonements
+   - [ ] Browser/GMail.Inbox
+   - [ ] Browser/Facebook.Nachrichten
+** Selbstfürsorge
+   - [ ] Weiterbildung, Selbstbewusstsein, Selbstakzeptanz
+   - [ ] Umarmungen, Zuneigung
+   - [ ] Heiße Schokolade, guter Kaffee, Süßes
+   - [ ] Perspektiven: Andere Menschen und deren Weltanschauung
+   - [ ] Reflektierung, Planung
+   - [ ] Experimente
+   - [ ] Spaziergänge, Sonnenschein, Sport
+   - [ ] Mit Tieren kuscheln
+   - [ ] Hauspflege
+   - [X] Logging
+** Log
