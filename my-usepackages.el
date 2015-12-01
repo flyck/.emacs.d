@@ -1,5 +1,13 @@
 (require 'use-package)
 
+;; required for zonokai
+(use-package dash
+  :ensure t
+  )
+(use-package zonokai-theme
+  :ensure t
+  )
+
 (use-package helm
   :ensure t
   :init
@@ -12,11 +20,11 @@
   (helm-mode 1)
   )
 
-(use-package helm-themes
-  :ensure t
-  :config
-  (helm-themes--load-theme "zonokai-blue")
-  )
+;;(use-package helm-themes
+;;  :ensure t
+;;  :config
+;;  (helm-themes--load-theme "zonokai-blue")
+;;  )
 ;; Change the cursor after setting the theme
 (setq-default cursor-type 'hbar)
 
@@ -29,6 +37,7 @@
 (add-to-list 'exec-path "C:/Program Files/Git/bin")
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
 (use-package magit
+  :ensure t
   :init
   (define-key global-map (kbd "C-c m") 'magit-status)
   (setenv "GIT_ASKPASS" "git-gui--askpass")
