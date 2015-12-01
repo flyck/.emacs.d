@@ -1,16 +1,6 @@
 ;; Load-Path
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
-(let ((default-directory "~/.emacs.d/"))
-  (normal-top-level-add-subdirs-to-load-path))
-;;(setq exec-path (append exec-path '("C:/Program Files (x86)/Git/bin")))
-;;(setq load-path (append load-path '("C:/cygwin/fakecygpty")))
-(load "~/.emacs.d/my-loadpackages.el")
+(require 'package)
 
 ;; Set the environment-variable SYSENV for this to "home" or "work"
 (if (equal "home" (getenv "SYSENV"))
@@ -20,19 +10,53 @@
     (if (file-exists-p "~/.emacs.d/work.el") 
 	(load "~/.emacs.d/work.el")))
 
+(setq package-enable-at-startup nil)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
+
+(package-initialize)
+
+(let ((default-directory "~/.emacs.d/elpa/"))
+  (normal-top-level-add-subdirs-to-load-path))
+
+;; Experimental exec-paths
+;;(setq exec-path (append exec-path '("C:/Program Files (x86)/Git/bin")))
+;;(setq load-path (append load-path '("C:/cygwin/fakecygpty")))
+
+;; Bootstrap use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; Load my packages
+(load "~/.emacs.d/my-usepackages.el")
+
 ;; Coding System
 (prefer-coding-system 'utf-8)
 (setq coding-system-for-read 'utf-8)
 (setq coding-system-for-write 'utf-8)
 
-;; stuff
-(setq org-log-done t)
+;; Emacs Startup changes 
 (setq inhibit-default-init t)
 (setq inhibit-splash-screen t)
 (setq transient-mark-mode 1)
 
+;; Line intendation
+(setq-default fill-column 99)
+(auto-fill-mode 1)
+(define-key global-map "\C-cf" 'auto-fill-mode)
+(setq tab-width 4)
+
 ;; Dired
 (setq dired-listing-switches "-alh")
+
+;; eshell
+(add-hook
+ 'eshell-mode-hook
+ (lambda ()
+   (setq pcomplete-cycle-completions nil)))
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;; No splash screen please ... jeez
 (setq inhibit-startup-message t)
@@ -57,21 +81,6 @@
 
 ;; Remove alarm (bell) on scroll
 (setq ring-bell-function 'ignore)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-tags-column -93)
- '(package-selected-packages
-   (quote
-    (org-beautify-theme yasnippet smart-mode-line rainbow-delimiters org-toodledo nyan-mode magit helm-themes helm-projectile color-theme-sanityinc-tomorrow))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t)))))
 
 ;; Fonts
 ;; "Select an Emacs font from a list of known good fonts and fontsets.
