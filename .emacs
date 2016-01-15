@@ -4,10 +4,10 @@
 
 ;; Set the environment-variable SYSENV for this to "home" or "work"
 (if (equal "home" (getenv "SYSENV"))
-    (if (file-exists-p "~/.emacs.d/home.el") 
+    (if (file-exists-p "~/.emacs.d/home.el")
 	(load "~/.emacs.d/home.el")))
 (if (equal "work" (getenv "SYSENV"))
-    (if (file-exists-p "~/.emacs.d/work.el") 
+    (if (file-exists-p "~/.emacs.d/work.el")
 	(load "~/.emacs.d/work.el")))
 
 (setq package-enable-at-startup nil)
@@ -32,12 +32,29 @@
 ;; Load my packages
 (load "~/.emacs.d/my-usepackages.el")
 
-;; Coding System
-(prefer-coding-system 'utf-8)
-(setq coding-system-for-read 'utf-8)
-(setq coding-system-for-write 'utf-8)
+;; Remove ^M Errors in Babel
+(add-to-list 'process-coding-system-alist
+      '("bash" . (undecided-unix)))
+(add-hook 'comint-output-filter-functions
+          'comint-strip-ctrl-m)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(setq show-trailing-whitespace t)
 
-;; Emacs Startup changes 
+;; Eshell
+(add-hook 'eshell-mode-hook '(lambda ()
+			       ;; Make the eshell behave like a normal shell
+                               (local-set-key (kbd "C-p") 'eshell-previous-input)
+                               (local-set-key (kbd "M-p") 'previous-line)
+			       (local-set-key (kbd "C-n") 'eshell-next-input)
+                               (local-set-key (kbd "M-n") 'next-line)
+			     ))
+
+;; Coding System
+(prefer-coding-system 'utf-8-unix)
+(setq coding-system-for-read 'utf-8-unix)
+(setq coding-system-for-write 'utf-8-unix)
+
+;; Emacs Startup changes
 (setq inhibit-default-init t)
 (setq inhibit-splash-screen t)
 (setq transient-mark-mode 1)
@@ -68,8 +85,8 @@
 (setq diff-switches "-u")
 
 ;; transparency
-(set-frame-parameter (selected-frame) 'alpha '(95 95))
-(add-to-list 'default-frame-alist '(alpha 95 95))
+(set-frame-parameter (selected-frame) 'alpha '(100 100))
+(add-to-list 'default-frame-alist '(alpha 100 100))
 ;;(set-frame-font "Source Code Pro-16" nil t)
 
 ;; customize the interface on windows
