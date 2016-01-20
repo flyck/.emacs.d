@@ -64,6 +64,7 @@
   :ensure t
   :init
   ;; load org-babel
+  (setq org-export-coding-system 'utf-8-unix)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
@@ -80,7 +81,6 @@
   (global-set-key (kbd "<f9>") 'org-todo)
   ;; Load syntax-highlighting for source-blocks
   (setq org-src-fontify-natively t)
-  (setq org-export-coding-system 'utf-8-unix)
   (setq org-log-done t)
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
   (global-set-key [(control next)] 'next-buffer)
@@ -93,7 +93,7 @@
    ;;                 :strike-through t))))
    ;; '(font-lock-comment-face ((t (:foreground "dark slate blue" :slant italic))))
 
-   ;; Color the Org-Blocks beautifully
+   ;; Color the Org-Blocks beautifully for color schemes that do not do that
    ;; org-block :background messes out the outline background :(
    ;;'(org-block-background ((t (:background "dark orange"))))
    ;;'(org-block-begin-line ((t (:background "SlateBlue4"))))
@@ -101,9 +101,9 @@
    '(org-block-foreground ((t (:foreground "dark orange"))))
    '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
    '(org-block-end-line ((t (:foreground "SlateBlue4"))))
-   ;; if the background is not set the outlines that contain an org-block will have weird background colors even when folded
-   ;; nvm
-   ;;'(font-lock-function-name-face ((t (:background "black"))))
+   ;; if the background is not set the outlines that contain an org-block will have weird
+   ;; background colors even when folded
+   ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
    '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
   )
@@ -209,4 +209,8 @@
   ;; (customize-group "vbasense")
   ;; Do setting a recommemded configuration
   (vbasense-config-default)
+  )
+
+(use-package smooth-scrolling
+  :ensure t
   )

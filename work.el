@@ -3,7 +3,7 @@
 			   ("https" . "172.16.8.250:3128")))
 
 (setq org-todo-keywords
-      '((sequence "TODO" "PENDING" "DELEGATED" "CANCELED" "DONE")))
+      '((sequence "TODO" "PENDING" "DELEGATED" "|" "CANCELED" "DONE")))
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
         ("CANCELED" . (:foreground "#b5bd68"
