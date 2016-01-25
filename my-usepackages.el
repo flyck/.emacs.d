@@ -1,11 +1,22 @@
 (require 'use-package)
 
-;; required for zonokai
-(use-package dash
+;; ;; required for zonokai
+;; (use-package dash
+;;   :ensure t
+;;   )
+;; (use-package zonokai-theme
+;;   :ensure t
+;;   )
+
+;; (use-package abyss-theme
+;;   :ensure t
+;;   )
+
+(use-package seti-theme
   :ensure t
-  )
-(use-package zonokai-theme
-  :ensure t
+  :init
+  (custom-set-faces
+  '(org-level-2 ((t (:inherit outline-2 :foreground "indian red")))))
   )
 
 (use-package helm
@@ -18,6 +29,9 @@
 				    helm-source-bookmarks
 				    helm-source-buffer-not-found))
   (helm-mode 1)
+  (set-face-attribute 'helm-selection nil 
+                    :background "ivory1"
+                    :foreground "gray5")
   )
 
 ;;(use-package helm-themes
@@ -31,7 +45,8 @@
 (use-package spaceline-config
   :config
   (spaceline-emacs-theme)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+  )
 
 ;; Put this somewhere useful
 (add-to-list 'exec-path "C:/Program Files/Git/bin")
@@ -76,9 +91,13 @@
   (custom-set-faces
    ;; '(org-done ((t (:weight normal
    ;;                 :strike-through t))))
-;; '(font-lock-comment-face ((t (:foreground "dark slate blue" :slant italic))))
+   ;; '(font-lock-comment-face ((t (:foreground "dark slate blue" :slant italic))))
    '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
-   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t)))))
+   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+   '(org-date ((t (:foreground "cornflower blue" :underline t))))
+   '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
+   )
+  
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
   (setq org-ellipsis "⤵")
   (setq org-tags-column -93)
@@ -90,13 +109,19 @@
 	(org-map-entries 'org-archive-subtree "/DELEGATED" 'file))
   :config
   (setq org-export-with-sub-superscripts nil)
+  ;; remove the "validate"-link from the org-html export
+  (setq org-export-html-validation-link nil)
+  ;; adapt to orgzly which automatically forms stuff this way
+  ;; (setq org-adapt-indentation nil)
+  ;; sadly this doesnt improve linebreaking in orgzly
   )
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
 
-(use-package org-bullets
-  :ensure t
-  :init
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  )
+;; (use-package org-bullets
+;;   :init
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+;;   )
 
 (use-package tramp
   :ensure t
@@ -150,4 +175,9 @@
   :ensure t
   :init
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+  )
+
+(use-package smooth-scrolling
+  :ensure t
+  :init
   )

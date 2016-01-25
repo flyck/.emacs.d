@@ -12,8 +12,11 @@
 
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+                         ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ;; ("melpa" . "https://melpa.org/packages/")))
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/"))
+      )
 
 (package-initialize)
 
@@ -43,7 +46,8 @@
 (setq transient-mark-mode 1)
 
 ;; Line intendation
-(setq-default fill-column 99)
+(setq-default fill-column 98)
+(setq auto-hscroll-mode nil)
 (auto-fill-mode 1)
 (define-key global-map "\C-cf" 'auto-fill-mode)
 (setq tab-width 4)
@@ -68,8 +72,8 @@
 (setq diff-switches "-u")
 
 ;; transparency
-(set-frame-parameter (selected-frame) 'alpha '(95 95))
-(add-to-list 'default-frame-alist '(alpha 95 95))
+(set-frame-parameter (selected-frame) 'alpha '(100 100))
+(add-to-list 'default-frame-alist '(alpha 100 100))
 ;;(set-frame-font "Source Code Pro-16" nil t)
 
 ;; customize the interface on windows
@@ -115,7 +119,23 @@
 	(if (null font)
 	    (error "Font not found")))))
 
-;; My favorite font on Windows
+;; Windows-specific settings
 (if (eq system-type 'windows-nt)
+    ;; Set the font
     (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
     )
+
+;; Startup position of emacs on windows, several FIX approaches
+(if (window-system)
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-height (selected-frame) 60))
+;; Maximize the screen on Windows-Systems
+;; (add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
+;; (w32-send-sys-command #xf030)
+;; (defun w32-maximize-frame ()
+;;   "Maximize the current frame"
+;;   (interactive)
+;;   (w32-send-sys-command 61488)
+;; )
+;; (w32-maximize-frame)
+
