@@ -1,5 +1,6 @@
 (require 'use-package)
 
+<<<<<<< HEAD
 ;; ;; required for zonokai
 ;; (use-package dash
 ;;   :ensure t
@@ -7,6 +8,17 @@
 ;; (use-package zonokai-theme
 ;;   :ensure t
 ;;   )
+=======
+;; Theme-config (and old theme configs)
+
+;; required for zonokai
+;; (use-package dash
+;;   :ensure t
+;;   )
+;;(use-package zonokai-theme
+;;  :ensure t
+;;  )
+>>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
 
 ;; (use-package abyss-theme
 ;;   :ensure t
@@ -42,11 +54,19 @@
 ;; Change the cursor after setting the theme
 (setq-default cursor-type 'hbar)
 
+<<<<<<< HEAD
 (use-package spaceline-config
   :config
   (spaceline-emacs-theme)
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
   )
+=======
+;; doesn't work
+;; (use-package spaceline
+;;  :config
+;;   (spaceline-emacs-theme)
+;;   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
+>>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
 
 ;; Put this somewhere useful
 (add-to-list 'exec-path "C:/Program Files/Git/bin")
@@ -68,22 +88,26 @@
   :ensure t
   :init
   ;; load org-babel
+  (setq org-export-coding-system 'utf-8-unix)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
 	 (lisp . t)
 	 (sh . t)
+	 (perl . t)
 	 ))
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
   (define-key global-map "\C-cc" 'org-capture)
   (define-key global-map "\M-n" 'org-metadown)
   (define-key global-map "\M-p" 'org-metaup)
+  (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
   (global-set-key (kbd "<f9>") 'org-todo)
-  (setq org-export-coding-system 'utf-8)
+  ;; Load syntax-highlighting for source-blocks
+  (setq org-src-fontify-natively t)
   (setq org-log-done t)
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  (global-set-key [(control next)] 'next-buffer) 
+  (global-set-key [(control next)] 'next-buffer)
   (global-set-key [(control prior)] 'previous-buffer)
   ;; Visual modifications
   ;; Strike through DONE headlines (from sachachuas config)
@@ -92,43 +116,90 @@
    ;; '(org-done ((t (:weight normal
    ;;                 :strike-through t))))
    ;; '(font-lock-comment-face ((t (:foreground "dark slate blue" :slant italic))))
+<<<<<<< HEAD
    '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
    '(org-date ((t (:foreground "cornflower blue" :underline t))))
    '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
    )
   
+=======
+
+   ;; Color the Org-Blocks beautifully for color schemes that do not do that
+   ;; org-block :background messes out the outline background :(
+   ;;'(org-block-background ((t (:background "dark orange"))))
+   ;;'(org-block-begin-line ((t (:background "SlateBlue4"))))
+   ;;'(org-block-end-line ((t (:background "SlateBlue4"))))
+   '(org-block-foreground ((t (:foreground "dark orange"))))
+   '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
+   '(org-block-end-line ((t (:foreground "SlateBlue4"))))
+   ;; if the background is not set the outlines that contain an org-block will have weird
+   ;; background colors even when folded
+   ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
+   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
+   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+  )
+  ;; autofill hooks for automatic indentation
+  (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
+>>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
-  (setq org-ellipsis "⤵")
+  (setq auto-hscroll-mode nil)
   (setq org-tags-column -93)
+  ;; change from ... to the arrow
+  (setq org-ellipsis "⤵")
   ;; orgmode archive done tasks
   (defun my-org-archive-done-tasks ()
 	(interactive)
 	(org-map-entries 'org-archive-subtree "/DONE" 'file)
 	(org-map-entries 'org-archive-subtree "/CANCELED" 'file)
-	(org-map-entries 'org-archive-subtree "/DELEGATED" 'file))
+	(org-map-entries 'org-archive-subtree "/DELEGATED" 'file)
+  )
+  ;; calfw-org doesn't exist on the emacs repositories right now
+  ;; git clone https://github.com/kiwanami/emacs-calfw.git
+  (require 'calfw-org)
   :config
   (setq org-export-with-sub-superscripts nil)
+<<<<<<< HEAD
   ;; remove the "validate"-link from the org-html export
   (setq org-export-html-validation-link nil)
   ;; adapt to orgzly which automatically forms stuff this way
   ;; (setq org-adapt-indentation nil)
   ;; sadly this doesnt improve linebreaking in orgzly
+=======
+  ;; indicate sublevels in parts of org-agenda, for example
+  (setq org-tags-match-list-sublevels 'indented)
+>>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
   )
 (require 'org-habit)
 (add-to-list 'org-modules 'org-habit)
 
 ;; (use-package org-bullets
+<<<<<<< HEAD
+;;   :init
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+;;   )
+=======
+;;   :ensure t
 ;;   :init
 ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 ;;   )
 
+;; Inserts highlighting of Org Source-Blocks on Html-Export
+(use-package htmlize
+  :ensure t
+  )
+>>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
+
 (use-package tramp
   :ensure t
   :init
-  (setq tramp-verbose 1)
+  (setq tramp-verbose 5)
   ;; sshx is the required for cygwin
   (setq default-tramp-method "sshx")
+  ;; Fix for base64 error
+  ;; see footnotes here: http://www.howardism.org/Technical/Emacs/literate-devops.html
+  ;; you can try this:
+  ;;(setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
   ;; When connecting to a remote server it usually does source the profile, but for some
   ;; reason doesn't do that for $PATH by default. You'll have to specifically tell tramp
   ;; to do that from your .emacs. with
@@ -150,7 +221,7 @@
 	(if (symbol-value sensitive-mode)
 		(progn
 		  ;; disable backups
-		  (set (make-local-variable 'backup-inhibited) t)	
+		  (set (make-local-variable 'backup-inhibited) t)
 		  ;; disable auto-save
 		  (if auto-save-default
 			  (auto-save-mode -1)))
@@ -177,7 +248,24 @@
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
   )
 
+<<<<<<< HEAD
 (use-package smooth-scrolling
   :ensure t
   :init
+=======
+(use-package vbasense
+  :ensure t
+  :init
+  ;; Keybinding
+  (setq vbasense-popup-help-key "C-:")
+  (setq vbasense-jump-to-definition-key "C->")
+  ;; Make config suit for you. About the config item, eval the following sexp.
+  ;; (customize-group "vbasense")
+  ;; Do setting a recommemded configuration
+  (vbasense-config-default)
+  )
+
+(use-package smooth-scrolling
+  :ensure t
+>>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
   )
