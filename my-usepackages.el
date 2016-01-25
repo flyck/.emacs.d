@@ -1,14 +1,5 @@
 (require 'use-package)
 
-<<<<<<< HEAD
-;; ;; required for zonokai
-;; (use-package dash
-;;   :ensure t
-;;   )
-;; (use-package zonokai-theme
-;;   :ensure t
-;;   )
-=======
 ;; Theme-config (and old theme configs)
 
 ;; required for zonokai
@@ -18,7 +9,7 @@
 ;;(use-package zonokai-theme
 ;;  :ensure t
 ;;  )
->>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
+
 
 ;; (use-package abyss-theme
 ;;   :ensure t
@@ -28,7 +19,12 @@
   :ensure t
   :init
   (custom-set-faces
-  '(org-level-2 ((t (:inherit outline-2 :foreground "indian red")))))
+   '(org-level-2 ((t (:inherit outline-2 :foreground "indian red"))))
+   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
+   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+   '(org-date ((t (:foreground "cornflower blue" :underline t))))
+   '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
+   )
   )
 
 (use-package helm
@@ -54,19 +50,14 @@
 ;; Change the cursor after setting the theme
 (setq-default cursor-type 'hbar)
 
-<<<<<<< HEAD
-(use-package spaceline-config
-  :config
-  (spaceline-emacs-theme)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  )
-=======
-;; doesn't work
-;; (use-package spaceline
-;;  :config
+;; use-package doesnt find spaceline-config or spaceline
+;; (use-package spaceline-config
+;;   :ensure t
+;;   :config
 ;;   (spaceline-emacs-theme)
-;;   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
->>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
+;;   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+;;   )
+
 
 ;; Put this somewhere useful
 (add-to-list 'exec-path "C:/Program Files/Git/bin")
@@ -113,18 +104,6 @@
   ;; Strike through DONE headlines (from sachachuas config)
   (setq org-fontify-done-headline t)
   (custom-set-faces
-   ;; '(org-done ((t (:weight normal
-   ;;                 :strike-through t))))
-   ;; '(font-lock-comment-face ((t (:foreground "dark slate blue" :slant italic))))
-<<<<<<< HEAD
-   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
-   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-   '(org-date ((t (:foreground "cornflower blue" :underline t))))
-   '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
-   )
-  
-=======
-
    ;; Color the Org-Blocks beautifully for color schemes that do not do that
    ;; org-block :background messes out the outline background :(
    ;;'(org-block-background ((t (:background "dark orange"))))
@@ -136,12 +115,9 @@
    ;; if the background is not set the outlines that contain an org-block will have weird
    ;; background colors even when folded
    ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
-   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
-   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-  )
+   )
   ;; autofill hooks for automatic indentation
   (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
->>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
   (setq auto-hscroll-mode nil)
   (setq org-tags-column -93)
@@ -154,41 +130,32 @@
 	(org-map-entries 'org-archive-subtree "/CANCELED" 'file)
 	(org-map-entries 'org-archive-subtree "/DELEGATED" 'file)
   )
-  ;; calfw-org doesn't exist on the emacs repositories right now
-  ;; git clone https://github.com/kiwanami/emacs-calfw.git
-  (require 'calfw-org)
-  :config
   (setq org-export-with-sub-superscripts nil)
-<<<<<<< HEAD
   ;; remove the "validate"-link from the org-html export
   (setq org-export-html-validation-link nil)
   ;; adapt to orgzly which automatically forms stuff this way
   ;; (setq org-adapt-indentation nil)
   ;; sadly this doesnt improve linebreaking in orgzly
-=======
   ;; indicate sublevels in parts of org-agenda, for example
   (setq org-tags-match-list-sublevels 'indented)
->>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
+  (require 'org-habit)
+  (add-to-list 'org-modules 'org-habit)
   )
-(require 'org-habit)
-(add-to-list 'org-modules 'org-habit)
+
+(use-package smooth-scrolling
+  :ensure t
+  )
 
 ;; (use-package org-bullets
-<<<<<<< HEAD
 ;;   :init
 ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 ;;   )
-=======
-;;   :ensure t
-;;   :init
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-;;   )
+
 
 ;; Inserts highlighting of Org Source-Blocks on Html-Export
 (use-package htmlize
   :ensure t
   )
->>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
 
 (use-package tramp
   :ensure t
@@ -225,9 +192,9 @@
 		  ;; disable auto-save
 		  (if auto-save-default
 			  (auto-save-mode -1)))
-										;resort to default value of backup-inhibited
+	;; resort to default value of backup-inhibited
 	  (kill-local-variable 'backup-inhibited)
-										;resort to default auto save setting
+	;; resort to default auto save setting
 	  (if auto-save-default
 		  (auto-save-mode 1))))
   )
@@ -248,11 +215,7 @@
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
   )
 
-<<<<<<< HEAD
-(use-package smooth-scrolling
-  :ensure t
-  :init
-=======
+;; VBA Highlighting
 (use-package vbasense
   :ensure t
   :init
@@ -265,7 +228,4 @@
   (vbasense-config-default)
   )
 
-(use-package smooth-scrolling
-  :ensure t
->>>>>>> 540ec7f40337a8e90f78013b3b58bc53f2f4eb33
-  )
+
