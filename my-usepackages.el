@@ -1,5 +1,5 @@
 (require 'use-package)
-
+ 
 ;; Theme-config (and old theme configs)
 
 ;; required for zonokai
@@ -60,14 +60,14 @@
 
 
 ;; Put this somewhere useful
-(add-to-list 'exec-path "C:/Program Files/Git/bin")
+;; (add-to-list 'exec-path "C:/Program Files/Git/bin")
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
-(use-package magit
-  :ensure t
-  :init
-  (define-key global-map (kbd "C-c m") 'magit-status)
-  (setenv "GIT_ASKPASS" "git-gui--askpass")
-  )
+;; (use-package magit
+;;   :ensure nil
+;;   :init
+;;   (define-key global-map (kbd "C-c m") 'magit-status)
+;;   (setenv "GIT_ASKPASS" "git-gui--askpass")
+;;   )
 
 (use-package ace-jump-mode
   :ensure t

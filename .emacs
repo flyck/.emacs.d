@@ -3,20 +3,18 @@
 (require 'package)
 
 ;; Set the environment-variable SYSENV for this to "home" or "work"
-(if (equal "home" (getenv "SYSENV"))
-    (if (file-exists-p "~/.emacs.d/home.el")
-	(load "~/.emacs.d/home.el")))
-(if (equal "work" (getenv "SYSENV"))
-    (if (file-exists-p "~/.emacs.d/work.el")
-	(load "~/.emacs.d/work.el")))
-
-(setq package-enable-at-startup nil)
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ;; ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ;; ("melpa" . "https://melpa.org/packages/")))
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/"))
+(cond ((equal "work" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/work.el") (load "~/.emacs.d/work.el")))
+      ((equal "home" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/home.el") (load "~/.emacs.d/home.el")))
+      (t (if (file-exists-p "~/.emacs.d/university.el") (load "~/.emacs.d/university.el")))
       )
+
+;; (setq package-enable-at-startup nil)
+;; (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+;;                          ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+;;                          ;; ("melpa" . "https://melpa.org/packages/")))
+;;                          ("marmalade" . "http://marmalade-repo.org/packages/")
+;;                          ("melpa" . "https://melpa.org/packages/"))
+;;      )
 
 (package-initialize)
 
@@ -53,9 +51,9 @@
 			     ))
 
 ;; Coding System
-(prefer-coding-system 'utf-8-unix)
-(setq coding-system-for-read 'utf-8-unix)
-(setq coding-system-for-write 'utf-8-unix)
+(prefer-coding-system 'utf-8-dos)
+(setq coding-system-for-read 'utf-8-dos)
+(setq coding-system-for-write 'utf-8-dos)
 
 ;; Emacs Startup changes
 (setq inhibit-default-init t)
