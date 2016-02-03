@@ -1,3 +1,8 @@
+;; Coding System
+(prefer-coding-system 'utf-8-dos)
+(setq coding-system-for-read 'utf-8-dos)
+(setq coding-system-for-write 'utf-8-dos)
+
 ;; test tls connection on windows for successfull download of packages
 ;; makes sure this returns t in the echo area
 (gnutls-available-p)

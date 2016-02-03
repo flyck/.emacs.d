@@ -50,11 +50,6 @@
                                (local-set-key (kbd "M-n") 'next-line)
 			     ))
 
-;; Coding System
-(prefer-coding-system 'utf-8-dos)
-(setq coding-system-for-read 'utf-8-dos)
-(setq coding-system-for-write 'utf-8-dos)
-
 ;; Emacs Startup changes
 (setq inhibit-default-init t)
 (setq inhibit-splash-screen t)
