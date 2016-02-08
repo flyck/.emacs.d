@@ -1,5 +1,5 @@
 (require 'use-package)
- 
+
 ;; Theme-config (and old theme configs)
 
 ;; required for zonokai
@@ -37,7 +37,7 @@
 				    helm-source-bookmarks
 				    helm-source-buffer-not-found))
   (helm-mode 1)
-  (set-face-attribute 'helm-selection nil 
+  (set-face-attribute 'helm-selection nil
                     :background "ivory1"
                     :foreground "gray5")
   )
@@ -86,6 +86,7 @@
 	 (lisp . t)
 	 (sh . t)
 	 (perl . t)
+	 (dot . t) ;; activates graphviz dot suport
 	 ))
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
@@ -227,5 +228,3 @@
   ;; Do setting a recommemded configuration
   (vbasense-config-default)
   )
-
-
