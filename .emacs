@@ -5,6 +5,7 @@
 ;; Set the environment-variable SYSENV for this to "home" or "work"
 (cond ((equal "work" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/work.el") (load "~/.emacs.d/work.el")))
       ((equal "home" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/home.el") (load "~/.emacs.d/home.el")))
+      ;; The default, the condition is true
       (t (if (file-exists-p "~/.emacs.d/university.el") (load "~/.emacs.d/university.el")))
       )
 
@@ -24,6 +25,12 @@
 ;; Experimental exec-paths
 ;;(setq exec-path (append exec-path '("C:/Program Files (x86)/Git/bin")))
 ;;(setq load-path (append load-path '("C:/cygwin/fakecygpty")))
+
+;; For Graphviz
+(setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
+(setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
+
+;;(setq load-path (append exec-path '("H:\\Win7PoolData\\Desktop\\emacs\\bin")))
 
 ;; Bootstrap use-package
 (unless (package-installed-p 'use-package)
@@ -82,8 +89,8 @@
 (setq diff-switches "-u")
 
 ;; transparency
-(set-frame-parameter (selected-frame) 'alpha '(100 100))
-(add-to-list 'default-frame-alist '(alpha 100 100))
+(set-frame-parameter (selected-frame) 'alpha '(90 90))
+(add-to-list 'default-frame-alist '(alpha 90 90))
 ;;(set-frame-font "Source Code Pro-16" nil t)
 
 ;; customize the interface on windows
