@@ -10,6 +10,11 @@
 		       ;;:strike-through t
 		       :weight bold))))
 
+;; Coding System
+(prefer-coding-system 'utf-8-unix)
+(setq coding-system-for-read 'utf-8-unix)
+(setq coding-system-for-write 'utf-8-unix)
+
 (if (eq system-type 'windows-nt)
     (setq org-agenda-files (list "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org"
 				 "C:\\Users\\FBrilej\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
