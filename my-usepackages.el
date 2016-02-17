@@ -113,6 +113,7 @@
    '(org-block-foreground ((t (:foreground "dark orange"))))
    '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
    '(org-block-end-line ((t (:foreground "SlateBlue4"))))
+   '(org-document-info ((t (:foreground "medium sea green"))))
    ;; if the background is not set the outlines that contain an org-block will have weird
    ;; background colors even when folded
    ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
