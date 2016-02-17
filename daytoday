@@ -3,15 +3,16 @@
 # key: daytoday
 # --
 * Daytoday $0
-  ~Notizen~
+** Log
 ** Gewohnheiten
    - [ ] Entspannen
    - [ ] Musik hören
    - [ ] Sport
    - [ ] Lernen
-   - [ ] Uni Status überprüfen   
-   - [ ] PC Spielen   
-** Neuigkeiten 
+   - [ ] Uni Status überprüfen
+   - [ ] PC Spielen
+   - [ ] Negativ/Positiv Atem-Meditation
+** Neuigkeiten
    - [ ] Browser/Readme.Blogs
    - [ ] Browser/Youtube.Abbonements
    - [ ] Browser/GMail.Inbox
@@ -27,4 +28,3 @@
    - [ ] Mit Tieren kuscheln
    - [ ] Hauspflege
    - [X] Logging
-** Log
