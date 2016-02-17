@@ -22,16 +22,6 @@
 (let ((default-directory "~/.emacs.d/elpa/"))
   (normal-top-level-add-subdirs-to-load-path))
 
-;; Experimental exec-paths
-;;(setq exec-path (append exec-path '("C:/Program Files (x86)/Git/bin")))
-;;(setq load-path (append load-path '("C:/cygwin/fakecygpty")))
-
-;; For Graphviz
-(setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
-(setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
-
-;;(setq load-path (append exec-path '("H:\\Win7PoolData\\Desktop\\emacs\\bin")))
-
 ;; Bootstrap use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -55,7 +45,15 @@
                                (local-set-key (kbd "M-p") 'previous-line)
 			       (local-set-key (kbd "C-n") 'eshell-next-input)
                                (local-set-key (kbd "M-n") 'next-line)
-			     ))
+			       (setq pcomplete-cycle-completions nil)
+			       ))
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(custom-set-faces
+ '(eshell-ls-archive ((t (:foreground "gold1" :weight bold))))
+ '(eshell-ls-backup ((t (:foreground "LemonChiffon1"))))
+ '(eshell-ls-directory ((t (:foreground "brown1" :weight bold))))
+ '(eshell-prompt ((t (:foreground "firebrick" :weight bold))))
+ )
 
 ;; Emacs Startup changes
 (setq inhibit-default-init t)
@@ -71,13 +69,6 @@
 
 ;; Dired
 (setq dired-listing-switches "-alh")
-
-;; eshell
-(add-hook
- 'eshell-mode-hook
- (lambda ()
-   (setq pcomplete-cycle-completions nil)))
-(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;; No splash screen please ... jeez
 (setq inhibit-startup-message t)
@@ -145,7 +136,7 @@
 ;; Startup position of emacs on windows, several FIX approaches
 (if (window-system)
   (set-frame-position (selected-frame) 0 0)
-  (set-frame-height (selected-frame) 60))
+  (set-frame-height (selected-frame) 120))
 ;; Maximize the screen on Windows-Systems
 ;; (add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
 ;; (w32-send-sys-command #xf030)

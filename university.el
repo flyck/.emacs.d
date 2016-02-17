@@ -17,6 +17,8 @@
 ;;   (error e))
 
 (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\emacs\\bin"))
+;; (setq load-path (append exec-path '("H:\\Win7PoolData\\Desktop\\emacs\\bin")))
+;; does this work?
 
 ;; (getenv "PATH")
 ;; university pcs cant use https for some reason (error: cant reach melpa:443)
@@ -26,3 +28,7 @@
 ;; git settings
 ;; requires portable-git on the desktop
 (add-to-list 'exec-path "H:/Win7PoolData/Desktop/PortableGit/mingw64/bin")
+
+;; For Graphviz
+(setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
+(setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
