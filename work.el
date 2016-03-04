@@ -25,3 +25,18 @@
 
 ;;(open-file "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org")
 ;;(load-file "~/Documents/request-tracker/ticketsystem.org")
+
+;; Startup position of emacs
+(if (window-system)
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-height (selected-frame) 120))
+
+;; Maximize the screen on Windows-Systems
+;; (add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
+;; (w32-send-sys-command #xf030)
+;; (defun w32-maximize-frame ()
+;;   "Maximize the current frame"
+;;   (interactive)
+;;   (w32-send-sys-command 61488)
+;; )
+;; (w32-maximize-frame)

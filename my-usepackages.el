@@ -61,13 +61,19 @@
 
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
 (use-package magit
-  :if (equal "home" (getenv "SYSENV"))
+  :if (cond ((equal "home" (getenv "SYSENV")) msg "Loading magit") ((equal "laptop" (getenv "SYSENV")) msg "Loading magit"))
   :ensure t
   :init
   (add-to-list 'exec-path "C:/Program Files/Git/bin")
   (define-key global-map (kbd "C-c m") 'magit-status)
   (setenv "GIT_ASKPASS" "git-gui--askpass")
   )
+
+
+;; (cond ((equal "home" (getenv "SYSENV")) msg "Loading magit")
+;;       ((equal "laptop" (getenv "SYSENV")) msg "Loading magit")
+;;       (t nil)
+;; )
 
 (use-package ace-jump-mode
   :ensure t
@@ -146,13 +152,41 @@
 
 (use-package smooth-scrolling
   :ensure t
+  :init
+  (add-hook 'org-mode-hook (lambda () (smooth-scrolling-mode 1)))
   )
 
+
+;; Settings for company plus company-emoji
+(use-package company-emoji
+  :if (equal "laptop" (getenv "SYSENV"))
+  :ensure t
+  :init
+  (add-to-list 'company-backends 'company-emoji)
+
+  (require 'color)
+  (let ((bg (face-attribute 'default :background)))
+    (custom-set-faces
+     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+  )
+
+;; Probably only works on my laptop
+(use-package mode-icons
+  :if (equal "laptop" (getenv "SYSENV"))
+  :ensure t
+  :init
+  (mode-icons-mode 1)
+  )
+
+;; I seem to use this on and off from time to time
 ;; (use-package org-bullets
 ;;   :init
 ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 ;;   )
-
 
 ;; Inserts highlighting of Org Source-Blocks on Html-Export
 (use-package htmlize
@@ -211,21 +245,31 @@
   (yas-global-mode 1)
   )
 
-(use-package rainbow-delimiters
-  :ensure t
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-  )
+;; Keep track of my most used key-bindings
+;; (use-package keyfreg
+;;   :ensure t
+;;   :init
+;;   (keyfreq-mode 1)
+;;   (keyfreq-autosave-mode 1)
+;;   )
+
+;; is not listed in "package-list-packages"
+;; (use-package rainbow-delimiters
+;;   :ensure nil
+;;   :init
+;;   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+;;   )
 
 ;; VBA Highlighting
-(use-package vbasense
-  :ensure t
-  :init
-  ;; Keybinding
-  (setq vbasense-popup-help-key "C-:")
-  (setq vbasense-jump-to-definition-key "C->")
-  ;; Make config suit for you. About the config item, eval the following sexp.
-  ;; (customize-group "vbasense")
-  ;; Do setting a recommemded configuration
-  (vbasense-config-default)
-  )
+;; is not listed in "package-list-packages"
+;; (use-package vbasense
+;;   :ensure nil
+;;   :init
+;;   ;; Keybinding
+;;   (setq vbasense-popup-help-key "C-:")
+;;   (setq vbasense-jump-to-definition-key "C->")
+;;   ;; Make config suit for you. About the config item, eval the following sexp.
+;;   ;; (customize-group "vbasense")
+;;   ;; Do setting a recommemded configuration
+;;   (vbasense-config-default)
+;;   )

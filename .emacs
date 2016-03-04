@@ -5,17 +5,18 @@
 ;; Set the environment-variable SYSENV for this to "home" or "work"
 (cond ((equal "work" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/work.el") (load "~/.emacs.d/work.el")))
       ((equal "home" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/home.el") (load "~/.emacs.d/home.el")))
-      ;; The default, the condition is true
+      ((equal "laptop" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/laptop.el") (load "~/.emacs.d/laptop.el")))
+      ;; The default, the condition is always true
       (t (if (file-exists-p "~/.emacs.d/university.el") (load "~/.emacs.d/university.el")))
       )
 
-;; (setq package-enable-at-startup nil)
-;; (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-;;                          ;; ("marmalade" . "https://marmalade-repo.org/packages/")
-;;                          ;; ("melpa" . "https://melpa.org/packages/")))
-;;                          ("marmalade" . "http://marmalade-repo.org/packages/")
-;;                          ("melpa" . "https://melpa.org/packages/"))
-;;      )
+(setq package-enable-at-startup nil)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ;; ("melpa" . "https://melpa.org/packages/")))
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/"))
+     )
 
 (package-initialize)
 
@@ -80,8 +81,8 @@
 (setq diff-switches "-u")
 
 ;; transparency
-(set-frame-parameter (selected-frame) 'alpha '(90 90))
-(add-to-list 'default-frame-alist '(alpha 90 90))
+(set-frame-parameter (selected-frame) 'alpha '(100 100))
+(add-to-list 'default-frame-alist '(alpha 100 100))
 ;;(set-frame-font "Source Code Pro-16" nil t)
 
 ;; customize the interface on windows
@@ -133,16 +134,3 @@
     (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
     )
 
-;; Startup position of emacs on windows, several FIX approaches
-(if (window-system)
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-height (selected-frame) 120))
-;; Maximize the screen on Windows-Systems
-;; (add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
-;; (w32-send-sys-command #xf030)
-;; (defun w32-maximize-frame ()
-;;   "Maximize the current frame"
-;;   (interactive)
-;;   (w32-send-sys-command 61488)
-;; )
-;; (w32-maximize-frame)
