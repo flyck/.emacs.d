@@ -61,19 +61,16 @@
 
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
 (use-package magit
-  :if (cond ((equal "home" (getenv "SYSENV")) msg "Loading magit") ((equal "laptop" (getenv "SYSENV")) msg "Loading magit"))
+  :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
+      ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
+      ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
+      )
   :ensure t
   :init
   (add-to-list 'exec-path "C:/Program Files/Git/bin")
   (define-key global-map (kbd "C-c m") 'magit-status)
   (setenv "GIT_ASKPASS" "git-gui--askpass")
   )
-
-
-;; (cond ((equal "home" (getenv "SYSENV")) msg "Loading magit")
-;;       ((equal "laptop" (getenv "SYSENV")) msg "Loading magit")
-;;       (t nil)
-;; )
 
 (use-package ace-jump-mode
   :ensure t
