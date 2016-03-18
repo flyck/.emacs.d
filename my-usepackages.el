@@ -160,7 +160,6 @@
 ;; Settings for company plus company-emoji
 (use-package company-emoji
   :if (equal "laptop" (getenv "SYSENV"))
-  :ensure t
   :init
   (add-to-list 'company-backends 'company-emoji)
 

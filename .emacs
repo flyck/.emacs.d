@@ -1,5 +1,3 @@
-;; Load-Path
-
 (require 'package)
 
 ;; Set the environment-variable SYSENV for this to "home" or "work"
@@ -11,12 +9,10 @@
       )
 
 (setq package-enable-at-startup nil)
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ;; ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ;; ("melpa" . "https://melpa.org/packages/")))
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/"))
-     )
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;;(package-refresh-contents)
 
 (package-initialize)
 
@@ -133,4 +129,3 @@
     ;; Set the font
     (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
     )
-
