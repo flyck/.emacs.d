@@ -173,7 +173,6 @@
 ;; Probably only works on my laptop
 (use-package mode-icons
   :if (equal "laptop" (getenv "SYSENV"))
-  :ensure t
   :init
   (mode-icons-mode 1)
   )
@@ -265,7 +264,7 @@
 ;; smartparens, a mode that tries to be smart around parentheses of all kinds
 (use-package smartparens
   :ensure t
-  :config
+  :init
   (smartparens-global-mode t)
   ;; make the overlay disappear
   (custom-set-faces '(sp-pair-overlay-face ((t nil))))
