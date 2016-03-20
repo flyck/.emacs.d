@@ -1,5 +1,9 @@
 (require 'package)
 
+;; create the elpa directory if it doesnt exist since emacs will otherwise complain while loading the packages
+(unless (file-exists-p "~/.emacs.d/elpa")
+  (make-directory "~/.emacs.d/elpa"))
+
 ;; Set the environment-variable SYSENV for this to "home" or "work"
 (cond ((equal "work" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/work.el") (load "~/.emacs.d/work.el")))
       ((equal "home" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/home.el") (load "~/.emacs.d/home.el")))
@@ -34,6 +38,28 @@
           'comint-strip-ctrl-m)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq show-trailing-whitespace t)
+
+;; show matching parenthesis without delay
+(setq show-paren-delay 0)
+(show-paren-mode t)
+
+;; don't blink curser
+;; doesnt work?
+(blink-cursor-mode 0)
+(if (fboundp 'blink-cursor-mode)
+    (blink-cursor-mode nil))
+
+;; save minibuffer history
+(savehist-mode 1)
+;; delete duplicates in minibuffer history
+(setq history-delete-duplicates t)
+(setq history-length 1000)
+
+;; take the short answer, y/n is yes/no
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; highlight current line
+(global-hl-line-mode 1)
 
 ;; Eshell
 (add-hook 'eshell-mode-hook '(lambda ()

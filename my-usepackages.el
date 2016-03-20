@@ -241,14 +241,6 @@
   (yas-global-mode 1)
   )
 
-;; Keep track of my most used key-bindings
-;; (use-package keyfreg
-;;   :ensure t
-;;   :init
-;;   (keyfreq-mode 1)
-;;   (keyfreq-autosave-mode 1)
-;;   )
-
 ;; is not listed in "package-list-packages"
 ;; (use-package rainbow-delimiters
 ;;   :ensure nil
@@ -269,3 +261,12 @@
 ;;   ;; Do setting a recommemded configuration
 ;;   (vbasense-config-default)
 ;;   )
+
+;; smartparens, a mode that tries to be smart around parentheses of all kinds
+(use-package smartparens
+  :ensure t
+  :config
+  (smartparens-global-mode t)
+  ;; make the overlay disappear
+  (custom-set-faces '(sp-pair-overlay-face ((t nil))))
+  )
