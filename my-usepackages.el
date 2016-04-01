@@ -24,6 +24,7 @@
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
    '(org-date ((t (:foreground "cornflower blue" :underline t))))
    '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
+   '(font-lock-comment-face ((t (:foreground "spring green"))))
    )
   )
 
