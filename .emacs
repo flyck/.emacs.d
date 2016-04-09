@@ -16,6 +16,9 @@
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; yasnippet doesnt unpack from melpa
+;; usepackage is only available on melpa
+;; smartparens crashes when not installed from melpa
 ;;(package-refresh-contents)
 
 (package-initialize)
@@ -116,6 +119,10 @@
 
 ;; Remove alarm (bell) on scroll
 (setq ring-bell-function 'ignore)
+
+;; Intuitive Buffer-changing
+(global-set-key [(control next)] 'next-buffer)
+(global-set-key [(control prior)] 'previous-buffer)
 
 ;; Fonts
 ;; "Select an Emacs font from a list of known good fonts and fontsets.

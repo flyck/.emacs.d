@@ -24,6 +24,14 @@
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
    '(org-date ((t (:foreground "cornflower blue" :underline t))))
    '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
+   ;; Color the Org-Blocks beautifully for color schemes that do not do that
+   '(org-block-foreground ((t (:foreground "dark orange"))))
+   '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
+   '(org-block-end-line ((t (:foreground "SlateBlue4"))))
+   '(org-document-info ((t (:foreground "medium sea green"))))
+   ;; if the background is not set the outlines that contain an org-block will have weird
+   ;; background colors even when folded
+   ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
    )
   )
 
@@ -40,6 +48,7 @@
   (set-face-attribute 'helm-selection nil
                     :background "ivory1"
                     :foreground "gray5")
+  (global-set-key (kbd "M-x") 'helm-M-x)
   )
 
 ;;(use-package helm-themes
@@ -83,14 +92,16 @@
   :init
   ;; load org-babel
   (setq org-export-coding-system 'utf-8-unix)
+  ;; Org Babel
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
 	 (lisp . t)
 	 (sh . t)
 	 (perl . t)
-	 (dot . t) ;; activates graphviz dot suport
+	 (dot . t) ;; activates graphviz dot support
 	 ))
+  ;; Custom commands
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
   (define-key global-map "\C-cc" 'org-capture)
@@ -102,47 +113,35 @@
   (setq org-src-fontify-natively t)
   (setq org-log-done t)
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  (global-set-key [(control next)] 'next-buffer)
-  (global-set-key [(control prior)] 'previous-buffer)
   ;; Visual modifications
-  ;; Strike through DONE headlines (from sachachuas config)
+  ;; Strike through DONE headlines
   (setq org-fontify-done-headline t)
-  (custom-set-faces
-   ;; Color the Org-Blocks beautifully for color schemes that do not do that
-   ;; org-block :background messes out the outline background :(
-   ;;'(org-block-background ((t (:background "dark orange"))))
-   ;;'(org-block-begin-line ((t (:background "SlateBlue4"))))
-   ;;'(org-block-end-line ((t (:background "SlateBlue4"))))
-   '(org-block-foreground ((t (:foreground "dark orange"))))
-   '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-   '(org-block-end-line ((t (:foreground "SlateBlue4"))))
-   '(org-document-info ((t (:foreground "medium sea green"))))
-   ;; if the background is not set the outlines that contain an org-block will have weird
-   ;; background colors even when folded
-   ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
-   )
   ;; autofill hooks for automatic indentation
   (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
   (setq auto-hscroll-mode nil)
+  (setq org-hide-emphasis-markers t)
   (setq org-tags-column -93)
   ;; change from ... to the arrow
   (setq org-ellipsis "⤵")
-  ;; orgmode archive done tasks
+  ;; Circulate Bullets instead of asteriks
+  (font-lock-add-keywords 'org-mode
+                        '(("^ +\\([-*]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;; Custom fuctions Archive done tasks properly (doesn't work, i use C-x-a and C-x-z z z z z to
+  ;; archive multiple entries)
   (defun my-org-archive-done-tasks ()
 	(interactive)
 	(org-map-entries 'org-archive-subtree "/DONE" 'file)
 	(org-map-entries 'org-archive-subtree "/CANCELED" 'file)
 	(org-map-entries 'org-archive-subtree "/DELEGATED" 'file)
-  )
+	)
+  ;; what does this even do?
   (setq org-export-with-sub-superscripts nil)
   ;; remove the "validate"-link from the org-html export
   (setq org-export-html-validation-link nil)
-  ;; adapt to orgzly which automatically forms stuff this way
-  ;; (setq org-adapt-indentation nil)
-  ;; sadly this doesnt improve linebreaking in orgzly
-  ;; indicate sublevels in parts of org-agenda, for example
   (setq org-tags-match-list-sublevels 'indented)
+  ;; A package to visualize repeated tasks in the org agenda
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
   )
