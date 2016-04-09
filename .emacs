@@ -61,8 +61,8 @@
 ;; take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; highlight current line
-(global-hl-line-mode 1)
+;; highlight current line (slows down C-n and C-p immensly)
+;; (global-hl-line-mode 1)
 
 ;; Eshell
 (add-hook 'eshell-mode-hook '(lambda ()
@@ -114,8 +114,9 @@
 (when window-system
   (tooltip-mode -1)
   (tool-bar-mode -1)
-  (menu-bar-mode 1)
-  (scroll-bar-mode -1))
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  )
 
 ;; Remove alarm (bell) on scroll
 (setq ring-bell-function 'ignore)
