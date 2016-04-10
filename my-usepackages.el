@@ -24,7 +24,6 @@
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
    '(org-date ((t (:foreground "cornflower blue" :underline t))))
    '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
-<<<<<<< HEAD
    ;; Color the Org-Blocks beautifully for color schemes that do not do that
    '(org-block-foreground ((t (:foreground "dark orange"))))
    '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
@@ -33,9 +32,6 @@
    ;; if the background is not set the outlines that contain an org-block will have weird
    ;; background colors even when folded
    ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
-=======
-   '(font-lock-comment-face ((t (:foreground "spring green"))))
->>>>>>> f8c19bd2fb14ffbb751d61b981e99bbe9237c17e
    )
   )
 
@@ -161,8 +157,6 @@
 (use-package company-emoji
   :if (equal "laptop" (getenv "SYSENV"))
   :init
-  (add-to-list 'company-backends 'company-emoji)
-
   (require 'color)
   (let ((bg (face-attribute 'default :background)))
     (custom-set-faces
