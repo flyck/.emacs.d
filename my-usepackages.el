@@ -19,7 +19,10 @@
   :ensure t
   :init
   (custom-set-faces
-   '(org-level-2 ((t (:inherit outline-2 :foreground "indian red"))))
+   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+   '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
    '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
    '(org-date ((t (:foreground "cornflower blue" :underline t))))
@@ -107,6 +110,7 @@
   (define-key global-map "\C-cc" 'org-capture)
   (define-key global-map "\M-n" 'org-metadown)
   (define-key global-map "\M-p" 'org-metaup)
+  (define-key org-mode-map "\C-m" 'nil)
   (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
   (global-set-key (kbd "<f9>") 'org-todo)
   ;; Load syntax-highlighting for source-blocks
@@ -228,7 +232,7 @@
   )
 
 (use-package yasnippet
-  :ensure t
+  :ensure nil
   :init
   (define-key global-map "\C-cy" 'yas/insert-snippet)
   ;;(setq yas-snippet-dirs (append yas-snippet-dirs
