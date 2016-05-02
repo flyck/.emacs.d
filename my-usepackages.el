@@ -1,43 +1,5 @@
 (require 'use-package)
 
-;; Theme-config (and old theme configs)
-
-;; required for zonokai
-;; (use-package dash
-;;   :ensure t
-;;   )
-;;(use-package zonokai-theme
-;;  :ensure t
-;;  )
-
-
-;; (use-package abyss-theme
-;;   :ensure t
-;;   )
-
-(use-package seti-theme
-  :ensure t
-  :init
-  (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
-   '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
-   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
-   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-   '(org-date ((t (:foreground "cornflower blue" :underline t))))
-   '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
-   ;; Color the Org-Blocks beautifully for color schemes that do not do that
-   '(org-block-foreground ((t (:foreground "dark orange"))))
-   '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-   '(org-block-end-line ((t (:foreground "SlateBlue4"))))
-   '(org-document-info ((t (:foreground "medium sea green"))))
-   ;; if the background is not set the outlines that contain an org-block will have weird
-   ;; background colors even when folded
-   ;; nvm '(font-lock-function-name-face ((t (:background "black"))))
-   )
-  )
-
 (use-package helm
   :ensure t
   :init
@@ -171,13 +133,6 @@
      `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
   )
 
-;; Probably only works on my laptop
-(use-package mode-icons
-  :if (equal "laptop" (getenv "SYSENV"))
-  :init
-  (mode-icons-mode 1)
-  )
-
 ;; I seem to use this on and off from time to time
 ;; (use-package org-bullets
 ;;   :init
@@ -263,4 +218,43 @@
   (smartparens-global-mode t)
   ;; make the overlay disappear
   (custom-set-faces '(sp-pair-overlay-face ((t nil))))
+  )
+
+;; Theme-config (and old theme configs)
+
+;; required for zonokai
+;; (use-package dash
+;;   :ensure t
+;;   )
+;;(use-package zonokai-theme
+;;  :ensure t
+;;  )
+
+
+;; (use-package abyss-theme
+;;   :ensure t
+;;   )
+
+(use-package seti-theme
+  :ensure t
+  :config
+  (custom-set-faces
+   '(font-lock-function-name-face ((t (:foreground "royal blue"))))
+   '(font-lock-comment-face ((t (:foreground "#9FCA56"))))
+   '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
+   '(org-level-1 ((t (:height 1.4 :foreground "royal blue"))))
+   '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
+   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+   '(org-date ((t (:foreground "cornflower blue" :underline t))))
+   '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
+   ;; Color the Org-Blocks beautifully for color schemes that do not do that
+   '(org-block-foreground ((t (:foreground "dark orange"))))
+   '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
+   '(org-block-end-line ((t (:foreground "SlateBlue4"))))
+   '(org-document-info ((t (:foreground "medium sea green"))))
+   '(org-document-info-keyword ((t (:foreground "#9FCA56"))))
+   )
   )
