@@ -48,12 +48,6 @@
 (setq show-paren-delay 0)
 (show-paren-mode t)
 
-;; don't blink curser
-;; doesnt work?
-(blink-cursor-mode 0)
-(if (fboundp 'blink-cursor-mode)
-    (blink-cursor-mode nil))
-
 ;; save minibuffer history
 (savehist-mode 1)
 ;; delete duplicates in minibuffer history
@@ -62,6 +56,7 @@
 
 ;; take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)
+
 
 ;; highlight current line (slows down C-n and C-p immensly)
 ;; (global-hl-line-mode 1)
@@ -165,3 +160,8 @@
     ;; Set the font
     (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
     )
+
+;; don't blink curser
+(blink-cursor-mode 0)
+(if (fboundp 'blink-cursor-mode)
+    (blink-cursor-mode 0))
