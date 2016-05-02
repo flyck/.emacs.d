@@ -1,9 +1,9 @@
 ;; To be loaded when I'm using my laptop
 
 ;; Coding System
-(prefer-coding-system 'utf-8-unix)
-(setq coding-system-for-read 'utf-8-unix)
-(setq coding-system-for-write 'utf-8-unix)
+;; (prefer-coding-system 'utf-8-unix)
+;; (setq coding-system-for-read 'utf-8-unix)
+;; (setq coding-system-for-write 'utf-8-unix)
 
 ;; Org-agenda files
 (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"))
