@@ -189,6 +189,12 @@
   :ensure t
   )
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-setup-side-window-right)
+  )
+
 (use-package tramp
   :ensure t
   :init
