@@ -193,6 +193,8 @@
   :ensure t
   :config
   (which-key-setup-side-window-right)
+  (setq which-key-popup-type 'side-window)
+  (which-key-mode)
   )
 
 (use-package tramp
@@ -237,6 +239,7 @@
 		  (auto-save-mode 1))))
   )
 
+;; Currently there is a problem "package does not untar cleanly"
 (use-package yasnippet
   :ensure nil
   :init
@@ -247,26 +250,11 @@
   (yas-global-mode 1)
   )
 
-;; is not listed in "package-list-packages"
-;; (use-package rainbow-delimiters
-;;   :ensure nil
-;;   :init
-;;   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-;;   )
-
-;; VBA Highlighting
-;; is not listed in "package-list-packages"
-;; (use-package vbasense
-;;   :ensure nil
-;;   :init
-;;   ;; Keybinding
-;;   (setq vbasense-popup-help-key "C-:")
-;;   (setq vbasense-jump-to-definition-key "C->")
-;;   ;; Make config suit for you. About the config item, eval the following sexp.
-;;   ;; (customize-group "vbasense")
-;;   ;; Do setting a recommemded configuration
-;;   (vbasense-config-default)
-;;   )
+(use-package rainbow-delimiters
+  :ensure t
+  :init
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+  )
 
 ;; smartparens, a mode that tries to be smart around parentheses of all kinds
 (use-package smartparens

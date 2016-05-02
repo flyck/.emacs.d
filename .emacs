@@ -13,13 +13,15 @@
       )
 
 (setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(setq package-archives nil)
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-refresh-contents)
+;; Problems:
 ;; yasnippet doesnt unpack from melpa
 ;; usepackage is only available on melpa
 ;; smartparens crashes when not installed from melpa
-;;(package-refresh-contents)
 
 (package-initialize)
 
