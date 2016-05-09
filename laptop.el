@@ -6,7 +6,8 @@
 ;; (setq coding-system-for-write 'utf-8-unix)
 
 ;; Org-agenda files
-(setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"))
+(setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
+			     "~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
 
 ;; Startup position of emacs
 (if (window-system)
@@ -20,3 +21,9 @@
       (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
     ;; For Linux
     (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+
+(setq org-todo-keywords
+      '((sequence "TODO" "PENDING" "|" "CANCELED" "DONE")))
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning) ("PENDING" . "#f0c674")
+        ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
