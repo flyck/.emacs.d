@@ -40,7 +40,7 @@
       ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
       )
   :ensure t
-  :init
+  :config
   (add-to-list 'exec-path "C:/Program Files/Git/bin")
   (define-key global-map (kbd "C-c m") 'magit-status)
   (setenv "GIT_ASKPASS" "git-gui--askpass")
@@ -242,6 +242,7 @@
    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
    '(font-lock-comment-face ((t (:foreground "#9FCA56"))))
    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
+   '(helm-candidate-number ((t (:foreground "goldenrod2"))))
    '(org-level-1 ((t (:height 1.4 :foreground "royal blue"))))
    '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
    '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
