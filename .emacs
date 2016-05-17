@@ -57,6 +57,8 @@
 ;; take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; overwrite selected text
+(delete-selection-mode t)
 
 ;; highlight current line (slows down C-n and C-p immensly)
 ;; (global-hl-line-mode 1)
