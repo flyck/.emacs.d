@@ -35,6 +35,12 @@
   (setenv "GIT_ASKPASS" "git-gui--askpass")
   )
 
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode)
+  )
+
+;; I never use this
 (use-package ace-jump-mode
   :ensure t
   :init
