@@ -21,17 +21,6 @@
 ;;  :config
 ;;  (helm-themes--load-theme "zonokai-blue")
 ;;  )
-;; Change the cursor after setting the theme
-(setq-default cursor-type 'hbar)
-
-;; use-package doesnt find spaceline-config or spaceline
-;; (use-package spaceline-config
-;;   :ensure t
-;;   :config
-;;   (spaceline-emacs-theme)
-;;   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-;;   )
-
 
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
 (use-package magit
@@ -230,7 +219,6 @@
 ;;  :ensure t
 ;;  )
 
-
 ;; (use-package abyss-theme
 ;;   :ensure t
 ;;   )
@@ -259,3 +247,16 @@
    '(org-document-info-keyword ((t (:foreground "#9FCA56"))))
    )
   )
+
+;; The mode-line
+;; load it after the theme since themes sometimes set their own mode-line
+;; former problem: use-package doesnt find spaceline-config or spaceline
+;; doest it still exist?
+(use-package 'spaceline-config
+  :load
+  (spaceline-emacs-theme)
+  (spaceline-helm-mode)
+  )
+
+;; Change the cursor after setting the theme
+(setq-default cursor-type 'hbar)
