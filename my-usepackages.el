@@ -14,6 +14,7 @@
                     :background "ivory1"
                     :foreground "gray5")
   (global-set-key (kbd "M-x") 'helm-M-x)
+  (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
   )
 
 ;;(use-package helm-themes
@@ -143,6 +144,14 @@
   :ensure t
   )
 
+;; Respawns the scratch buffer when its killed
+;; Feels just right
+(use-package immortal-scratch
+  :ensure t
+  :config
+  (immortal-scratch-mode t)
+  )
+
 (use-package which-key
   :ensure t
   :config
@@ -243,6 +252,7 @@
    '(helm-candidate-number ((t (:foreground "goldenrod2"))))
    '(org-level-1 ((t (:height 1.4 :foreground "royal blue"))))
    '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
+   '(outline-3 ((t (:foreground "DarkOrchid1"))))
    '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
    '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
    '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
