@@ -44,6 +44,9 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq show-trailing-whitespace t)
 
+;; disable tabs
+(setq-default indent-tabs-mode nil)
+
 ;; show matching parenthesis without delay
 (setq show-paren-delay 0)
 (show-paren-mode t)

@@ -87,8 +87,12 @@
   (setq org-ellipsis "⤵")
   ;; Circulate Bullets instead of asteriks
   (font-lock-add-keywords 'org-mode
-                        '(("^ +\\([-*]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                          '(("^ +\\([-*]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;; for tabs (should be redundant after removing all of my tabs)
+  (font-lock-add-keywords 'org-mode
+                          '(("^	 +\\([-*]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
   ;; Custom fuctions Archive done tasks properly (doesn't work, i use C-x-a and C-x-z z z z z to
   ;; archive multiple entries)
   (defun my-org-archive-done-tasks ()
@@ -258,8 +262,8 @@
 ;; load it after the theme since themes sometimes set their own mode-line
 ;; former problem: use-package doesnt find spaceline-config or spaceline
 ;; doest it still exist?
-(use-package 'spaceline-config
-  :load
+(use-package spaceline-config
+  :config
   (spaceline-emacs-theme)
   (spaceline-helm-mode)
   )
