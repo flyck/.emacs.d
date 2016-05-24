@@ -250,6 +250,7 @@
    '(font-lock-comment-face ((t (:foreground "#9FCA56"))))
    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
    '(helm-candidate-number ((t (:foreground "goldenrod2"))))
+   '(helm-selection ((t (:background "light gray" :foreground "gray5"))))
    '(org-level-1 ((t (:height 1.4 :foreground "royal blue"))))
    '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
    '(outline-3 ((t (:foreground "DarkOrchid1"))))
