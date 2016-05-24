@@ -273,9 +273,14 @@
 ;; former problem: use-package doesnt find spaceline-config or spaceline
 ;; doest it still exist?
 (use-package spaceline-config
+  :ensure spaceline
   :config
   (spaceline-emacs-theme)
   (spaceline-helm-mode)
+  (spaceline-toggle-buffer-size-off)
+  (spaceline-toggle-nyan-cat-on)
+  (spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-buffer-position-off)
   )
 
 ;; Change the cursor after setting the theme
