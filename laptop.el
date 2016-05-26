@@ -30,7 +30,7 @@
 
 ;; org-capture setup
 (setq org-capture-templates
-      '(("a" "My TODO task format." entry
+      '(("a" "Add a task to tasks.org." entry
          (file "tasks.org")
          "* TODO %?
 SCHEDULED: %t")))
