@@ -110,6 +110,26 @@
   ;; A package to visualize repeated tasks in the org agenda
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
+  ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+(require 'ox-latex)
+(add-to-list 'org-latex-classes
+             '("bjmarticle"
+               "\\documentclass{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+\\usepackage{graphicx}
+\\usepackage{longtable}
+\\usepackage{hyperref}
+\\usepackage{natbib}
+\\usepackage{amssymb}
+\\usepackage{amsmath}
+\\usepackage{geometry}
+\\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
 
 (use-package smooth-scrolling
