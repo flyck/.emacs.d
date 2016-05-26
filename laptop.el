@@ -27,3 +27,11 @@
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning) ("PENDING" . "#f0c674")
         ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+
+;; org-capture setup
+(setq org-capture-templates
+      '(("a" "My TODO task format." entry
+         (file "tasks.org")
+         "* TODO %?
+SCHEDULED: %t")))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))

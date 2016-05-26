@@ -17,6 +17,13 @@
 (if (eq system-type 'gnu/linux)
     (setq org-agenda-files (list "~/Documents/org/projects.org"
 				 "~/Documents/request-tracker/ticketsystem.org")))
+;; org-capture setup
+(setq org-capture-templates
+      '(("a" "My TODO task format." entry
+         (file "projects.org")
+         "* TODO %?
+SCHEDULED: %t")))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
 ;; Open my projects file which contains all of my scheduling
 (switch-to-buffer (find-file-noselect "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org"))
