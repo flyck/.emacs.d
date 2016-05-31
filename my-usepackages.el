@@ -53,6 +53,8 @@
   :init
   ;; load org-babel
   (setq org-export-coding-system 'utf-8-unix)
+  (setq org-export-with-clocks t)
+  (setq org-agenda-start-with-clockreport-mode t)
   ;; Org Babel
   (org-babel-do-load-languages
    'org-babel-load-languages
