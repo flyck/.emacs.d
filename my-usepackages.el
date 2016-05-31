@@ -131,7 +131,14 @@
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+             )
+)
+
+(use-package org-autolist
+  :ensure t
+  :conf
+  (add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
   )
 
 (use-package smooth-scrolling
