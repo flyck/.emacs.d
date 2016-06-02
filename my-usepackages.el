@@ -137,7 +137,7 @@
 
 (use-package org-autolist
   :ensure t
-  :conf
+  :config
   (add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
   )
 
