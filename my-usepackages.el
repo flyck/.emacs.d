@@ -282,7 +282,7 @@
    '(helm-selection ((t (:background "light gray" :foreground "gray5"))))
    '(org-level-1 ((t (:height 1.4 :foreground "royal blue"))))
    '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
-   '(outline-3 ((t (:foreground "DarkOrchid1"))))
+   '(outline-3 ((t (:foreground "orchid"))))
    '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
    '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
    '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
