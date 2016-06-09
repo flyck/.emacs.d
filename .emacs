@@ -166,7 +166,7 @@
     (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
     )
 
-;; don't blink curser
+;; stop cursor from blinking
 (blink-cursor-mode 0)
 (if (fboundp 'blink-cursor-mode)
     (blink-cursor-mode 0))
