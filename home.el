@@ -1,4 +1,4 @@
-(setq org-agenda-files (list "C:/Users/Scat666/Dropbox/org/gtd/tasks.org"))
+(setq org-agenda-files (list (string "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org" )))
 
 ;; Coding System
 (prefer-coding-system 'utf-8-dos)
