@@ -37,15 +37,9 @@
   )
 
 (use-package undo-tree
+  :ensure t
   :config
   (global-undo-tree-mode)
-  )
-
-;; I never use this
-(use-package ace-jump-mode
-  :ensure t
-  :init
-  (define-key global-map (kbd "C-M-q") 'ace-jump-mode)
   )
 
 (use-package org
@@ -96,14 +90,6 @@
   (font-lock-add-keywords 'org-mode
                           '(("^	 +\\([-*]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  ;; Custom fuctions Archive done tasks properly (doesn't work, i use C-x-a and C-x-z z z z z to
-  ;; archive multiple entries)
-  (defun my-org-archive-done-tasks ()
-	(interactive)
-	(org-map-entries 'org-archive-subtree "/DONE" 'file)
-	(org-map-entries 'org-archive-subtree "/CANCELED" 'file)
-	(org-map-entries 'org-archive-subtree "/DELEGATED" 'file)
-	)
   ;; what does this even do?
   (setq org-export-with-sub-superscripts nil)
   ;; remove the "validate"-link from the org-html export
@@ -135,12 +121,6 @@
              )
 )
 
-(use-package org-autolist
-  :ensure t
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
-  )
-
 (use-package smooth-scrolling
   :ensure t
   :init
@@ -161,12 +141,6 @@
      `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
      `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
   )
-
-;; I seem to use this on and off from time to time
-;; (use-package org-bullets
-;;   :init
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-;;   )
 
 ;; Inserts highlighting of Org Source-Blocks on Html-Export
 (use-package htmlize
@@ -257,26 +231,13 @@
   (custom-set-faces '(sp-pair-overlay-face ((t nil))))
   )
 
-;; Theme-config (and old theme configs)
-
-;; required for zonokai
-;; (use-package dash
-;;   :ensure t
-;;   )
-;;(use-package zonokai-theme
-;;  :ensure t
-;;  )
-
-;; (use-package abyss-theme
-;;   :ensure t
-;;   )
-
+;; Theme-config
 (use-package seti-theme
   :ensure t
   :config
   (custom-set-faces
    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
-   '(font-lock-comment-face ((t (:foreground "#9FCA56"))))
+   '(font-lock-comment-face ((t (:foreground "#b5bd68")))) ;9FCA56
    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
    '(helm-candidate-number ((t (:foreground "goldenrod2"))))
    '(helm-selection ((t (:background "light gray" :foreground "gray5"))))
