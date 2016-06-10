@@ -58,6 +58,10 @@
 	 (perl . t)
 	 (dot . t) ;; activates graphviz dot support
 	 ))
+  ;; Send stderror into the result drawer instead of an extra window
+  (setq org-babel-default-header-args:sh
+        '((:prologue . "exec 2>&1") (:epilogue . ":"))
+        )
   ;; Custom commands
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
