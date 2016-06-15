@@ -90,7 +90,8 @@
 
 ;; Line intendation
 (setq-default fill-column 98)
-(setq auto-hscroll-mode nil)
+(setq auto-hscroll-mode t)
+(setq hscroll-step 1)
 (auto-fill-mode 1)
 (define-key global-map "\C-cf" 'auto-fill-mode)
 (setq tab-width 4)
