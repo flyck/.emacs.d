@@ -241,7 +241,7 @@
   :config
   (custom-set-faces
    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
-   '(font-lock-comment-face ((t (:foreground "#b5bd68")))) ;9FCA56
+   '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
    '(helm-candidate-number ((t (:foreground "goldenrod2"))))
    '(helm-selection ((t (:background "light gray" :foreground "gray5"))))
@@ -259,7 +259,7 @@
    '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
    '(org-block-end-line ((t (:foreground "SlateBlue4"))))
    '(org-document-info ((t (:foreground "medium sea green"))))
-   '(org-document-info-keyword ((t (:foreground "#9FCA56"))))
+   '(org-document-info-keyword ((t (:foreground "light sea green"))))
    )
   )
 

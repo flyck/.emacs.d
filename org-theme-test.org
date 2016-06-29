@@ -1,7 +1,7 @@
 #+Title:  My org-mode theme testing environment
 #+Author: BubblesToTheLimit
 #+Date:   <2016-06-07 Di>
-#+Options: STARTUP:showall
+#+STARTUP:showall
 
 * About this file
   In this file i show and config all of my org-mode colors.
@@ -12,6 +12,9 @@
    '(outline-3 ((t (:foreground "orchid"))))
    '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
    '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+   '(org-document-info ((t (:foreground "medium sea green"))))
+   '(org-document-info-keyword ((t (:foreground "light sea green"))))
+   '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
    )
   (save-buffer)
   ;(revert-buffer)

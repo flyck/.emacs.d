@@ -5,7 +5,7 @@ echo ""
 cd ~
 mkdir -p src
 cd src
-wget http://ftp.gnu.org/gnu/emacs/emacs-24.5.tar.gz -P /~/src
+wget http://ftp.gnu.org/gnu/emacs/emacs-24.5.tar.gz -P ~/src
 
 #Check if download was successfull
 if [ -e ~/src/emacs-24.5.tar.gz ]
