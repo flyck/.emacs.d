@@ -30,4 +30,6 @@ read -p "Executing ./configure [Enter]"
 ./configure
 
 echo "There might be some missing packages listed in the ./configure output"
-echo "You might want to go ahead and fix those. Then execute make and make install."
+echo "You might want to go ahead and fix those. Next steps:"
+echo "make"
+echo "make install"
