@@ -15,6 +15,7 @@
 ;; Set the agenda-files on my working laptop (windows) and possible linux VMs respectively
 (if (eq system-type 'windows-nt)
     (setq org-agenda-files (list "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org"
+                                 "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org_archive"
 				 "C:\\Users\\FBrilej\\Desktop\\Projekte\\request-tracker\\ticketsystem.org"))
     ;; Open my projects file which contains all of my scheduling
     (switch-to-buffer (find-file-noselect "C:\\Users\\FBrilej\\Desktop\\Projekte\\org\\projects.org"))
