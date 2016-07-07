@@ -62,6 +62,10 @@
   (setq org-babel-default-header-args:sh
         '((:prologue . "exec 2>&1") (:epilogue . ":"))
         )
+  ;; Custom Keybindings
+  (fset 'fbr/convert-listitem-into-checklistitem
+        "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
+  (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
   ;; Custom commands
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
