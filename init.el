@@ -1,14 +1,15 @@
 (require 'package)
 
-;; create the elpa directory if it doesnt exist since emacs will otherwise complain while loading the packages
+;; Create the elpa directory if it doesnt exist since emacs will otherwise complain while loading the packages
 (unless (file-exists-p "~/.emacs.d/elpa")
   (make-directory "~/.emacs.d/elpa"))
 
-;; Set the environment-variable SYSENV for this to "home" or "work"
+;; Set the environment-variable "SYSENV" for this to (home/work/laptop)
 (cond ((equal "work" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/work.el") (load "~/.emacs.d/work.el")))
       ((equal "home" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/home.el") (load "~/.emacs.d/home.el")))
       ((equal "laptop" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/laptop.el") (load "~/.emacs.d/laptop.el")))
       ;; The default, the condition is always true
+      ;; The reason being that I can't set environment variables on university-PCs
       (t (if (file-exists-p "~/.emacs.d/university.el") (load "~/.emacs.d/university.el")))
       )
 
@@ -17,7 +18,8 @@
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-refresh-contents)
+;; Disable the updating of the package-list on startup to increase startup time
+;;(package-refresh-contents)
 ;; Problems:
 ;; yasnippet doesnt unpack from melpa
 ;; usepackage is only available on melpa
@@ -44,26 +46,26 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq show-trailing-whitespace t)
 
-;; disable tabs
+;; Disable tabs
 (setq-default indent-tabs-mode nil)
 
-;; show matching parenthesis without delay
+;; Show matching parenthesis without delay
 (setq show-paren-delay 0)
 (show-paren-mode t)
 
-;; save minibuffer history
+;; Save minibuffer history
 (savehist-mode 1)
-;; delete duplicates in minibuffer history
+;; Delete duplicates in minibuffer history
 (setq history-delete-duplicates t)
 (setq history-length 1000)
 
-;; take the short answer, y/n is yes/no
+;; Take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; overwrite selected text
+;; Overwrite selected text
 (delete-selection-mode t)
 
-;; highlight current line (slows down C-n and C-p immensly)
+;; Highlight current line (slows down C-n and C-p immensly)
 ;; (global-hl-line-mode 1)
 
 ;; Eshell
@@ -102,16 +104,15 @@
 ;; No splash screen please ... jeez
 (setq inhibit-startup-message t)
 
-;; default to better frame titles
+;; Default to better frame titles
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
-;; default to unified diffs
+;; Default to unified diffs
 (setq diff-switches "-u")
 
-;; transparency
+;; Transparency
 (set-frame-parameter (selected-frame) 'alpha '(100 100))
 (add-to-list 'default-frame-alist '(alpha 100 100))
-;;(set-frame-font "Source Code Pro-16" nil t)
 
 ;; customize the interface on windows
 (when window-system
@@ -129,6 +130,17 @@
 (global-set-key [(control prior)] 'previous-buffer)
 
 ;; Fonts
+;; (set-frame-font "Source Code Pro-11" nil t)
+;; How to install on ubuntu:
+;; #!/bin/bash
+;; mkdir /tmp/adodefont
+;; cd /tmp/adodefont
+;; wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
+;; unzip 1.030R-it.zip
+;; mkdir -p ~/.fonts
+;; cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf ~/.fonts/
+;; fc-cache -f -v
+
 ;; "Select an Emacs font from a list of known good fonts and fontsets.
 (defun mouse-set-font (&rest fonts)
   ;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
