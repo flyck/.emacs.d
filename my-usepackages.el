@@ -135,6 +135,15 @@
   (add-hook 'org-mode-hook (lambda () (smooth-scrolling-mode 1)))
   )
 
+(use-package org-alert
+  ;; package on top of alert.el
+  :ensure t
+  :init
+  ;; set this option from alert.el to make alerts visual
+  (setq alert-default-style 'libnotify)
+  (setq org-alert-enable t)
+  (setq org-alert-interval 60)
+  )
 
 ;; Settings for company plus company-emoji
 (use-package company-emoji
