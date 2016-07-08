@@ -43,6 +43,9 @@
 ;; Load my use-package definitions
 (load "~/.emacs.d/my-usepackages.el")
 
+;; Load my elisp-goodise
+(load "~/.emacs.d/elisp-goodies.el")
+
 ;; Remove ^M Errors in Babel
 (add-to-list 'process-coding-system-alist
       '("bash" . (undecided-unix)))
