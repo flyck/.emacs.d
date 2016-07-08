@@ -40,7 +40,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Load my packages
+;; Load my use-package definitions
 (load "~/.emacs.d/my-usepackages.el")
 
 ;; Remove ^M Errors in Babel
