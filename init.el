@@ -5,12 +5,17 @@
   (make-directory "~/.emacs.d/elpa"))
 
 ;; Set the environment-variable "SYSENV" for this to (home/work/laptop)
-(cond ((equal "work" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/work.el") (load "~/.emacs.d/work.el")))
-      ((equal "home" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/home.el") (load "~/.emacs.d/home.el")))
-      ((equal "laptop" (getenv "SYSENV")) (if (file-exists-p "~/.emacs.d/laptop.el") (load "~/.emacs.d/laptop.el")))
+(setq sysenvconf-path "~/.emacs.d/environment-specific/")
+(cond ((equal "work" (getenv "SYSENV"))
+       (if (file-exists-p (concat sysenvconf-path "work.el")) (load (concat sysenvconf-path "work.el"))))
+      ((equal "home" (getenv "SYSENV"))
+       (if (file-exists-p (concat sysenvconf-path "home.el")) (load (concat sysenvconf-path "home.el"))))
+      ((equal "laptop" (getenv "SYSENV"))
+       (if (file-exists-p (concat sysenvconf-path "laptop.el")) (load (concat sysenvconf-path "laptop.el"))))
       ;; The default, the condition is always true
       ;; The reason being that I can't set environment variables on university-PCs
-      (t (if (file-exists-p "~/.emacs.d/university.el") (load "~/.emacs.d/university.el")))
+      (t
+       (if (file-exists-p (concat sysenvconf-path "university.el")) (load (concat sysenvconf-path "university.el"))))
       )
 
 (setq package-enable-at-startup nil)
