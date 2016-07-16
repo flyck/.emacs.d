@@ -12,7 +12,7 @@
   (helm-mode 1)
   (set-face-attribute 'helm-selection nil
                     :background "ivory1"
-                    :foreground "gray5")
+                    :foreground "gray5");;ivory1
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
   )
@@ -66,6 +66,10 @@
   (fset 'fbr/convert-listitem-into-checklistitem
         "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
   (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
+  (defun fbr/org-agenda-add-current-file()
+      (interactive)
+      (setq org-agenda-files (list (buffer-file-name)))
+      )
   ;; Custom commands
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
