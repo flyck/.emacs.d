@@ -123,6 +123,7 @@
   ;; A package to visualize repeated tasks in the org agenda
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-show-habits-only-for-today nil)
   ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
 (require 'ox-latex)
 (add-to-list 'org-latex-classes
