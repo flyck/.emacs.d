@@ -1,5 +1,20 @@
 (require 'use-package)
 
+(use-package recentf
+  ;; i think it's build in but whatever
+  :ensure t
+  :config
+  ;; Quote: When using TrampMode with recentf.el, it’s advisable to turn off the cleanup feature
+  ;; of recentf that attempts to stat all the files and remove them from the recently accessed
+  ;; list if they are readable. Tramp means that this requires recentf to open up a remote site
+  ;; which will block your emacs process at the most inopportune times.
+  ;;
+  ;; Also I dont want to have to re-find files i frequently use because recentf decided to delete
+  ;; them from its list
+  (setq recentf-auto-cleanup 'never)
+  (recentf-mode 1)
+  )
+
 (use-package helm
   :ensure t
   :init
@@ -15,6 +30,8 @@
                     :foreground "gray5");;ivory1
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
+  ;; automatically resize the search window based on results (feels convenient)
+  (helm-autoresize-mode 1)
   )
 
 ;;(use-package helm-themes
@@ -110,6 +127,7 @@
   ;; A package to visualize repeated tasks in the org agenda
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-show-habits-only-for-today nil)
   ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
 (require 'ox-latex)
 (add-to-list 'org-latex-classes

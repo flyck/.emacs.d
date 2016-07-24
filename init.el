@@ -4,7 +4,7 @@
 (unless (file-exists-p "~/.emacs.d/elpa")
   (make-directory "~/.emacs.d/elpa"))
 
-;; Set the environment-variable "SYSENV" for this to (home/work/laptop)
+;; Set the environment-variable "SYSENV" for this to (home/work/laptop/linux-vm)
 (setq sysenvconf-path "~/.emacs.d/environment-specific/")
 (cond ((equal "work" (getenv "SYSENV"))
        (if (file-exists-p (concat sysenvconf-path "work.el")) (load (concat sysenvconf-path "work.el"))))
@@ -12,7 +12,10 @@
        (if (file-exists-p (concat sysenvconf-path "home.el")) (load (concat sysenvconf-path "home.el"))))
       ((equal "laptop" (getenv "SYSENV"))
        (if (file-exists-p (concat sysenvconf-path "laptop.el")) (load (concat sysenvconf-path "laptop.el"))))
-      ;; The default, the condition is always true
+      ((equal "linux-vm" (getenv "SYSENV"))
+       (if (file-exists-p (concat sysenvconf-path "linux-vm.el")) (load (concat sysenvconf-path "linux-vm.el"))))
+      ;; The default t, meaning the condition is always true
+      ;; In that case I'm  loading my university-settings
       ;; The reason being that I can't set environment variables on university-PCs
       (t
        (if (file-exists-p (concat sysenvconf-path "university.el")) (load (concat sysenvconf-path "university.el"))))
