@@ -1,4 +1,8 @@
-(setq org-agenda-files (list (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org" )))
+(setq org-agenda-files (list
+                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+                        ))
+(switch-to-buffer (find-file-noselect (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")))
 
 ;; Coding System
 (prefer-coding-system 'utf-8-dos)

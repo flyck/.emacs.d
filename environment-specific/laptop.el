@@ -7,7 +7,10 @@
 
 ;; Org-agenda files
 (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
+                             "~/Dropbox/org/hobby/dactyl-keyboard-guide/index.org"
 			     "~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
+;; open this file on startup
+(switch-to-buffer (find-file-noselect "~/Dropbox/org/gtd/tasks.org"))
 
 ;; Startup position of emacs
 (if (window-system)
