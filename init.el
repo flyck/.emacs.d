@@ -68,7 +68,8 @@
 (savehist-mode 1)
 ;; Delete duplicates in minibuffer history
 (setq history-delete-duplicates t)
-(setq history-length 1000)
+(setq savehist-save-minibuffer-history 1)
+(setq history-length t)
 
 ;; Take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)
