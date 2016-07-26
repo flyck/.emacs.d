@@ -26,8 +26,8 @@
     (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
 
 (setq org-todo-keywords
-      '((sequence "TODO" "|" "DONE")
-        (sequence "TODO" "PENDING" "|" "CANCELED" "DONE")
+      '((sequence "TODO(t)" "|" "DONE(d)")
+        (sequence "PENDING(p)" "|" "CANCELED(c)" )
         ))
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning) ("PENDING" . "#f0c674")
