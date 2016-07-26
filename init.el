@@ -1,3 +1,6 @@
+;; good place to get emacs for windows:
+;; http://vgoulet.act.ulaval.ca/en/emacs/windows/
+
 (require 'package)
 
 ;; Create the elpa directory if it doesnt exist since emacs will otherwise complain while loading the packages
