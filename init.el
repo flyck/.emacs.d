@@ -78,6 +78,7 @@
 
 ;; Highlight current line (slows down C-n and C-p immensly)
 ;; (global-hl-line-mode 1)
+;; (set-face-background 'hl-line "#cc0033") ;; crimson
 
 ;; Eshell
 (add-hook 'eshell-mode-hook '(lambda ()
