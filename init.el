@@ -1,3 +1,6 @@
+;; good place to get emacs for windows:
+;; http://vgoulet.act.ulaval.ca/en/emacs/windows/
+
 (require 'package)
 
 ;; Create the elpa directory if it doesnt exist since emacs will otherwise complain while loading the packages
@@ -68,7 +71,8 @@
 (savehist-mode 1)
 ;; Delete duplicates in minibuffer history
 (setq history-delete-duplicates t)
-(setq history-length 1000)
+(setq savehist-save-minibuffer-history 1)
+(setq history-length t)
 
 ;; Take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -78,6 +82,7 @@
 
 ;; Highlight current line (slows down C-n and C-p immensly)
 ;; (global-hl-line-mode 1)
+;; (set-face-background 'hl-line "#cc0033") ;; crimson
 
 ;; Eshell
 (add-hook 'eshell-mode-hook '(lambda ()
