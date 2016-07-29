@@ -1,5 +1,7 @@
 ;; good place to get emacs for windows:
 ;; http://vgoulet.act.ulaval.ca/en/emacs/windows/
+;; breaks html export though for some font lock reason
+;; this has no image support but can do html export correctly: http://emacs.link/
 
 (require 'package)
 
@@ -113,6 +115,11 @@
 (auto-fill-mode 1)
 (define-key global-map "\C-cf" 'auto-fill-mode)
 (setq tab-width 4)
+
+;; Start the emacs server such that i can open new files conveniently using the explorer
+(server-start)
+;; remove the annoying prompt that occurs when killing such a file
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
 ;; Dired
 (setq dired-listing-switches "-alh")
