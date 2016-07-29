@@ -5,12 +5,19 @@
 
 ;; Work-specific org settings
 (setq org-todo-keywords
-      '((sequence "TODO" "PENDING" "DELEGATED" "|" "CANCELED" "DONE")))
+      '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(d)" "|" "CANCELED(c)" "DONE")))
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
         ("CANCELED" . (:foreground "#b5bd68"
 		       ;;:strike-through t
 				   :weight bold))))
+;; org-capture setup
+(setq org-capture-templates
+      '(("a" "My TODO task format." entry
+         (file "projects.org")
+         "* TODO %?
+SCHEDULED: %t")))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
 ;; Set the agenda-files on my working laptop (windows) and possible linux VMs respectively
 (if (eq system-type 'windows-nt)
@@ -23,14 +30,6 @@
 ;; (if (eq system-type 'gnu/linux)
 ;;     (setq org-agenda-files (list "~/Documents/org/projects.org"
 ;; 				 "~/Documents/request-tracker/ticketsystem.org")))
-
-;; org-capture setup
-(setq org-capture-templates
-      '(("a" "My TODO task format." entry
-         (file "projects.org")
-         "* TODO %?
-SCHEDULED: %t")))
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
 ;; Coding System
 ;; I use the unix coding system everywhere
