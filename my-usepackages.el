@@ -315,7 +315,7 @@
 ;;   )
 
 (use-package nyan-mode
-  :ensure t
+  ;;:ensure t
   :config
   (nyan-mode 1)
   (nyan-start-animation)
