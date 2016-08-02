@@ -7,6 +7,7 @@
 
 ;; Org-agenda files
 (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
+                             "~/Dropbox/org/gtd/tasks.org_archive"
                              "~/Dropbox/org/hobby/dactyl-keyboard-guide/index.org"
 			     "~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
 ;; open this file on startup (doesnt work since (package-initialize) has to be executed before)
