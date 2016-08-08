@@ -117,7 +117,9 @@
 (setq tab-width 4)
 
 ;; Start the emacs server such that i can open new files conveniently using the explorer
-(server-start)
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 ;; remove the annoying prompt that occurs when killing such a file
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
