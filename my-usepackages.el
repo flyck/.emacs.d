@@ -34,6 +34,20 @@
   (helm-autoresize-mode 1)
   )
 
+;; search for strings in the current textfile very conveniently
+(use-package helm-swiper
+  :ensure t
+  :config
+  (global-set-key (kbd "C-s") 'swiper-helm)
+  )
+
+;; huge package but so far I only need the find-file function which is better than helm default
+(use-package counsel
+  :ensure t
+  :config
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  )
+
 ;;(use-package helm-themes
 ;;  :ensure t
 ;;  :config
