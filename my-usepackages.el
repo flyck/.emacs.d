@@ -44,7 +44,7 @@
   )
 
 ;; search for strings in the current textfile very conveniently
-(use-package helm-swiper
+(use-package swiper-helm
   :ensure t
   :config
   (global-set-key (kbd "C-s") 'swiper-helm)
