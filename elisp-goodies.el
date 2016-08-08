@@ -12,18 +12,18 @@
   (run-with-timer (* minutes 60) nil 'alert "Tea is ready \xF0\x9F\x98\x84" :title "Tea-time")
   )
 
-(shell-command "Msg asd")
-(call-process "~\\.emacs.d\\notifu\\notifu.exe" nil t nil "/m" "aads" "/d" "10000" "/i" "~\\emacs.d\\emacs.ico")
-;; ich brauche start-process
-(start-process "my-process" "~\\.emacs.d\\notifu\\notifu.exe" "/m" "aads" "/d" "10000" "/i" "~\\emacs.d\\emacs.ico")
-(start-process "my-process" "~/.emacs.d/notifu/notifu.exe" "/m" "aads" "/d" "10000")
+;; (shell-command "Msg asd")
+;; (call-process "~\\.emacs.d\\notifu\\notifu.exe" nil t nil "/m" "aads" "/d" "10000" "/i" "~\\emacs.d\\emacs.ico")
+;; ;; ich brauche start-process
+;; (start-process "my-process" "~\\.emacs.d\\notifu\\notifu.exe" "/m" "aads" "/d" "10000" "/i" "~\\emacs.d\\emacs.ico")
+;; (start-process "my-process" "~/.emacs.d/notifu/notifu.exe" "/m" "aads" "/d" "10000")
 
-(defun execvp (&rest args)
-  "Simulate C's execvp() function.
-Quote each argument seperately, join with spaces and call shell-command-to-string to run in a shell."
-  (let ((cmd (mapconcat 'shell-quote-argument args " ")))
-    (shell-command-to-string cmd)))
+;; (defun execvp (&rest args)
+;;   "Simulate C's execvp() function.
+;; Quote each argument seperately, join with spaces and call shell-command-to-string to run in a shell."
+;;   (let ((cmd (mapconcat 'shell-quote-argument args " ")))
+;;     (shell-command-to-string cmd)))
 
-(shell-command-to-string "echo ")
-(start-process "mvn-exec" "~\.emacs.d\notifu\notifu.exe" "/m" "aads" "/d" "10000" )
-(setq debug-on-error t)
+;; (shell-command-to-string "echo ")
+;; (start-process "mvn-exec" "~\.emacs.d\notifu\notifu.exe" "/m" "aads" "/d" "10000" )
+;; (setq debug-on-error t)
