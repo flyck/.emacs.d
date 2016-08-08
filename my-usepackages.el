@@ -13,6 +13,15 @@
   ;; them from its list
   (setq recentf-auto-cleanup 'never)
   (recentf-mode 1)
+  (setq recentf-max-saved-items 50)
+  ;; get rid of `find-file-read-only' and replace it with something more useful.
+  (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+  (defun ido-recentf-open ()
+    "Use `ido-completing-read' to \\[find-file] a recent file"
+    (interactive)
+    (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+        (message "Opening file...")
+      (message "Aborting")))
   )
 
 (use-package helm
@@ -55,6 +64,7 @@
 ;;  )
 
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
+;; TODO: Warn if username and useremail are not set
 (use-package magit
   :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
       ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
