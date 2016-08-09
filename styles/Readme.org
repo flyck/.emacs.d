@@ -10,4 +10,4 @@ convenience in my oppinion.
 
 Using windows then add this to the top of your file:
 
-    #+HTML_HEAD:  <link rel="stylesheet" type="text/css" href="styles\\base.css" />
+    \#+HTML_HEAD:  <link rel="stylesheet" type="text/css" href="styles\\base.css" />
