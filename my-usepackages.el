@@ -1,5 +1,8 @@
 (require 'use-package)
 
+(setq cl-selection-background "ivory1")
+(setq cl-selection-foreground "gray5")
+
 (use-package recentf
   ;; i think it's build in but whatever
   :ensure t
@@ -35,8 +38,8 @@
 				    helm-source-buffer-not-found))
   (helm-mode 1)
   (set-face-attribute 'helm-selection nil
-                    :background "ivory1"
-                    :foreground "gray5");;ivory1
+                    :background cl-selection-background
+                    :foreground cl-selection-foreground)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
   ;; automatically resize the search window based on results (feels convenient)
@@ -87,7 +90,8 @@
   :ensure t
   :init
   ;; load org-babel
-  (setq org-export-coding-system 'utf-8-unix)
+  (setq org-export-coding-system 'utf-8-unix) ;; Might have to fix this, dont i want dos on
+                                              ;; Windows? Lookup Environment specific settings
   (setq org-export-with-clocks t)
   (setq org-export-preserve-breaks t)
   (setq org-agenda-start-with-clockreport-mode t)
@@ -177,6 +181,11 @@
 ;;   :ensure t
 ;;   )
 
+;; Inserts highlighting of Org Source-Blocks on Html-Export
+(use-package htmlize
+  :ensure t
+  )
+
 (use-package smooth-scrolling
   :ensure t
   :init
@@ -205,11 +214,6 @@
      `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
      `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
      `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
-  )
-
-;; Inserts highlighting of Org Source-Blocks on Html-Export
-(use-package htmlize
-  :ensure t
   )
 
 ;; Respawns the scratch buffer when its killed
@@ -322,6 +326,7 @@
    '(org-document-info ((t (:foreground "medium sea green"))))
    '(org-document-info-keyword ((t (:foreground "light sea green"))))
    )
+  (set-background-color "grey22")
   )
 
 ;; The mode-line
@@ -339,8 +344,13 @@
   (spaceline-toggle-buffer-position-off)
   (custom-set-faces
    '(spaceline-highlight-face ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+   '(spaceline-modified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+   '(spaceline-unmodified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+   '(spaceline-unmodified-p ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+   ;; LightGoldenrod ist die Farbe vom Helm-buffer, nur was ist das Face?
    )
   (spaceline-highlight-face-default)
+  (spaceline-highlight-face-modified)
   )
 
 ;; (use-package nyan-mode
