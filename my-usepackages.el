@@ -172,6 +172,11 @@
              )
 )
 
+;; melpa is currently unavailable? try this again later then...
+;; (use-package calfw
+;;   :ensure t
+;;   )
+
 (use-package smooth-scrolling
   :ensure t
   :init
