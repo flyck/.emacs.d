@@ -144,8 +144,13 @@
   (tooltip-mode -1)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
-  (scroll-bar-mode -1)
+  (scroll-bar-mode 1)
   )
+
+;; Improve the scrolling to make emacs feel more like an editor
+(require 'sublimity)
+(require 'sublimity-scroll)
+(sublimity-mode 1)
 
 ;; Remove alarm (bell) on scroll
 (setq ring-bell-function 'ignore)
