@@ -16,7 +16,7 @@
       '(("TODO" . org-warning) ("PENDING" . "#f0c674")
         ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
 
-(switch-to-buffer (find-file-noselect (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")))
+;; (switch-to-buffer (find-file-noselect (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")))
 
 ;; load my manually installed yasnippet package
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
