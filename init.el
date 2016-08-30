@@ -9,22 +9,119 @@
 (unless (file-exists-p "~/.emacs.d/elpa")
   (make-directory "~/.emacs.d/elpa"))
 
-;; Set the environment-variable "SYSENV" for this to (home/work/laptop/linux-vm)
-(setq sysenvconf-path "~/.emacs.d/environment-specific/")
-(cond ((equal "work" (getenv "SYSENV"))
-       (if (file-exists-p (concat sysenvconf-path "work.el")) (load (concat sysenvconf-path "work.el"))))
-      ((equal "home" (getenv "SYSENV"))
-       (if (file-exists-p (concat sysenvconf-path "home.el")) (load (concat sysenvconf-path "home.el"))))
-      ((equal "laptop" (getenv "SYSENV"))
-       (if (file-exists-p (concat sysenvconf-path "laptop.el")) (load (concat sysenvconf-path "laptop.el"))))
-      ((equal "linux-vm" (getenv "SYSENV"))
-       (if (file-exists-p (concat sysenvconf-path "linux-vm.el")) (load (concat sysenvconf-path "linux-vm.el"))))
-      ;; The default t, meaning the condition is always true
-      ;; In that case I'm  loading my university-settings
-      ;; The reason being that I can't set environment variables on university-PCs
-      (t
-       (if (file-exists-p (concat sysenvconf-path "university.el")) (load (concat sysenvconf-path "university.el"))))
-      )
+
+;; Coding System (system-specific)
+;; I use the unix coding system everywhere
+;; Pros:
+;; - Its easier to copy stuff into the terminal without weird line-ending interaction
+;; - Makes org-babel codeblocks work in the first place on linux systems
+;; Cons:
+;; - Editing my configs or files from the Windows Editor doesn't work
+;; - My colleagues are not able to visit my config files since they dont care and only use the dos-coding system
+;; The argument: if i edit a file synched by dropbox on windows and linux, then i have to use the unix coding system everywhere, since i dont want to convert the file everytime i open it
+(if (equal "" (getenv "SYSENV")) ;; the default case for university pcs(?) maybe delete this one too
+    (prefer-coding-system 'utf-8-dos)
+    (setq coding-system-for-read 'utf-8-dos)
+    (setq coding-system-for-write 'utf-8-dos)
+    )
+(if (or (equal "home" (getenv "SYSENV"))
+        (equal "work" (getenv "SYSENV"))
+        (equal "laptop" (getenv "SYSENV"))
+        (equal "linux-vm" (getenv "SYSENV"))
+        )
+    (prefer-coding-system 'utf-8-unix)
+    (setq coding-system-for-read 'utf-8-unix)
+    (setq coding-system-for-write 'utf-8-unix)
+    )
+
+
+;; Org-mode settings (system-specific)
+
+;; Org-todo-keywords
+(if (equal "work" (getenv "SYSENV"))
+        (setq org-todo-keywords
+              '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(d)" "|" "CANCELED(c)" "DONE")))
+    )
+(if (or (equal "home" (getenv "SYSENV"))
+        (equal "laptop" (getenv "SYSENV"))
+        (equal "linux-vm" (getenv "SYSENV")))
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "|" "DONE(d)")
+            (sequence "PENDING(p)" "|" "CANCELED(c)")
+            ))
+  )
+;; Set these independantly for every system?! maybe move them to my use-package file?
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+        ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+
+;; Org-agenda-files
+(if (equal "home" (getenv "SYSENV"))
+    (setq org-agenda-files (list
+                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+                        ))
+    ;; org-capture setup
+    (setq org-capture-templates
+          '(("a" "Add a task to tasks.org." entry
+             (file "tasks.org")
+             "* TODO %? SCHEDULED: %t")))
+    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+    )
+;; The tilde probably makes it that i cant run this as root... might want to fix that?
+(if (equal "laptop" (getenv "SYSENV"))
+    (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
+                             "~/Dropbox/org/gtd/tasks.org_archive"
+                             "~/Dropbox/org/hobby/dactyl-keyboard-guide/index.org"
+			     "~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
+    ;; org-capture setup
+    (setq org-capture-templates
+          '(("a" "Add a task to tasks.org." entry
+             (file "tasks.org")
+             "* TODO %? SCHEDULED: %t")))
+    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+    )
+(if (equal "work" (getenv "SYSENV"))
+    (setq org-agenda-files
+    (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+          (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+          (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+    ;; org-capture setup
+    (setq org-capture-templates
+          '(("a" "My TODO task format." entry
+             (file "projects.org")
+             "* TODO %?
+    SCHEDULED: %t")))
+    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+    )
+
+
+;; Manually installed packages / unsorted stuff (system-specific)
+;; Some packages dont install for some systems. It is stupid but here is the workaround.
+(if (equal "home" (getenv "SYSENV"))
+    ;; load my manually installed yasnippet package
+    (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+    (require 'yasnippet)
+    )
+(if (equal "" (getenv "SYSENV")) ;; assuming we are on a university pc since we cannot set the SYSENV variable there
+  ;; test tls connection on windows for successfull download of packages
+  ;; makes sure this returns t in the echo area
+  (gnutls-available-p)
+  (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\emacs\\bin"))
+  ;; For Git
+  (add-to-list 'exec-path "H:/Win7PoolData/Desktop/PortableGit/mingw64/bin")
+  ;; For Graphviz
+  (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
+  (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
+  )
+
+
+;; proxy settings (system-specific)
+(if (equal "work" (getenv "SYSENV"))
+    (setq url-proxy-services '(("no_proxy" . "work\\.com")
+                           ("http" . "172.16.8.250:3128")
+			   ("https" . "172.16.8.250:3128")))
+    )
 
 (setq package-enable-at-startup nil)
 (setq package-archives nil)
@@ -151,6 +248,7 @@
 (require 'sublimity)
 (require 'sublimity-scroll)
 (sublimity-mode 1)
+;; TODO: Fix that i cant scroll all the way up using C-v
 
 ;; Remove alarm (bell) on scroll
 (setq ring-bell-function 'ignore)
@@ -213,3 +311,8 @@
 (blink-cursor-mode 0)
 (if (fboundp 'blink-cursor-mode)
     (blink-cursor-mode 0))
+
+;; Startup position of emacs
+(if (window-system)
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-height (selected-frame) 120))
