@@ -46,6 +46,17 @@
   (helm-autoresize-mode 1)
   )
 
+;; documentation over here: http://jblevins.org/projects/deft/
+(use-package deft
+  :ensure t
+  :config
+  (setq deft-extensions '("txt" "tex" "org"))
+  (setq deft-directory "~/Dropbox/org")
+  (setq deft-recursive t)
+  (setq deft-use-filename-as-title t)
+  (global-set-key [f10] 'deft)
+  )
+
 ;; search for strings in the current textfile very conveniently
 (use-package swiper-helm
   :ensure t
@@ -153,11 +164,37 @@
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
   (setq org-habit-show-habits-only-for-today nil)
+  ;; Make appt aware of appointments from the agenda
+  (defun fbr/org-agenda-to-appt ()
+    "Activate appointments found in `org-agenda-files'."
+    (interactive)
+    (require 'org)
+    (let* ((today (org-date-to-gregorian
+                   (time-to-days (current-time))))
+           (files org-agenda-files) entries file)
+      (while (setq file (pop files))
+        (setq entries (append entries (org-agenda-get-day-entries
+                                       file today :timestamp))))
+      (setq entries (delq nil entries))
+      (mapc (lambda(x)
+              (let* ((event (org-trim (get-text-property 1 'txt x)))
+                     (time-of-day (get-text-property 1 'time-of-day x)) tod)
+                (when time-of-day
+                  (setq tod (number-to-string time-of-day)
+                        tod (when (string-match
+                                   "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
+                              (concat (match-string 1 tod) ":"
+                                      (match-string 2 tod))))
+                  (if tod (appt-add tod event))))) entries)))
+  (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
+    "Clear the appt-time-msg-list."
+    (setq appt-time-msg-list nil))
+  (org-agenda-to-appt)
   ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-(require 'ox-latex)
-(add-to-list 'org-latex-classes
-             '("bjmarticle"
-               "\\documentclass{article}
+  (require 'ox-latex)
+  (add-to-list 'org-latex-classes
+               '("bjmarticle"
+                 "\\documentclass{article}
 \\usepackage[utf8]{inputenc}
 \\usepackage[T1]{fontenc}
 \\usepackage{graphicx}
@@ -168,12 +205,12 @@
 \\usepackage{amsmath}
 \\usepackage{geometry}
 \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-             )
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+               )
 )
 
 ;; melpa is currently unavailable? try this again later then...
@@ -302,7 +339,7 @@
 
 (setq cl-headline "ghost white")
 (setq cl-first-level "royal blue")
-(setq cl-second-level "indian-red")
+(setq cl-second-level "IndianRed3")
 (setq cl-third-level "SlateBlue3")
 (setq cl-meta-information-one "cornflower blue")
 
