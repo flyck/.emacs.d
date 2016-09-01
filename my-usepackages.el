@@ -300,6 +300,12 @@
   (custom-set-faces '(sp-pair-overlay-face ((t nil))))
   )
 
+(setq cl-headline "ghost white")
+(setq cl-first-level "royal blue")
+(setq cl-second-level "indian-red")
+(setq cl-third-level "orchid")
+(setq cl-meta-information-one "cornflower blue")
+
 ;; Theme-config
 (use-package seti-theme
   :ensure t
@@ -308,25 +314,30 @@
    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
    '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
-   '(helm-candidate-number ((t (:foreground "goldenrod2"))))
-   '(helm-selection ((t (:background "light gray" :foreground "gray5"))))
-   '(org-level-1 ((t (:height 1.4 :foreground "royal blue"))))
-   '(org-level-2 ((t (:inherit outline-2 :foreground "indian red" :height 1.3))))
-   '(outline-3 ((t (:foreground "orchid"))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
-   '(org-document-title ((t (:foreground "ghost white" :weight bold :height 1.44))))
-   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-   '(org-date ((t (:foreground "cornflower blue" :underline t))))
-   '(org-link ((t (:inherit nil :foreground "cornflower blue"))))
+   `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
+   ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
+   `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
+   ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
+   ;; added the outline definitions to blindly work towards a global color theme
+   ;; which variables inherit from these "outline" variables?
+   `(org-level-1 ((t (:height 1.4 :foreground ,cl-first-level))))
+   `(outline-2 ((t (:foreground ,cl-second-level))))
+   `(org-level-2 ((t (:inherit outline-2 :foreground ,cl-second-level :height 1.3))))
+   `(outline-3 ((t (:foreground ,cl-third-level))))
+   `(org-level-3 ((t (:inherit outline-3 :height 1.2))))
+   `(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+   `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
+   `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+   `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
+   `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
    ;; Color the Org-Blocks beautifully for color schemes that do not do that
-   '(org-block-foreground ((t (:foreground "dark orange"))))
-   '(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-   '(org-block-end-line ((t (:foreground "SlateBlue4"))))
-   '(org-document-info ((t (:foreground "medium sea green"))))
-   '(org-document-info-keyword ((t (:foreground "light sea green"))))
+   `(org-block-foreground ((t (:foreground "dark orange"))))
+   `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
+   `(org-block-end-line ((t (:foreground "SlateBlue4"))))
+   `(org-document-info ((t (:foreground "medium sea green"))))
+   `(org-document-info-keyword ((t (:foreground "light sea green"))))
    )
-  (set-background-color "grey22")
+  (set-background-color "grey12")
   )
 
 ;; The mode-line
