@@ -303,7 +303,7 @@
 (setq cl-headline "ghost white")
 (setq cl-first-level "royal blue")
 (setq cl-second-level "indian-red")
-(setq cl-third-level "orchid")
+(setq cl-third-level "SlateBlue3")
 (setq cl-meta-information-one "cornflower blue")
 
 ;; Theme-config
