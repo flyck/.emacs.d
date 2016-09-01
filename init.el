@@ -20,35 +20,36 @@
 ;; - My colleagues are not able to visit my config files since they dont care and only use the dos-coding system
 ;; The argument: if i edit a file synched by dropbox on windows and linux, then i have to use the unix coding system everywhere, since i dont want to convert the file everytime i open it
 (if (equal "" (getenv "SYSENV")) ;; the default case for university pcs(?) maybe delete this one too
-    (prefer-coding-system 'utf-8-dos)
-    (setq coding-system-for-read 'utf-8-dos)
-    (setq coding-system-for-write 'utf-8-dos)
-    )
+    (progn (prefer-coding-system 'utf-8-dos)
+           (setq coding-system-for-read 'utf-8-dos)
+           (setq coding-system-for-write 'utf-8-dos))
+  )
 (if (or (equal "home" (getenv "SYSENV"))
         (equal "work" (getenv "SYSENV"))
         (equal "laptop" (getenv "SYSENV"))
         (equal "linux-vm" (getenv "SYSENV"))
         )
-    (prefer-coding-system 'utf-8-unix)
-    (setq coding-system-for-read 'utf-8-unix)
-    (setq coding-system-for-write 'utf-8-unix)
-    )
+    (progn (prefer-coding-system 'utf-8-unix)
+	   (setq coding-system-for-read 'utf-8-unix)
+	   (setq coding-system-for-write 'utf-8-unix))
+  )
 
 
 ;; Org-mode settings (system-specific)
 
 ;; Org-todo-keywords
 (if (equal "work" (getenv "SYSENV"))
-        (setq org-todo-keywords
-              '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(d)" "|" "CANCELED(c)" "DONE")))
-    )
+    (progn (setq org-todo-keywords
+		 '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+  )
 (if (or (equal "home" (getenv "SYSENV"))
         (equal "laptop" (getenv "SYSENV"))
         (equal "linux-vm" (getenv "SYSENV")))
-    (setq org-todo-keywords
-          '((sequence "TODO(t)" "|" "DONE(d)")
-            (sequence "PENDING(p)" "|" "CANCELED(c)")
-            ))
+    (progn (setq org-todo-keywords
+		 '((sequence "TODO(t)" "|" "DONE(d)")
+		   (sequence "PENDING(p)" "|" "CANCELED(c)")
+		   ))
+	   )
   )
 ;; Set these independantly for every system?! maybe move them to my use-package file?
 (setq org-todo-keyword-faces
@@ -57,62 +58,66 @@
 
 ;; Org-agenda-files
 (if (equal "home" (getenv "SYSENV"))
-    (setq org-agenda-files (list
-                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
-                        ))
-    ;; org-capture setup
-    (setq org-capture-templates
-          '(("a" "Add a task to tasks.org." entry
-             (file "tasks.org")
-             "* TODO %? SCHEDULED: %t")))
-    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
-    )
+    (progn (setq org-agenda-files (list
+				   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+				   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+				   ))
+	   ;; org-capture setup
+	   (setq org-capture-templates
+		 '(("a" "Add a task to tasks.org." entry
+		    (file "tasks.org")
+		    "* TODO %? SCHEDULED: %t")))
+	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1)))))
+  )
 ;; The tilde probably makes it that i cant run this as root... might want to fix that?
 (if (equal "laptop" (getenv "SYSENV"))
-    (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
-                             "~/Dropbox/org/gtd/tasks.org_archive"
-                             "~/Dropbox/org/hobby/dactyl-keyboard-guide/index.org"
-			     "~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
-    ;; org-capture setup
-    (setq org-capture-templates
-          '(("a" "Add a task to tasks.org." entry
-             (file "tasks.org")
-             "* TODO %? SCHEDULED: %t")))
-    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
-    )
+    (progn (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
+					"~/Dropbox/org/gtd/tasks.org_archive"
+					"~/Dropbox/org/hobby/dactyl-keyboard-guide/index.org"
+					"~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
+	   ;; org-capture setup
+	   (setq org-capture-templates
+		 '(("a" "Add a task to tasks.org." entry
+		    (file "tasks.org")
+		    "* TODO %? SCHEDULED: %t")))
+	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1)))))
+  )
 (if (equal "work" (getenv "SYSENV"))
-    (setq org-agenda-files
-    (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-          (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
-          (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
-    ;; org-capture setup
-    (setq org-capture-templates
-          '(("a" "My TODO task format." entry
-             (file "projects.org")
-             "* TODO %?
+    (progn (setq org-agenda-files
+		 (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+		       (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+		       (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+	   ;; org-capture setup
+	   (setq org-capture-templates
+		 '(("a" "My TODO task format." entry
+		    (file "projects.org")
+		    "* TODO %?
     SCHEDULED: %t")))
-    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
-    )
+	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+	   )
+  )
 
 
 ;; Manually installed packages / unsorted stuff (system-specific)
 ;; Some packages dont install for some systems. It is stupid but here is the workaround.
 (if (equal "home" (getenv "SYSENV"))
-    ;; load my manually installed yasnippet package
-    (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
-    (require 'yasnippet)
-    )
+    (progn
+      ;; load my manually installed yasnippet package
+      (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+      (require 'yasnippet)
+      (message "loading yasnippet"))
+  )
 (if (equal "" (getenv "SYSENV")) ;; assuming we are on a university pc since we cannot set the SYSENV variable there
-  ;; test tls connection on windows for successfull download of packages
-  ;; makes sure this returns t in the echo area
-  (gnutls-available-p)
-  (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\emacs\\bin"))
-  ;; For Git
-  (add-to-list 'exec-path "H:/Win7PoolData/Desktop/PortableGit/mingw64/bin")
-  ;; For Graphviz
-  (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
-  (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
+    (progn
+     ;; test tls connection on windows for successfull download of packages
+     ;; makes sure this returns t in the echo area
+     (gnutls-available-p)
+     (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\emacs\\bin"))
+     ;; For Git
+     (add-to-list 'exec-path "H:/Win7PoolData/Desktop/PortableGit/mingw64/bin")
+     ;; For Graphviz
+     (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
+     (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin"))))
   )
 
 
@@ -245,9 +250,10 @@
   )
 
 ;; Improve the scrolling to make emacs feel more like an editor
-(require 'sublimity)
-(require 'sublimity-scroll)
-(sublimity-mode 1)
+;; cant install this on my work pc
+;;(require 'sublimity)
+;;(require 'sublimity-scroll)
+;;(sublimity-mode 1)
 ;; TODO: Fix that i cant scroll all the way up using C-v
 
 ;; Remove alarm (bell) on scroll
