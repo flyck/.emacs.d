@@ -48,7 +48,7 @@
 
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
-  :ensure t
+  :ensure nil ;;doesnt work on work pc, unable to install from melpa
   :config
   (setq deft-extensions '("txt" "tex" "org"))
   (setq deft-directory "~/Dropbox/org")
