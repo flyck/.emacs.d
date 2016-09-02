@@ -308,7 +308,31 @@
 	  (kill-local-variable 'backup-inhibited)
 	;; resort to default auto save setting
 	  (if auto-save-default
-		  (auto-save-mode 1))))
+              (auto-save-mode 1))))
+  ;; from howards blog: http://www.howardism.org/Technical/Emacs/literate-devops.html
+  ;; this is supposed to overwrite the standard org-mode function in ob-core.el which is buggy
+  ;; on windows it is here: <path_to_emacs>\emacs\share\emacs\24.5\lisp\org
+  (defun org-babel-temp-file (prefix &optional suffix)
+  "Create a temporary file in the `org-babel-temporary-directory'.
+Passes PREFIX and SUFFIX directly to `make-temp-file' with the
+value of `temporary-file-directory' temporarily set to the value
+of `org-babel-temporary-directory'."
+  (if (file-remote-p default-directory)
+      (let ((prefix
+             ;; We cannot use `temporary-file-directory' as local part
+             ;; on the remote host, because it might be another OS
+             ;; there.  So we assume "/tmp", which ought to exist on
+             ;; relevant architectures.
+             (concat (file-remote-p default-directory)
+                     ;; REPLACE temporary-file-directory with /tmp:
+                     (expand-file-name prefix "/tmp/"))))
+        (make-temp-file prefix nil suffix))
+    (let ((temporary-file-directory
+           (or (and (boundp 'org-babel-temporary-directory)
+                    (file-exists-p org-babel-temporary-directory)
+                    org-babel-temporary-directory)
+               temporary-file-directory)))
+      (make-temp-file prefix nil suffix))))
   )
 
 ;; Currently there is a problem "package does not untar cleanly"
