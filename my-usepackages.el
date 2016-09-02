@@ -365,6 +365,8 @@ of `org-babel-temporary-directory'."
 (setq cl-first-level "royal blue")
 (setq cl-second-level "IndianRed3")
 (setq cl-third-level "SlateBlue3")
+;; alternative for sunny days
+;; (setq cl-third-level "SkyBlue1")
 (setq cl-meta-information-one "cornflower blue")
 
 ;; Theme-config
