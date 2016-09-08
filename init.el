@@ -71,10 +71,10 @@
   )
 (if (equal "laptop" (getenv "SYSENV"))
     (progn (setq org-agenda-files (list
-                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org_archive")
-                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
-                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
+                                   (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
+                                   (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
+                                   (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+                                   (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
 	   ;; org-capture setup
 	   (setq org-capture-templates
 		 '(("a" "Add a task to tasks.org." entry
