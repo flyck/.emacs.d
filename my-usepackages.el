@@ -3,6 +3,7 @@
 (setq cl-selection-background "ivory1")
 (setq cl-selection-foreground "gray5")
 
+;; I hate browsing for files (I frequently use), this package is supposed to help me out with that
 (use-package recentf
   ;; i think it's build in but whatever
   :ensure t
@@ -12,8 +13,6 @@
   ;; list if they are readable. Tramp means that this requires recentf to open up a remote site
   ;; which will block your emacs process at the most inopportune times.
   ;;
-  ;; Also I dont want to have to re-find files i frequently use because recentf decided to delete
-  ;; them from its list
   (setq recentf-auto-cleanup 'never)
   (recentf-mode 1)
   (setq recentf-max-saved-items 50)
@@ -123,7 +122,7 @@
   (fset 'fbr/convert-listitem-into-checklistitem
         "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
   (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
-  (defun fbr/org-agenda-add-current-file()
+  (defun fbr/org-agenda-reduce-to-current-file()
       (interactive)
       (setq org-agenda-files (list (buffer-file-name)))
       )
@@ -195,16 +194,16 @@
   (add-to-list 'org-latex-classes
                '("bjmarticle"
                  "\\documentclass{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage[T1]{fontenc}
-\\usepackage{graphicx}
-\\usepackage{longtable}
-\\usepackage{hyperref}
-\\usepackage{natbib}
-\\usepackage{amssymb}
-\\usepackage{amsmath}
-\\usepackage{geometry}
-\\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+                  \\usepackage[utf8]{inputenc}
+                  \\usepackage[T1]{fontenc}
+                  \\usepackage{graphicx}
+                  \\usepackage{longtable}
+                  \\usepackage{hyperref}
+                  \\usepackage{natbib}
+                  \\usepackage{amssymb}
+                  \\usepackage{amsmath}
+                  \\usepackage{geometry}
+                  \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -259,6 +258,27 @@
   :ensure t
   :config
   (immortal-scratch-mode t)
+  )
+
+;; Package for editing c-code
+(use-package helm-gtags
+  :if (equal "laptop" (getenv "SYSENV"))
+  :config
+  ;; Enable helm-gtags-mode
+  (add-hook 'dired-mode-hook 'helm-gtags-mode)
+  (add-hook 'eshell-mode-hook 'helm-gtags-mode)
+  (add-hook 'c-mode-hook 'helm-gtags-mode)
+  (add-hook 'c++-mode-hook 'helm-gtags-mode)
+  (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+  (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+  (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+  (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+  (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+  (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+  (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+
+  (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
   )
 
 (use-package which-key
