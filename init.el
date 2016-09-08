@@ -11,19 +11,15 @@
 
 
 ;; Coding System (system-specific)
-;; I use the unix coding system everywhere
+;; Right now I use the unix coding system everywhere, might be subject to change though
 ;; Pros:
 ;; - Its easier to copy stuff into the terminal without weird line-ending interaction
 ;; - Makes org-babel codeblocks work in the first place on linux systems
+;; - I edit org-files from linux and on windows, which due to org-babel requiring linux line-endings mak
+;; - There is no comfortable way to convert line-endings without me noticing it, so I have to decide for one of the two
 ;; Cons:
-;; - Editing my configs or files from the Windows Editor doesn't work
+;; - Editing my configs or files from the Windows Default Editor doesn't work
 ;; - My colleagues are not able to visit my config files since they dont care and only use the dos-coding system
-;; The argument: if i edit a file synched by dropbox on windows and linux, then i have to use the unix coding system everywhere, since i dont want to convert the file everytime i open it
-(if (equal "" (getenv "SYSENV")) ;; the default case for university pcs(?) maybe delete this one too
-    (progn (prefer-coding-system 'utf-8-dos)
-           (setq coding-system-for-read 'utf-8-dos)
-           (setq coding-system-for-write 'utf-8-dos))
-  )
 (if (or (equal "home" (getenv "SYSENV"))
         (equal "work" (getenv "SYSENV"))
         (equal "laptop" (getenv "SYSENV"))
@@ -51,15 +47,18 @@
 		   ))
 	   )
   )
-;; Set these independantly for every system?! maybe move them to my use-package file?
+;; Keyword-faces, these can be set independant from the system
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
         ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
 
 ;; Org-agenda-files
+;; Including my *.org_archive-file on most systems definately slows generating the agenda down,
+;; but this way I can archive tasks whenever I want, while always maintaining a consistent look-back
+;; at my previous work (without including the archive-file archived tasks disappear from the agenda).
 (if (equal "home" (getenv "SYSENV"))
     (progn (setq org-agenda-files (list
-				   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                                   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
 				   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
 				   ))
 	   ;; org-capture setup
@@ -67,20 +66,22 @@
 		 '(("a" "Add a task to tasks.org." entry
 		    (file "tasks.org")
 		    "* TODO %? SCHEDULED: %t")))
-	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1)))))
+	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+           )
   )
-;; The tilde probably makes it that i cant run this as root... might want to fix that?
 (if (equal "laptop" (getenv "SYSENV"))
-    (progn (setq org-agenda-files (list "~/Dropbox/org/gtd/tasks.org"
-					"~/Dropbox/org/gtd/tasks.org_archive"
-					"~/Dropbox/org/hobby/dactyl-keyboard-guide/index.org"
-					"~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org"))
+    (progn (setq org-agenda-files (list
+                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org_archive")
+                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+                                   (concat "/home/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
 	   ;; org-capture setup
 	   (setq org-capture-templates
 		 '(("a" "Add a task to tasks.org." entry
 		    (file "tasks.org")
 		    "* TODO %? SCHEDULED: %t")))
-	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1)))))
+	   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+           )
   )
 (if (equal "work" (getenv "SYSENV"))
     (progn (setq org-agenda-files
@@ -153,7 +154,7 @@
 ;; Load my use-package definitions
 (load "~/.emacs.d/my-usepackages.el")
 
-;; Load my elisp-goodise
+;; Load my elisp-goodies
 (load "~/.emacs.d/elisp-goodies.el")
 
 ;; Remove ^M Errors in Babel
