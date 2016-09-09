@@ -137,7 +137,12 @@
   (global-set-key (kbd "<f9>") 'org-todo)
   ;; Load syntax-highlighting for source-blocks
   (setq org-src-fontify-natively t)
+  ;; log the time when a task is "done"
   (setq org-log-done t)
+  ;; put "CLOCK" times into a drawer
+  (setq org-log-into-drawer t)
+  ;; makes sure LOGBOOK and PROPERTIES go first
+  (setq org-log-state-notes-insert-after-drawers t)
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
   ;; Visual modifications
   ;; Strike through DONE headlines
