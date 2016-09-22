@@ -2,7 +2,6 @@
 /elpa/
 /server/
 /recentf*
-/eshell
 /projectile*
 /url
 /org-html-themes
@@ -15,3 +14,4 @@ history
 /bookmarks
 /plugins/
 /#recentf#
+/eshell/lastdir
