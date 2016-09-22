@@ -153,6 +153,7 @@
   (setq auto-hscroll-mode nil)
   (setq org-hide-emphasis-markers t)
   (setq org-tags-column -93)
+  ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
   ;; change from ... to the arrow
   (setq org-ellipsis "⤵")
   ;; Circulate Bullets instead of asteriks
