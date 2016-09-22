@@ -1,25 +1,9 @@
-;; good place to get emacs for windows:
-;; http://vgoulet.act.ulaval.ca/en/emacs/windows/
-;; breaks html export though for some font lock reason
-;; this has no image support but can do html export correctly: http://emacs.link/
-
 (require 'package)
 
 ;; Create the elpa directory if it doesnt exist since emacs will otherwise complain while loading the packages
 (unless (file-exists-p "~/.emacs.d/elpa")
   (make-directory "~/.emacs.d/elpa"))
 
-
-;; Coding System (system-specific)
-;; Right now I use the unix coding system everywhere, might be subject to change though
-;; Pros:
-;; - Its easier to copy stuff into the terminal without weird line-ending interaction
-;; - Makes org-babel codeblocks work in the first place on linux systems
-;; - I edit org-files from linux and on windows, which due to org-babel requiring linux line-endings mak
-;; - There is no comfortable way to convert line-endings without me noticing it, so I have to decide for one of the two
-;; Cons:
-;; - Editing my configs or files from the Windows Default Editor doesn't work
-;; - My colleagues are not able to visit my config files since they dont care and only use the dos-coding system
 (if (or (equal "home" (getenv "SYSENV"))
         (equal "work" (getenv "SYSENV"))
         (equal "laptop" (getenv "SYSENV"))

@@ -16,3 +16,11 @@
   The only thing this compilation doesn't do well is image-interaction, but since everything else
   works this is my favorite emacs source. For linux I dont care about the source of the
   installation package because I never had any problems.
+
+  Other emacs compilations for windows I tried:
+  - http://emacs.link/
+    - can do html export correctly
+    - no image support
+  - http://vgoulet.act.ulaval.ca/en/emacs/windows/
+    - breaks html export for some font lock reason
+    - good image support
