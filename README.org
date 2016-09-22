@@ -3,7 +3,7 @@
   things I wanted to configure about emacs, and it was too annoying to set them each time by hand
   when switching the environment.
 
-  Things I am have accomplished in my config:
+  Things I am proud to have accomplished since my first commit here:
   - I use "use-package" for automatic package installation.
   - The different environments I work with emacs in are typed (work / home / laptop /
     uni). Depending on the environment I load different packages. I tell emacs which environment I
