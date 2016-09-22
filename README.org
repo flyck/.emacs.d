@@ -1,0 +1,17 @@
+* About this repository
+  Started to maintain my emacs-config here on github when I noticed there were more than a handful
+  things I wanted to configure about emacs, and it was too annoying to set them each time by hand
+  when switching the environment.
+
+  Things I am have accomplished in my config:
+  - I use "use-package" for automatic package installation.
+  - The different environments I work with emacs in are typed (work / home / laptop /
+    uni). Depending on the environment I load different packages. I tell emacs which environment I
+    am in by setting the system variable "SYSENV".
+  - The file-structure is not a mess, my final goal is to have one single config file written in
+    org-mode.
+
+  Things I struggle with:
+  - Some packages can't be installed on some of the environments I use because of install-errors
+    like "this package doesn't untar cleanly". This behaviour is unexpected and a big
+    inconvenience. I am still to come up with a solution for this.
