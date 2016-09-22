@@ -1,0 +1,18 @@
+* Different types of setup
+  When I work on a new system for a whole day or longer it is convenient to start emacs from that
+  computer.
+  - I can document my work with org-babel most efficiently, because it has the highest performance
+    when interacting with the local host
+  - When someone interrupts me in my work which during a whole day is definately going to happen I
+    have the work conveniently divided into two different instances of emacs, one on the remote
+    site im working on, one on my local machine with all my project notes and access to all the
+    company-infrastructure.
+
+  For this I install emacs with my configuration on those remote systems. This task can be
+  automated using the compile_emacs.sh script.
+
+  For windows I download the latest compilation from sourceforge:
+  https://sourceforge.net/projects/emacsbinw64/
+  The only thing this compilation doesn't do well is image-interaction, but since everything else
+  works this is my favorite emacs source. For linux I dont care about the source of the
+  installation package because I never had any problems.
