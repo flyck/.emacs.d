@@ -57,11 +57,12 @@
   )
 
 ;; search for strings in the current textfile very conveniently
-(use-package swiper-helm
-  :ensure t
-  :config
-  (global-set-key (kbd "C-s") 'swiper-helm)
-  )
+;; deactivated because it is broken
+;; (use-package swiper-helm
+;;   :ensure t
+;;   :config
+;;   (global-set-key (kbd "C-s") 'swiper-helm)
+;;   )
 
 ;; huge package but so far I only need the find-file function which is better than helm default
 (use-package counsel
@@ -152,7 +153,7 @@
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
   (setq auto-hscroll-mode nil)
   (setq org-hide-emphasis-markers t)
-  (setq org-tags-column -93)
+  (setq org-tags-column -70)
   ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
   ;; change from ... to the arrow
   (setq org-ellipsis "⤵")
