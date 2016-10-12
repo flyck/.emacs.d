@@ -45,11 +45,46 @@
   (helm-autoresize-mode 1)
   )
 
+(use-package dired-k
+  :ensure t
+  :config
+  (define-key dired-mode-map (kbd "K") 'dired-k)
+  ;; You can use dired-k alternative to revert-buffer
+  (define-key dired-mode-map (kbd "g") 'dired-k)
+  ;; always execute dired-k when dired buffer is opened
+  (add-hook 'dired-initial-position-hook 'dired-k)
+  (add-hook 'dired-after-readin-hook #'dired-k-no-revert)
+  )
+
+(use-package direx
+  :ensure t
+  :config
+  (push '(direx:direx-mode :position left :width 25 :dedicated t)
+      popwin:special-display-config)
+  (global-set-key [f12] 'direx:jump-to-directory-other-window)
+  )
+
+;; Makes small windows possible intended to be closed again soon
+;; required by direx
+(use-package popwin
+  :ensure t
+  :config
+  (popwin-mode 1)
+  )
+
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
-  :ensure nil ;;doesnt work on work pc, unable to install from melpa
+  :ensure t ;;doesnt work on work pc (sometimes), unable to install from melpa
   :config
   (setq deft-extensions '("txt" "tex" "org"))
+  (if (equal "work" (getenv "SYSENV"))
+      (progn (setq deft-directory (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte")))
+      )
+  (if (or (equal "home" (getenv "SYSENV"))
+          (equal "laptop" (getenv "SYSENV"))
+          (equal "linux-vm" (getenv "SYSENV")))
+      (progn )
+    )
   (setq deft-directory "~/Dropbox/org")
   (setq deft-recursive t)
   (setq deft-use-filename-as-title t)
