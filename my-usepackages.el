@@ -432,62 +432,79 @@ of `org-babel-temporary-directory'."
 (setq cl-meta-information-one "cornflower blue")
 
 ;; Theme-config
-(use-package seti-theme
+;; (use-package seti-theme
+;;   :ensure t
+;;   :config
+;;   (custom-set-faces
+;;    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
+;;    '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
+;;    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
+;;    `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
+;;    ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
+;;    `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
+;;    ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
+;;    ;; added the outline definitions to blindly work towards a global color theme
+;;    ;; which variables inherit from these "outline" variables?
+;;    `(org-level-1 ((t (:inherit org-level-1 :foreground ,cl-first-level))))
+;;    `(outline-2 ((t (:foreground ,cl-second-level))))
+;;    `(outline-3 ((t (:foreground ,cl-third-level))))
+;;    `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
+;;    `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+;;    `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
+;;    `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
+;;    ;; Color the Org-Blocks beautifully for color schemes that do not do that
+;;    `(org-block-foreground ((t (:foreground "dark orange"))))
+;;    `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
+;;    `(org-block-end-line ((t (:foreground "SlateBlue4"))))
+;;    `(org-document-info ((t (:foreground "medium sea green"))))
+;;    `(org-document-info-keyword ((t (:foreground "light sea green"))))
+;;    )
+;;   (set-background-color "grey12")
+;;   )
+
+;; Org-mode Size-Customizations
+(custom-set-faces
+ `(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+ `(org-level-2 ((t (:inherit outline-2 :height 1.3))))
+ `(org-level-3 ((t (:inherit outline-3 :height 1.2))))
+ `(org-level-4 ((t (:inherit outline-4 :height 1.1))))
+ )
+
+;; (use-package dark-mint-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'dark-mint t)
+;;   )
+
+(use-package twilight-bright-theme
   :ensure t
   :config
-  (custom-set-faces
-   '(font-lock-function-name-face ((t (:foreground "royal blue"))))
-   '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
-   '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
-   `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
-   ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
-   `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
-   ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
-   ;; added the outline definitions to blindly work towards a global color theme
-   ;; which variables inherit from these "outline" variables?
-   `(org-level-1 ((t (:height 1.4 :foreground ,cl-first-level))))
-   `(outline-2 ((t (:foreground ,cl-second-level))))
-   `(org-level-2 ((t (:inherit outline-2 :foreground ,cl-second-level :height 1.3))))
-   `(outline-3 ((t (:foreground ,cl-third-level))))
-   `(org-level-3 ((t (:inherit outline-3 :height 1.2))))
-   `(org-level-4 ((t (:inherit outline-4 :height 1.1))))
-   `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
-   `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-   `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
-   `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
-   ;; Color the Org-Blocks beautifully for color schemes that do not do that
-   `(org-block-foreground ((t (:foreground "dark orange"))))
-   `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-   `(org-block-end-line ((t (:foreground "SlateBlue4"))))
-   `(org-document-info ((t (:foreground "medium sea green"))))
-   `(org-document-info-keyword ((t (:foreground "light sea green"))))
-   )
-  (set-background-color "grey12")
+  (load-theme 'twilight-bright t)
   )
 
 ;; The mode-line
 ;; load it after the theme since themes sometimes set their own mode-line
 ;; former problem: use-package doesnt find spaceline-config or spaceline
 ;; doest it still exist?
-(use-package spaceline-config
-  :ensure spaceline
-  :config
-  (spaceline-emacs-theme)
-  (spaceline-helm-mode)
-  (spaceline-toggle-buffer-size-off)
-  (spaceline-toggle-nyan-cat-on)
-  (spaceline-toggle-minor-modes-off)
-  (spaceline-toggle-buffer-position-off)
-  (custom-set-faces
-   '(spaceline-highlight-face ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-   '(spaceline-modified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-   '(spaceline-unmodified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-   '(spaceline-unmodified-p ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-   ;; LightGoldenrod ist die Farbe vom Helm-buffer, nur was ist das Face?
-   )
-  (spaceline-highlight-face-default)
-  (spaceline-highlight-face-modified)
-  )
+;; (use-package spaceline-config
+;;   :ensure spaceline
+;;   :config
+;;   (spaceline-emacs-theme)
+;;   (spaceline-helm-mode)
+;;   (spaceline-toggle-buffer-size-off)
+;;   (spaceline-toggle-nyan-cat-on)
+;;   (spaceline-toggle-minor-modes-off)
+;;   (spaceline-toggle-buffer-position-off)
+;;   (custom-set-faces
+;;    '(spaceline-highlight-face ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+;;    '(spaceline-modified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+;;    '(spaceline-unmodified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+;;    '(spaceline-unmodified-p ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+;;    ;; LightGoldenrod ist die Farbe vom Helm-buffer, nur was ist das Face?
+;;    )
+;;   (spaceline-highlight-face-default)
+;;   (spaceline-highlight-face-modified)
+;;   )
 
 ;; (use-package nyan-mode
 ;;   ;;:ensure t
