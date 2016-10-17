@@ -42,8 +42,8 @@
 ;; at my previous work (without including the archive-file archived tasks disappear from the agenda).
 (if (equal "home" (getenv "SYSENV"))
     (progn (setq org-agenda-files (list
-                                   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-				   (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+                (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
 				   ))
 	   ;; org-capture setup
 	   (setq org-capture-templates
@@ -57,7 +57,7 @@
     (progn (setq org-agenda-files (list
                                    (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
                                    (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
-                                   (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard-guide/index.org")
+                                   (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                                    (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
 	   ;; org-capture setup
 	   (setq org-capture-templates
