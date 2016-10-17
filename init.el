@@ -44,6 +44,7 @@
     (progn (setq org-agenda-files (list
                 (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
                 (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
 				   ))
 	   ;; org-capture setup
 	   (setq org-capture-templates
