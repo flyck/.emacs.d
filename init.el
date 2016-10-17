@@ -182,6 +182,7 @@
                                (local-set-key (kbd "M-n") 'next-line)
 			       (setq pcomplete-cycle-completions nil)
 			       ))
+(global-set-key (kbd "C-c e") 'eshell)
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 (custom-set-faces
  '(eshell-ls-archive ((t (:foreground "gold1" :weight bold))))
@@ -189,6 +190,18 @@
  '(eshell-ls-directory ((t (:foreground "brown1" :weight bold))))
  '(eshell-prompt ((t (:foreground "firebrick" :weight bold))))
  )
+;; Visual commands are commands which require a proper terminal.
+;; eshell will run them in a term buffer when you invoke them.
+(setq eshell-visual-commands
+      '("less" "tmux" "htop" "top" "bash" "zsh" "fish"))
+(setq eshell-visual-subcommands
+      '(("git" "log" "l" "diff" "show")))
+;; Attempts to make a good looking git-prompt in eshell
+(use-package eshell-git-prompt
+  :ensure t
+  :config
+  (require 'powerline)
+  (eshell-git-prompt-use-theme 'powerline))
 
 ;; Emacs Startup changes
 (setq inhibit-default-init t)
