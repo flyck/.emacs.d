@@ -476,11 +476,16 @@ of `org-babel-temporary-directory'."
 ;;   (load-theme 'dark-mint t)
 ;;   )
 
-(use-package twilight-bright-theme
+;; (use-package twilight-bright-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'twilight-bright t)
+;;   )
+
+(use-package oceanic-theme
   :ensure t
   :config
-  (load-theme 'twilight-bright t)
-  )
+  (load-theme 'oceanic t))
 
 ;; The mode-line
 ;; load it after the theme since themes sometimes set their own mode-line
