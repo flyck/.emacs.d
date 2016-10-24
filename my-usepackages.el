@@ -255,9 +255,12 @@
 )
 
 ;; melpa is currently unavailable? try this again later then...
-;; (use-package calfw
-;;   :ensure t
-;;   )
+(use-package calfw
+  :ensure t
+  :config
+  (require 'calfw-org)
+  (setq cfw:org-overwrite-default-keybinding t)
+  )
 
 ;; Inserts highlighting of Org Source-Blocks on Html-Export
 (use-package htmlize
