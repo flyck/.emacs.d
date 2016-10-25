@@ -180,6 +180,8 @@
   ;; makes sure LOGBOOK and PROPERTIES go first
   (setq org-log-state-notes-insert-after-drawers t)
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+  ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
+  (org-agenda-archives-mode t)
   ;; Visual modifications
   ;; Strike through DONE headlines
   (setq org-fontify-done-headline t)
