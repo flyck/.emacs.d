@@ -92,12 +92,13 @@
   )
 
 ;; search for strings in the current textfile very conveniently
-;; deactivated because it is broken
-;; (use-package swiper-helm
-;;   :ensure t
-;;   :config
-;;   (global-set-key (kbd "C-s") 'swiper-helm)
-;;   )
+;; deactivated it temporarily because it is broken on windows
+(use-package swiper-helm
+  :ensure t
+  :config
+  (global-set-key (kbd "C-s") 'swiper-helm)
+  (global-set-key (kbd "C-c u") 'swiper-all)
+  )
 
 ;; huge package but so far I only need the find-file function which is better than helm default
 (use-package counsel
