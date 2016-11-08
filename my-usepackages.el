@@ -256,7 +256,12 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
                )
-)
+  )
+
+;; Make beautiful graphs
+(use-package org-clock-csv
+  :ensure t
+  )
 
 ;; melpa is currently unavailable? try this again later then...
 (use-package calfw
