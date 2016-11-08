@@ -24,3 +24,12 @@
   - http://vgoulet.act.ulaval.ca/en/emacs/windows/
     - breaks html export for some font lock reason
     - good image support
+
+* Update on linux
+  Used this approach on my laptop. Taken from askubuntu.com
+  This uses this ppa: https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
+  #+BEGIN_SRC sh
+sudo add-apt-repository ppa:ubuntu-elisp/ppa
+sudo apt-get update
+sudo apt-get install emacs-snapshot
+  #+END_SRC
