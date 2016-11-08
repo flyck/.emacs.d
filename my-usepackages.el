@@ -100,6 +100,10 @@
   (global-set-key (kbd "C-c u") 'swiper-all)
   )
 
+;; Save whatever’s in the current (system) clipboard before replacing it with the Emacs’ text.
+;; More tricks like this: https://github.com/dakrone/eos/blob/master/eos.org
+(setq save-interprogram-paste-before-kill t)
+
 ;; huge package but so far I only need the find-file function which is better than helm default
 (use-package counsel
   :ensure t
