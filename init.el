@@ -209,12 +209,16 @@
 (setq inhibit-splash-screen t)
 (setq transient-mark-mode 1)
 
-;; Line intendation
+;; Line intendation and Line wrap / Word wrap
 (setq-default fill-column 98)
-(setq auto-hscroll-mode t)
 (setq hscroll-step 1)
-(auto-fill-mode 1)
-(define-key global-map "\C-cf" 'auto-fill-mode)
+(auto-fill-mode 1) ;; the mode responsible for adding line-endings after fill-column is reached
+(add-hook 'text-mode-hook 'turn-on-auto-fill) ;; turn on auto-fill-mode automatically
+;; Toggle for auto-fill-mode
+(global-set-key (kbd "C-c q") 'auto-fill-mode)
+(setq auto-hscroll-mode nil) ;; i sometimes toggle this manually for source-blocks with long lines
+;; to still be able to just paste them in the current buffer. More info on this, specifically
+;; regarding programming: https://www.emacswiki.org/emacs/AutoFillMode
 (setq tab-width 4)
 
 ;; Start the emacs server such that i can open new files conveniently using the explorer
