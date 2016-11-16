@@ -333,6 +333,13 @@
   (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
   )
 
+(use-package openwith
+  :ensure t
+  :config
+  (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
+  (openwith-mode t)
+)
+
 (use-package which-key
   :ensure t
   :config
@@ -536,8 +543,9 @@ of `org-babel-temporary-directory'."
 ;;   (spaceline-highlight-face-modified)
 ;;   )
 
+;; Sadly results in flickering on my laptop and doesnt install relyably on my windows-pc
 ;; (use-package nyan-mode
-;;   ;;:ensure t
+;;   :ensure t
 ;;   :config
 ;;   (nyan-mode 1)
 ;;   (nyan-start-animation)
