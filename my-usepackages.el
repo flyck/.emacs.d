@@ -112,12 +112,6 @@
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   )
 
-;;(use-package helm-themes
-;;  :ensure t
-;;  :config
-;;  (helm-themes--load-theme "zonokai-blue")
-;;  )
-
 ;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
 ;; TODO: Warn if username and useremail are not set
 (use-package magit
@@ -498,10 +492,25 @@ of `org-babel-temporary-directory'."
 ;;   (load-theme 'twilight-bright t)
 ;;   )
 
+;; temporary disabled
 (use-package oceanic-theme
+  :ensure nil
+  :config
+  (load-theme 'oceanic t)
+  )
+
+;; temporary testing this
+(use-package purple-haze-theme
   :ensure t
   :config
-  (load-theme 'oceanic t))
+  (load-theme 'purple-haze t)
+  )
+
+(use-package helm-themes
+  :ensure t
+  :config
+  (helm-themes--load-theme "purple-haze")
+  )
 
 ;; The mode-line
 ;; load it after the theme since themes sometimes set their own mode-line
