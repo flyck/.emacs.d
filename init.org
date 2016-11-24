@@ -321,7 +321,8 @@
         			     (setq pcomplete-cycle-completions nil)
         			     ))
       (global-set-key (kbd "C-c e") 'eshell)
-      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+      ;; this apparently only works if org-mode is installed, therefor it's temporarily disabled
+      ;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
       (custom-set-faces
        '(eshell-ls-archive ((t (:foreground "gold1" :weight bold))))
        '(eshell-ls-backup ((t (:foreground "LemonChiffon1"))))
@@ -342,6 +343,7 @@
       ;;   (eshell-git-prompt-use-theme 'powerline))
     #+END_SRC
 
+*** TODO Fix the problem with the tramp remote path
 ** System-specific configuration
 *** Org-mode settings (system-specific)
 **** Org-todo-keywords
