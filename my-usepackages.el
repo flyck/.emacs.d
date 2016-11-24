@@ -150,6 +150,11 @@
 	 (perl . t)
 	 (dot . t) ;; activates graphviz dot support
 	 ))
+  ;; Remove ^M Errors in Babel
+  (add-to-list 'process-coding-system-alist
+               '("bash" . (undecided-unix)))
+  (add-hook 'comint-output-filter-functions
+            'comint-strip-ctrl-m)
   ;; Send stderror into the result drawer instead of an extra window
   (setq org-babel-default-header-args:sh
         '((:prologue . "exec 2>&1") (:epilogue . ":"))
@@ -500,11 +505,11 @@ of `org-babel-temporary-directory'."
 ;;   )
 
 ;; temporary disabled
-(use-package oceanic-theme
-  :ensure nil
-  :config
-  (load-theme 'oceanic t)
-  )
+;; (use-package oceanic-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'oceanic t)
+;;   )
 
 ;; temporary testing this
 (use-package purple-haze-theme
