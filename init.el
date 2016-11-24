@@ -227,6 +227,10 @@
   (server-start))
 ;; remove the annoying prompt that occurs when killing such a file
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+;; For my windows-PC this is necessary in addition:
+;; C:\Program Files (x86)\emacs\bin\emacsclientw.exe --alternate-editor="C:\Program Files (x86)\emacs\bin\runemacs.exe" "%1"
+;; This previous line should be included in the standard
+;; REG_SZ key at HKEY_CLASSES_ROOT/*/shell/Open with Emacs/command
 
 ;; Dired
 (setq dired-listing-switches "-alh")
