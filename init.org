@@ -1,0 +1,451 @@
+#+Title:  My emacs configuration in org-mode
+#+Author: Felix Brilej
+
+** About this file
+   :PROPERTIES:
+   :CUSTOM_ID: babel-init
+   :END:
+   <<babel-init>>
+
+   Ressources used:
+   - [X] https://raw.githubusercontent.com/sachac/.emacs.d/gh-pages/Sacha.org
+   - [X] https://www.suenkler.info/docs/emacs-konfiguration/
+   - [ ] http://mescal.imag.fr/membres/arnaud.legrand/misc/init.php
+
+** Starting up
+   Here's how we start:
+   #+begin_src emacs-lisp :tangle yes
+;; This sets up the load path so that we can override it
+(package-initialize)
+;; Override the packages with the git version of Org and other packages
+(add-to-list 'load-path "~/elisp/org-mode/lisp")
+(add-to-list 'load-path "~/elisp/org-mode/contrib/lisp")
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
+(setq package-enable-at-startup nil)
+(setq custom-file "~/.emacs.d/custom-settings.el")
+(load custom-file t)
+   #+END_SRC
+
+** Emacs initialization
+*** Add package sources
+    So far I only add melpa, is that enough? Experience will show
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (unless (assoc-default "melpa" package-archives)
+        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+	; (package-refresh-contents)
+      )
+    #+END_SRC
+
+    Use =M-x package-refresh-contents= to reload the list of packages
+    after adding these for the first time.
+
+    Problems with melpa packages:
+    - yasnippet doesnt unpack from melpa
+    - usepackage is only available on melpa
+    - smartparens crashes when not installed from melpa
+
+*** Add my elisp directory and use-package
+    Sometimes I load files outside the package system. As long as they're in a directory in my
+    =load-path=, Emacs can find them.
+
+    I create the elpa directory if it doesnt exist since emacs will
+    otherwise complain while loading the packages
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      ;; Do I need the following?
+      ;; (let ((default-directory "~/.emacs.d/elpa/"))
+      ;;   (normal-top-level-add-subdirs-to-load-path))
+      (unless (file-exists-p "~/.emacs.d/elpa")
+        (make-directory "~/.emacs.d/elpa"))
+      (unless (package-installed-p 'use-package)
+        (package-install 'use-package))
+      (setq use-package-verbose t)
+      (setq use-package-always-ensure t)
+      (require 'use-package)
+      (use-package auto-compile
+        :config (auto-compile-on-load-mode))
+      (setq load-prefer-newer t)
+    #+END_SRC
+
+** General configuration
+*** Libraries
+    #+begin_src emacs-lisp :tangle yes
+    (use-package dash)
+    #+end_src
+**** TODO What is that for again?
+*** Coding style
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (if (or (equal "home" (getenv "SYSENV"))
+              (equal "work" (getenv "SYSENV"))
+              (equal "laptop" (getenv "SYSENV"))
+              (equal "linux-vm" (getenv "SYSENV"))
+              )
+          (progn (prefer-coding-system 'utf-8-unix)
+             (setq coding-system-for-read 'utf-8-unix)
+             (setq coding-system-for-write 'utf-8-unix))
+        )
+      ;; Disable tabs
+      (setq-default indent-tabs-mode nil)
+      (setq tab-width 4)
+    #+END_SRC
+
+*** Line intendation, Linewrap and Word wrap
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq-default fill-column 98)
+      (setq hscroll-step 1)
+      (auto-fill-mode 1) ;; the mode responsible for adding line-endings after fill-column is reached
+      (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; turn on auto-fill-mode automatically
+      ;; Toggle for auto-fill-mode
+      (global-set-key (kbd "C-c q") 'auto-fill-mode)
+      (setq auto-hscroll-mode nil) ;; i sometimes toggle this manually for source-blocks with long lines
+      ;; to still be able to just paste them in the current buffer. More info on this, specifically
+      ;; regarding programming: https://www.emacswiki.org/emacs/AutoFillMode
+    #+END_SRC
+
+*** Conveniences
+    Emacs Startup changes
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq inhibit-default-init t)
+    (setq inhibit-splash-screen t)
+    (setq transient-mark-mode 1)
+    #+END_SRC
+
+    Take the short answer, y/n is yes/no
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (defalias 'yes-or-no-p 'y-or-n-p)
+    #+END_SRC
+
+    Start the emacs server such that i can open new files conveniently using the explorer
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (require 'server)
+      (unless (server-running-p)
+        (server-start))
+      ;; remove the annoying prompt that occurs when killing such a file
+      (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+      ;; For my windows-PC this is necessary in addition:
+      ;; C:\Program Files (x86)\emacs\bin\emacsclientw.exe --alternate-editor="C:\Program Files (x86)\emacs\bin\runemacs.exe" "%1"
+      ;; This previous line should be included in the standard
+      ;; REG_SZ key at HKEY_CLASSES_ROOT/*/shell/Open with Emacs/command
+    #+END_SRC
+
+    Overwrite selected text
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (delete-selection-mode t)
+    #+END_SRC
+
+    Dired
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq dired-listing-switches "-alh")
+    #+END_SRC
+
+    No splash screen please ... jeez
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq inhibit-startup-message t)
+    #+END_SRC
+
+    Backups:
+    This is one of the things people usually want to change right away. By default, Emacs saves
+    backup files in the current directory. These are the files ending in =~= that are cluttering
+    up your directory lists. The following code stashes them all in =~/.emacs.d/backups=, where I
+    can find them with =C-x C-f= (=find-file=) if I really need to.
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+    #+END_SRC
+
+    Default to better frame titles
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq frame-title-format
+      (concat  "%b - emacs@" (system-name)))
+    #+END_SRC
+
+    Default to unified diffs
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq diff-switches "-u")
+    #+END_SRC
+
+    Transparency settings
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (set-frame-parameter (selected-frame) 'alpha '(100 100))
+      (add-to-list 'default-frame-alist '(alpha 100 100))
+    #+END_SRC
+
+    Customize the interface to be more slim
+    #+BEGIN_SRC emacs-lisp :tangle yes
+(when window-system
+  (tooltip-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  )
+    #+END_SRC
+
+    Stop cursor from blinking
+    #+BEGIN_SRC emacs-lisp :tangle yes
+(blink-cursor-mode 0)
+(if (fboundp 'blink-cursor-mode)
+    (blink-cursor-mode 0))
+    #+END_SRC
+
+    Control the startup position of emacs
+    #+BEGIN_SRC emacs-lisp :tangle yes
+(if (window-system)
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-height (selected-frame) 120))
+    #+END_SRC
+
+    Remove alarm (bell) on scroll
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq ring-bell-function 'ignore)
+
+      ;; Intuitive Buffer-changing
+      (global-set-key [(control next)] 'next-buffer)
+      (global-set-key [(control prior)] 'previous-buffer)
+    #+END_SRC
+
+    Improve the scrolling to make emacs feel more like an editor
+    Problems:
+    - Cant install this on my work pc
+    - I cant scroll all the way up using C-v
+    #+BEGIN_SRC emacs-lisp :tangle yes
+;;(require 'sublimity)
+;;(require 'sublimity-scroll)
+;;(sublimity-mode 1)
+    #+END_SRC
+
+    Highlight the current line (mostly useful for going through logs)
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      ;; Highlight current line (slows down C-n and C-p immensly)
+      ;; (global-hl-line-mode 1)
+      ;; (set-face-background 'hl-line "#cc0033") ;; crimson
+    #+END_SRC
+
+    Highlight matching parenthesis
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      ;; Show matching parenthesis without delay
+      (setq show-paren-delay 0)
+      ;; Activate the mode
+      (show-paren-mode t)
+    #+END_SRC
+
+    Keep the buffer history as one would expect
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; Save minibuffer history
+(savehist-mode 1)
+;; Delete duplicates in minibuffer history
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq history-length t)
+    #+END_SRC
+
+    Clean up unnecessary spaces on save and show them while they are still there
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+    (setq show-trailing-whitespace t)
+    #+END_SRC
+
+**** TODO Fix the scrolling improvement
+*** Fonts
+    Font hints for Linux (Ubuntu)
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      ;; Fonts
+      ;; (set-frame-font "Source Code Pro-11" nil t)
+      ;; How to install on ubuntu:
+      ;; #!/bin/bash
+      ;; mkdir /tmp/adodefont
+      ;; cd /tmp/adodefont
+      ;; wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
+      ;; unzip 1.030R-it.zip
+      ;; mkdir -p ~/.fonts
+      ;; cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf ~/.fonts/
+      ;; fc-cache -f -v
+    #+END_SRC
+
+    Font settings for Windows
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      ;; "Select an Emacs font from a list of known good fonts and fontsets.
+      (defun mouse-set-font (&rest fonts)
+        ;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
+        ;;font dialog to display the list of possible fonts.  Otherwise use a
+        ;;pop-up menu (like Emacs does on other platforms) initialized with
+        ;;the fonts in `w32-fixed-font-alist'.
+        ;;If `w32-list-proportional-fonts' is non-nil, add proportional fonts
+        ;;to the list in the font selection dialog (the fonts listed by the
+        ;;pop-up menu are unaffected by `w32-list-proportional-fonts')."
+        (interactive
+         (if w32-use-w32-font-dialog
+             (let ((chosen-font (w32-select-font (selected-frame)
+    					     w32-list-proportional-fonts)))
+    	   (and chosen-font (list chosen-font)))
+           (x-popup-menu
+            last-nonmenu-event
+            ;; Append list of fontsets currently defined.
+            ;; Conditional on new-fontset so bootstrapping works on non-GUI compiles
+            (if (fboundp 'new-fontset)
+            (append w32-fixed-font-alist (list (generate-fontset-menu)))))))
+        (if fonts
+            (let (font)
+    	  (while fonts
+    	    (condition-case nil
+    	        (progn
+                      (setq font (car fonts))
+    		  (set-default-font font)
+                      (setq fonts nil))
+    	      (error (setq fonts (cdr fonts)))))
+    	  (if (null font)
+    	      (error "Font not found")))))
+
+      ;; Windows-specific settings
+      (if (eq system-type 'windows-nt)
+          ;; Set the font
+          (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
+          )
+    #+END_SRC
+*** Eshell
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      ;; Eshell
+      (add-hook 'eshell-mode-hook '(lambda ()
+        			     ;; Make the eshell behave like a normal shell
+                                     (local-set-key (kbd "C-p") 'eshell-previous-input)
+                                     (local-set-key (kbd "M-p") 'previous-line)
+        			     (local-set-key (kbd "C-n") 'eshell-next-input)
+                                     (local-set-key (kbd "M-n") 'next-line)
+        			     (setq pcomplete-cycle-completions nil)
+        			     ))
+      (global-set-key (kbd "C-c e") 'eshell)
+      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+      (custom-set-faces
+       '(eshell-ls-archive ((t (:foreground "gold1" :weight bold))))
+       '(eshell-ls-backup ((t (:foreground "LemonChiffon1"))))
+       '(eshell-ls-directory ((t (:foreground "brown1" :weight bold))))
+       '(eshell-prompt ((t (:foreground "firebrick" :weight bold))))
+       )
+      ;; Visual commands are commands which require a proper terminal.
+      ;; eshell will run them in a term buffer when you invoke them.
+      (setq eshell-visual-commands
+            '("less" "tmux" "htop" "top" "bash" "zsh" "fish"))
+      (setq eshell-visual-subcommands
+            '(("git" "log" "l" "diff" "show")))
+      ;; Attempts to make a good looking git-prompt in eshell
+      ;; (use-package eshell-git-prompt
+      ;;   :ensure t
+      ;;   :config
+      ;;   (require 'powerline)
+      ;;   (eshell-git-prompt-use-theme 'powerline))
+    #+END_SRC
+
+** System-specific configuration
+*** Org-mode settings (system-specific)
+**** Org-todo-keywords
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (if (equal "work" (getenv "SYSENV"))
+           (progn (setq org-todo-keywords
+    		    '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+         )
+       (if (or (equal "home" (getenv "SYSENV"))
+               (equal "laptop" (getenv "SYSENV"))
+               (equal "linux-vm" (getenv "SYSENV")))
+           (progn (setq org-todo-keywords
+    		    '((sequence "TODO(t)" "|" "DONE(d)")
+    		      (sequence "PENDING(p)" "|" "CANCELED(c)")
+    		      ))
+    	      )
+         )
+       ;; Keyword-faces, these can be set independant from the system
+       (setq org-todo-keyword-faces
+    	 '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+               ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+     #+END_SRC
+
+**** Org-agenda-files
+     Including my *.org_archive-file on most systems definately slows
+     generating the agenda down, but this way I can archive tasks
+     whenever I want, while always maintaining a consistent look-back
+     at my previous work (without including the archive-file archived
+     tasks disappear from the agenda).
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (if (equal "home" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+    				      ))
+    	      ;; org-capture setup
+    	      (setq org-capture-templates
+    		    '(("a" "Add a task to tasks.org." entry
+    		       (file "tasks.org")
+    		       "* TODO %? SCHEDULED: %t")))
+    	      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+                  )
+         )
+       (if (equal "laptop" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
+    	      ;; org-capture setup
+    	      (setq org-capture-templates
+    		    '(("a" "Add a task to tasks.org." entry
+    		       (file "tasks.org")
+    		       "* TODO %? SCHEDULED: %t")))
+    	      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+                  )
+         )
+       (if (equal "work" (getenv "SYSENV"))
+           (progn (setq org-agenda-files
+    		    (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+    			  (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+    			  (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+    	      ;; org-capture setup
+    	      (setq org-capture-templates
+    		    '(("a" "My TODO task format." entry
+    		       (file "projects.org")
+    		       "* TODO %?
+           SCHEDULED: %t")))
+    	      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+    	      )
+         )
+     #+END_SRC
+*** Unsorted stuff (system-specific)
+    Manually installed packages / unsorted stuff (system-specific)
+    Some packages dont install for some systems. It is stupid but here is the workaround.
+    #+BEGIN_SRC emacs-lisp :tangle yes
+ (if (equal "home" (getenv "SYSENV"))
+     (progn
+       ;; load my manually installed yasnippet package
+       (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+       (require 'yasnippet)
+       (message "loading yasnippet"))
+   )
+ (if (equal "" (getenv "SYSENV")) ;; assuming we are on a university pc since we cannot set the SYSENV variable there
+     (progn
+      ;; test tls connection on windows for successfull download of packages
+      ;; makes sure this returns t in the echo area
+      (gnutls-available-p)
+      (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\emacs\\bin"))
+      ;; For Git
+      (add-to-list 'exec-path "H:/Win7PoolData/Desktop/PortableGit/mingw64/bin")
+      ;; For Graphviz
+      (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
+      (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin"))))
+   )
+ #+END_SRC
+*** Proxy settings (system-specific)
+ #+BEGIN_SRC emacs-lisp :tangle yes
+ ;; proxy settings (system-specific)
+ (if (equal "work" (getenv "SYSENV"))
+     (setq url-proxy-services '(("no_proxy" . "work\\.com")
+                            ("http" . "172.16.8.250:3128")
+			    ("https" . "172.16.8.250:3128")))
+     )
+ #+END_SRC
+** Use-packages
+   Load my use-package definitions
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (load "~/.emacs.d/my-usepackages.el")
+   #+END_SRC
+
+   Load my elisp-goodies
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (load "~/.emacs.d/elisp-goodies.el")
+   #+END_SRC
