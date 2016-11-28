@@ -295,19 +295,21 @@
   (setq org-alert-interval 60)
   )
 
+;; If i dont uncomment this this attempts to get installed at work?!? TODO
+;; I bet its the new use-package config i took from sachac's config
 ;; Settings for company plus company-emoji
-(use-package company-emoji
-  :if (equal "laptop" (getenv "SYSENV"))
-  :init
-  (require 'color)
-  (let ((bg (face-attribute 'default :background)))
-    (custom-set-faces
-     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
-  )
+;; (use-package company-emoji
+;;   :if (equal "laptop" (getenv "SYSENV"))
+;;   :init
+;;   (require 'color)
+;;   (let ((bg (face-attribute 'default :background)))
+;;     (custom-set-faces
+;;      `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+;;      `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+;;      `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+;;      `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+;;      `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+;;   )
 
 ;; Respawns the scratch buffer when its killed
 ;; Feels just right
