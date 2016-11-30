@@ -8,19 +8,19 @@
   should use as my kind of color-palette when i go around and change defaults.
 
   #+BEGIN_SRC emacs-lisp
-(require 'use-package)
-;; (setq debug-on-error t) (turn on if needed)
+    (require 'use-package)
+    ;; (setq debug-on-error t) (turn on if needed)
 
-(setq cl-selection-background "ivory1")
-(setq cl-selection-foreground "gray5")
+    (setq cl-selection-background "ivory1")
+    (setq cl-selection-foreground "gray5")
 
-(setq cl-headline "ghost white")
-(setq cl-first-level "royal blue")
-(setq cl-second-level "IndianRed3")
-(setq cl-third-level "SlateBlue3")
-;; alternative for sunny days
-;; (setq cl-third-level "SkyBlue1")
-(setq cl-meta-information-one "cornflower blue")
+    (setq cl-headline "ghost white")
+    (setq cl-first-level "royal blue")
+    (setq cl-second-level "IndianRed3")
+    (setq cl-third-level "SlateBlue3")
+    ;; alternative for sunny days
+    ;; (setq cl-third-level "SkyBlue1")
+    (setq cl-meta-information-one "cornflower blue")
   #+END_SRC
 
 * File-browsing and text-searching
