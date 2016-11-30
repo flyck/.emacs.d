@@ -5,7 +5,7 @@
 
   🏆 Things I am proud to have accomplished since my first commit here:
   - I use "use-package" for automatic package installation.
-  - My config-files are written in org-mode org-mode
+  - My config-files are written in org-mode
   - The different environments I work with emacs in are typed (work / home / laptop /
     uni). Depending on the environment I load different packages. I tell emacs which environment I
     am in by setting the system variable "SYSENV".

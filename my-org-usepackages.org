@@ -325,7 +325,7 @@
     )
     #+END_SRC
 
-**** TODO Make sure that i actually have a server running
+**** TODO Make sure that i actually have a server running and adapt this config
      smirk
 
 ** Org-mode
