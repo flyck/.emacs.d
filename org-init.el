@@ -13,3 +13,4 @@
 
 ;; Nun kann die Emacs-Konfiguration im Org-Babel-style eingelesen werden
 (org-babel-load-file (expand-file-name "init.org" dotfiles-dir))
+(org-babel-load-file (expand-file-name "my-org-usepackages.org" dotfiles-dir))

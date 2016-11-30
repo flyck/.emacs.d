@@ -1,5 +1,6 @@
-#+Title:  My emacs configuration in org-mode
-#+Author: Felix Brilej
+#+Title:   My emacs configuration in org-mode
+#+Author:  Felix Brilej
+#+STARTUP: showall
 
 ** About this file
    :PROPERTIES:
@@ -11,6 +12,9 @@
    - [X] https://raw.githubusercontent.com/sachac/.emacs.d/gh-pages/Sacha.org
    - [X] https://www.suenkler.info/docs/emacs-konfiguration/
    - [ ] http://mescal.imag.fr/membres/arnaud.legrand/misc/init.php
+
+   Information about tangling:
+   - http://orgmode.org/manual/Extracting-source-code.html
 
 ** Starting up
    Here's how we start:
@@ -441,12 +445,7 @@
       (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin"))))
    )
  #+END_SRC
-** Use-packages
-   Load my use-package definitions
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (load "~/.emacs.d/my-usepackages.el")
-   #+END_SRC
-
+** Additional things
    Load my elisp-goodies
    #+BEGIN_SRC emacs-lisp :tangle yes
    (load "~/.emacs.d/elisp-goodies.el")
