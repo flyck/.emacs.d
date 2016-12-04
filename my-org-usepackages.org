@@ -166,6 +166,18 @@
   )
   #+END_SRC
 
+** Open the explorer
+   To open the OS-specific file-browser either use this command: =M-! explorer .= or the following
+   code snippet:
+   #+BEGIN_SRC emacs-lisp
+   (defun browse-current-folder ()
+     "open the current buffer’s folder"
+     (interactive)
+     (browse-url (concat "file://" (file-name-directory (buffer-file-name))))
+   )
+   (global-set-key [M-f9] 'browse-current-folder)
+   #+END_SRC
+
 * Conveniences
 
 ** Undo-tree
