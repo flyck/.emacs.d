@@ -104,13 +104,12 @@
 (use-package direx
   :ensure t
   :config
+  (require 'popwin)
   (push '(direx:direx-mode :position left :width 25 :dedicated t)
       popwin:special-display-config)
   (global-set-key [f12] 'direx:jump-to-directory-other-window)
   )
   #+END_SRC
-
-*** TODO Fix the error I get on every emacs startup because of this
 
 ** Finding files
    As great as helm is, there is an even better file-finding package, however it hinders me from
@@ -187,6 +186,7 @@
   (which-key-setup-side-window-right)
   (setq which-key-popup-type 'side-window)
   (which-key-mode)
+  :defer 5
   )
     #+END_SRC
 
@@ -202,16 +202,17 @@
 
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
-;; Currently there is a problem "package does not untar cleanly"
-(use-package yasnippet
-  :ensure nil
-  :init
-  (define-key global-map "\C-cy" 'yas/insert-snippet)
-  ;;(setq yas-snippet-dirs (append yas-snippet-dirs
-  ;;"~/.emacs.d/elpa/yasnippet-20150912.1330/snippets/"))
-  :config
-  (yas-global-mode 1)
-  )
+     ;; Currently there is a problem "package does not untar cleanly"
+     (use-package yasnippet
+       :ensure nil
+       :init
+       (define-key global-map "\C-cy" 'yas/insert-snippet)
+       ;;(setq yas-snippet-dirs (append yas-snippet-dirs
+       ;;"~/.emacs.d/elpa/yasnippet-20150912.1330/snippets/"))
+       :config
+       (yas-global-mode 1)
+       :defer 5
+     )
    #+END_SRC
 
 ** Smooth-scrolling
@@ -250,6 +251,7 @@
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
   )
    #+END_SRC
+
 ** Emoji-autocomplete (company-emoji)
    #+BEGIN_SRC emacs-lisp
 ;; If i dont uncomment this this attempts to get installed at work?!? TODO
@@ -295,6 +297,7 @@
   (add-to-list 'exec-path "C:/Program Files/Git/bin")
   (define-key global-map (kbd "C-c m") 'magit-status)
   (setenv "GIT_ASKPASS" "git-gui--askpass")
+  :defer 5
   )
    #+END_SRC
 
@@ -600,7 +603,58 @@
                          org-babel-temporary-directory)
                     temporary-file-directory)))
            (make-temp-file prefix nil suffix))))
+       :defer 5
        )
+   #+END_SRC
+
+** SQL
+   Thanks to baron42bba and https://truongtx.me/2014/08/23/setup-emacs-as-an-sql-database-client
+   I yet have to actually test this config.
+
+   Also check:
+   - https://github.com/Trevoke/sqlup-mode.el
+     - a presumably nice mode for writing sql
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+   ;; truncate lines such that tables with many columns dont line-wrap
+   (add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (toggle-truncate-lines t)))
+
+   (defun my-sql-connect ()
+     (interactive)
+     (require 'my-password "~/.emacs_secrets.el.gpg")
+     (setq sql-product 'mysql)
+
+     (let ((connection (helm-comp-read
+                        "Select server: "
+                        my-sql-servers-alist
+                        )))
+       (sql-connect connection))
+     (sql-rename-buffer)
+     )
+   #+END_SRC
+
+   your =~/.emacs_secrets.el.gpg= might look like:
+
+   #+BEGIN_SRC emacs-lisp :tangle never
+   (setq my-sql-servers-alist
+         '("serverA" "serverB"))
+
+   (setq sql-connection-alist
+         '((bbaprd (sql-product 'mysql)
+                   (sql-server "host42.foo.com")
+                   (sql-user "dbadmin")
+                   (sql-password "foo")
+                   (sql-database "serverA"))
+           (bbatst (sql-product 'mysql)
+                   (sql-server "host42.foo.com")
+                   (sql-user "dbadmin")
+                   (sql-password "foo")
+                   (sql-database "serverB"))
+           ))
+
+   (provide 'my-password)
    #+END_SRC
 
 * Programming
@@ -720,7 +774,7 @@
 (use-package helm-themes
   :ensure t
   :config
-  (helm-themes--load-theme "purple-haze")
+  ;; (helm-themes--load-theme "purple-haze")
   )
    #+END_SRC
 * Modeline
