@@ -156,13 +156,15 @@
   a quick overview over *all* of the search-results.
   This package however frequently breaks on windows, such that suddenly i can only scroll down in
   the result-list. Reinstalling the package fixes that, however that is a huge inconvenience.
+  After reinstalling this package can break just by searching for "magit" in this file. That's it,
+  I'm suspending this package.
   #+BEGIN_SRC emacs-lisp
-(use-package swiper-helm
-  :ensure t
-  :config
-  (global-set-key (kbd "C-s") 'swiper-helm)
-  (global-set-key (kbd "C-c u") 'swiper-all)
-  )
+    ;; (use-package swiper-helm
+    ;;   :ensure t
+    ;;   :config
+    ;;   (global-set-key (kbd "C-s") 'swiper-helm)
+    ;;   (global-set-key (kbd "C-c u") 'swiper-all)
+    ;;   )
   #+END_SRC
 
 ** Open the explorer
@@ -323,21 +325,25 @@
     scenario.
 
     #+BEGIN_SRC emacs-lisp :tangle no
-  ;; define function to shutdown emacs server instance
-  (defun server-shutdown ()
-    "Save buffers, Quit, and Shutdown (kill) server"
-    (interactive)
-    (save-some-buffers)
-    (shell-command "git --work-tree ~/org/ --git-dir ~/org/.git commit -a -m 'autocommit'")
-    (shell-command "git --work-tree ~/org/ --git-dir ~/org/.git push origin")
-    (if (equal "work" (getenv "SYSENV"))
-        (progn
-          (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git commit -a -m 'autocommit'")
-          (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git push origin")
-          ))
-    (setq twittering-cert-file nil)
-    (kill-emacs)
-    )
+      ;; define function to shutdown emacs server instance
+      (defun server-shutdown ()
+        "Save buffers, Quit, and Shutdown (kill) server"
+        (interactive)
+        (save-some-buffers)
+        ;; not adapted yet:
+        ;; (if (equal "work" (getenv "SYSENV"))
+        ;;     (progn
+        ;;       (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git commit -a -m 'autocommit'")
+        ;;       (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git push origin")
+        ;;       ))
+        (if (equal "home" (getenv "SYSENV"))
+            (progn
+              (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\gtd\\"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push origin"))
+              ))
+        (kill-emacs)
+        )
     #+END_SRC
 
 **** TODO Make sure that i actually have a server running and adapt this config
@@ -345,85 +351,86 @@
 
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
-(use-package org
-  :ensure t
-  :config
-  (setq org-export-coding-system 'utf-8-unix)
-  (setq org-export-with-clocks t)
-  (setq org-export-preserve-breaks t)
-  (setq org-agenda-start-with-clockreport-mode t)
-  ;; Org Babel
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(
-	 (lisp . t)
-	 (sh . t)
-	 (perl . t)
-	 (dot . t) ;; activates graphviz dot support
-	 ))
-  ;; Remove ^M Errors in Babel
-  (add-to-list 'process-coding-system-alist
-               '("bash" . (undecided-unix)))
-  (add-hook 'comint-output-filter-functions
-            'comint-strip-ctrl-m)
-  ;; Send stderror into the result drawer instead of an extra window
-  (setq org-babel-default-header-args:sh
-        '((:prologue . "exec 2>&1") (:epilogue . ":"))
-        )
-  ;; Custom Keybindings
-  (fset 'fbr/convert-listitem-into-checklistitem
-        "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
-  (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
-  (defun fbr/org-agenda-reduce-to-current-file()
-      (interactive)
-      (setq org-agenda-files (list (buffer-file-name)))
-      )
-  ;; Custom commands
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-ca" 'org-agenda)
-  (define-key global-map "\C-cc" 'org-capture)
-  (define-key global-map "\M-n" 'org-metadown)
-  (define-key global-map "\M-p" 'org-metaup)
-  (define-key org-mode-map "\C-m" 'nil)
-  (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
-  (global-set-key (kbd "<f9>") 'org-todo)
-  ;; Load syntax-highlighting for source-blocks
-  (setq org-src-fontify-natively t)
-  ;; log the time when a task is "done"
-  (setq org-log-done t)
-  ;; put "CLOCK" times into a drawer
-  (setq org-log-into-drawer t)
-  ;; makes sure LOGBOOK and PROPERTIES go first
-  (setq org-log-state-notes-insert-after-drawers t)
-  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
-  (setq org-agenda-archives-mode t)
-  ;; Visual modifications
-  ;; Strike through DONE headlines
-  (setq org-fontify-done-headline t)
-  ;; autofill hooks for automatic indentation
-  (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
-  (add-hook 'org-mode-hook 'turn-on-auto-fill)
-  (setq auto-hscroll-mode nil)
-  (setq org-hide-emphasis-markers t)
-  (setq org-tags-column -70)
-  ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
-  ;; change from ... to the arrow
-  (setq org-ellipsis "⤵")
-  ;; Circulate Bullets instead of asteriks
-  (font-lock-add-keywords 'org-mode
-                          '(("^ +\\([-*]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  ;; what does this even do?
-  (setq org-export-with-sub-superscripts nil)
-  ;; remove the "validate"-link from the org-html export
-  (setq org-export-html-validation-link nil)
-  (setq org-tags-match-list-sublevels 'indented)
-  ;; A package to visualize repeated tasks in the org agenda
-  (require 'org-habit)
-  (add-to-list 'org-modules 'org-habit)
-  (setq org-habit-show-habits-only-for-today nil)
-  )
+     (use-package org
+       :ensure t
+       :config
+       (setq org-export-coding-system 'utf-8-unix)
+       (setq org-export-with-clocks t)
+       (setq org-export-preserve-breaks t)
+       (setq org-agenda-start-with-clockreport-mode t)
+       ;; Org Babel
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '(
+          (lisp . t)
+          (sh . t)
+          (shell . t)
+          (perl . t)
+          (dot . t) ;; activates graphviz dot support
+          ))
+       ;; Remove ^M Errors in Babel
+       (add-to-list 'process-coding-system-alist
+                    '("bash" . (undecided-unix)))
+       (add-hook 'comint-output-filter-functions
+                 'comint-strip-ctrl-m)
+       ;; Send stderror into the result drawer instead of an extra window
+       (setq org-babel-default-header-args:sh
+             '((:prologue . "exec 2>&1") (:epilogue . ":"))
+             )
+       ;; Custom Keybindings
+       (fset 'fbr/convert-listitem-into-checklistitem
+             "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
+       (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
+       (defun fbr/org-agenda-reduce-to-current-file()
+         (interactive)
+         (setq org-agenda-files (list (buffer-file-name)))
+         )
+       ;; Custom commands
+       (define-key global-map "\C-cl" 'org-store-link)
+       (define-key global-map "\C-ca" 'org-agenda)
+       (define-key global-map "\C-cc" 'org-capture)
+       (define-key global-map "\M-n" 'org-metadown)
+       (define-key global-map "\M-p" 'org-metaup)
+       (define-key org-mode-map "\C-m" 'nil)
+       (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
+       (global-set-key (kbd "<f9>") 'org-todo)
+       ;; Load syntax-highlighting for source-blocks
+       (setq org-src-fontify-natively t)
+       ;; log the time when a task is "done"
+       (setq org-log-done t)
+       ;; put "CLOCK" times into a drawer
+       (setq org-log-into-drawer t)
+       ;; makes sure LOGBOOK and PROPERTIES go first
+       (setq org-log-state-notes-insert-after-drawers t)
+       (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+       ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
+       (setq org-agenda-archives-mode t)
+       ;; Visual modifications
+       ;; Strike through DONE headlines
+       (setq org-fontify-done-headline t)
+       ;; autofill hooks for automatic indentation
+       (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
+       (add-hook 'org-mode-hook 'turn-on-auto-fill)
+       (setq auto-hscroll-mode nil)
+       (setq org-hide-emphasis-markers t)
+       (setq org-tags-column -70)
+       ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
+       ;; change from ... to the arrow
+       (setq org-ellipsis "⤵")
+       ;; Circulate Bullets instead of asteriks
+       (font-lock-add-keywords 'org-mode
+                               '(("^ +\\([-*]\\) "
+                                  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+       ;; what does this even do?
+       (setq org-export-with-sub-superscripts nil)
+       ;; remove the "validate"-link from the org-html export
+       (setq org-export-html-validation-link nil)
+       (setq org-tags-match-list-sublevels 'indented)
+       ;; A package to visualize repeated tasks in the org agenda
+       (require 'org-habit)
+       (add-to-list 'org-modules 'org-habit)
+       (setq org-habit-show-habits-only-for-today nil)
+       )
    #+END_SRC
 
    The faulty code that allows me to have those super-cool appointment-reminders.
