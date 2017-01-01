@@ -340,7 +340,7 @@
             (progn
               (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\gtd\\"))
               (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
-              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push origin"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
               ))
         (kill-emacs)
         )
