@@ -156,13 +156,15 @@
   a quick overview over *all* of the search-results.
   This package however frequently breaks on windows, such that suddenly i can only scroll down in
   the result-list. Reinstalling the package fixes that, however that is a huge inconvenience.
+  After reinstalling this package can break just by searching for "magit" in this file. That's it,
+  I'm suspending this package.
   #+BEGIN_SRC emacs-lisp
-(use-package swiper-helm
-  :ensure t
-  :config
-  (global-set-key (kbd "C-s") 'swiper-helm)
-  (global-set-key (kbd "C-c u") 'swiper-all)
-  )
+    ;; (use-package swiper-helm
+    ;;   :ensure t
+    ;;   :config
+    ;;   (global-set-key (kbd "C-s") 'swiper-helm)
+    ;;   (global-set-key (kbd "C-c u") 'swiper-all)
+    ;;   )
   #+END_SRC
 
 ** Open the explorer
@@ -323,21 +325,25 @@
     scenario.
 
     #+BEGIN_SRC emacs-lisp :tangle no
-  ;; define function to shutdown emacs server instance
-  (defun server-shutdown ()
-    "Save buffers, Quit, and Shutdown (kill) server"
-    (interactive)
-    (save-some-buffers)
-    (shell-command "git --work-tree ~/org/ --git-dir ~/org/.git commit -a -m 'autocommit'")
-    (shell-command "git --work-tree ~/org/ --git-dir ~/org/.git push origin")
-    (if (equal "work" (getenv "SYSENV"))
-        (progn
-          (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git commit -a -m 'autocommit'")
-          (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git push origin")
-          ))
-    (setq twittering-cert-file nil)
-    (kill-emacs)
-    )
+      ;; define function to shutdown emacs server instance
+      (defun server-shutdown ()
+        "Save buffers, Quit, and Shutdown (kill) server"
+        (interactive)
+        (save-some-buffers)
+        ;; not adapted yet:
+        ;; (if (equal "work" (getenv "SYSENV"))
+        ;;     (progn
+        ;;       (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git commit -a -m 'autocommit'")
+        ;;       (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git push origin")
+        ;;       ))
+        (if (equal "home" (getenv "SYSENV"))
+            (progn
+              (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\gtd\\"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
+              ))
+        (kill-emacs)
+        )
     #+END_SRC
 
 **** TODO Make sure that i actually have a server running and adapt this config
