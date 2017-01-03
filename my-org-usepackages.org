@@ -351,7 +351,9 @@
   (setq org-export-coding-system 'utf-8-unix)
   (setq org-export-with-clocks t)
   (setq org-export-preserve-breaks t)
-  (setq org-agenda-start-with-clockreport-mode t)
+  ;; enable or disable clocktable in org-agenda by default
+  ;; (has high impact on org-agenda loading time)
+  (setq org-agenda-start-with-clockreport-mode nil)
   ;; Org Babel
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -739,24 +741,24 @@
    #+END_SRC
 ** Other unused themes
    #+BEGIN_SRC emacs-lisp
-;; (use-package dark-mint-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'dark-mint t)
-;;   )
+     ;; (use-package dark-mint-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'dark-mint t)
+     ;;   )
 
-;; (use-package twilight-bright-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'twilight-bright t)
-;;   )
+     (use-package twilight-bright-theme
+       :ensure t
+       :config
+       (load-theme 'twilight-bright t)
+       )
 
-;; temporary disabled
-;; (use-package oceanic-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'oceanic t)
-;;   )
+     ;; temporary disabled
+     ;; (use-package oceanic-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'oceanic t)
+     ;;   )
    #+END_SRC
 
 ** Org-mode Size settings
@@ -777,17 +779,17 @@
    theme. "Final theme".. *smirk*
 
    #+BEGIN_SRC emacs-lisp
-(use-package purple-haze-theme
-  :ensure t
-  :config
-  (load-theme 'purple-haze t)
-  )
+     ;; (use-package purple-haze-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'purple-haze t)
+     ;;   )
 
-(use-package helm-themes
-  :ensure t
-  :config
-  ;; (helm-themes--load-theme "purple-haze")
-  )
+     ;; (use-package helm-themes
+     ;;   :ensure t
+     ;;   :config
+     ;;   ;; (helm-themes--load-theme "purple-haze")
+     ;;   )
    #+END_SRC
 * Modeline
   I never learned how to successfully edit the modeline yet, i just keep copying configs from nice
