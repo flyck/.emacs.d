@@ -372,25 +372,33 @@
      #+END_SRC
 
 **** Org-agenda-files
-     Including my *.org_archive-file on most systems definately slows
-     generating the agenda down, but this way I can archive tasks
-     whenever I want, while always maintaining a consistent look-back
-     at my previous work (without including the archive-file archived
-     tasks disappear from the agenda).
      #+BEGIN_SRC emacs-lisp :tangle yes
        (if (equal "home" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-    				      ))
-    	      ;; org-capture setup
-    	      (setq org-capture-templates
-    		    '(("a" "Add a task to tasks.org." entry
-    		       (file "tasks.org")
-    		       "* TODO %? SCHEDULED: %t")))
-    	      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
-                  )
+              			    ))
+              ;; org-capture setup
+              (setq org-capture-templates
+              	  '(("a" "Add a task to tasks.org." entry
+              	     (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              	     "* TODO %? SCHEDULED: %t")))
+              (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              (setq org-capture-templates
+                    '(("t" "todo" entry (file org-default-notes-file)
+                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file org-default-notes-file)
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      ;; I dont have NEXT implemented yet into my workflow / config
+                      ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                      ;;  "** NEXT %? \nDEADLINE: %t")
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+              )
          )
        (if (equal "laptop" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
@@ -398,27 +406,27 @@
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
-    	      ;; org-capture setup
-    	      (setq org-capture-templates
-    		    '(("a" "Add a task to tasks.org." entry
-    		       (file "tasks.org")
-    		       "* TODO %? SCHEDULED: %t")))
-    	      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+              ;; org-capture setup
+              (setq org-capture-templates
+              	  '(("a" "Add a task to tasks.org." entry
+              	     (file "tasks.org")
+              	     "* TODO %? SCHEDULED: %t")))
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
                   )
          )
        (if (equal "work" (getenv "SYSENV"))
            (progn (setq org-agenda-files
-    		    (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-    			  (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
-    			  (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
-    	      ;; org-capture setup
-    	      (setq org-capture-templates
-    		    '(("a" "My TODO task format." entry
-    		       (file "projects.org")
-    		       "* TODO %?
+              	  (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+              	        (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+              	        (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+              ;; org-capture setup
+              (setq org-capture-templates
+              	  '(("a" "My TODO task format." entry
+              	     (file "projects.org")
+              	     "* TODO %?
            SCHEDULED: %t")))
-    	      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
-    	      )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+              )
          )
      #+END_SRC
 *** Unsorted stuff (system-specific)
