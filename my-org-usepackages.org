@@ -300,19 +300,22 @@
    passwords, on other systems i get an ugly error-message everytime i "git push". This is open
    for improvement but not a big issue.
    #+BEGIN_SRC emacs-lisp
-;; The Windows User-Home needs to be in some kind of path such that magit finds the .gitconfig
-(use-package magit
-  :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
-      ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
-      ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
-      )
-  :ensure t
-  :config
-  (add-to-list 'exec-path "C:/Program Files/Git/bin")
-  (define-key global-map (kbd "C-c m") 'magit-status)
-  (setenv "GIT_ASKPASS" "git-gui--askpass")
-  :defer 5
-  )
+     ;; set the key-binding unconditionally for times when magit is not yet loaded yet thanks to the
+     ;; usepackage-defer option
+     (define-key global-map (kbd "C-c m") 'magit-status)
+     ;; Warning: The Windows User-Home needs to be in some kind of path such that magit finds the
+     ;; .gitconfig
+     (use-package magit
+       :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
+                 ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
+                 ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
+                 )
+       :ensure t
+       :config
+       (add-to-list 'exec-path "C:/Program Files/Git/bin")
+       (setenv "GIT_ASKPASS" "git-gui--askpass")
+       :defer 5
+       )
    #+END_SRC
 
 *** TODO Warn if username and useremail are not set
@@ -437,6 +440,8 @@
        (interactive)
        (setq org-agenda-files (list (buffer-file-name)))
        )
+     ;; start the agenda in a full window
+     (setq org-agenda-window-setup 'current-window)
    #+END_SRC
 
    The faulty code that allows me to have those super-cool appointment-reminders.
@@ -476,29 +481,64 @@
     Isolated the code..
 
 *** Latex-settings
+    Including this into the usepackage-definition of org doesnt seem to work.
+    This is some sample-template called bjmarticle i copied from the webs.
     #+BEGIN_SRC emacs-lisp
-   ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-   (require 'ox-latex)
-   (add-to-list 'org-latex-classes
-                '("bjmarticle"
-                  "\\documentclass{article}
-                   \\usepackage[utf8]{inputenc}
-                   \\usepackage[T1]{fontenc}
-                   \\usepackage{graphicx}
-                   \\usepackage{longtable}
-                   \\usepackage{hyperref}
-                   \\usepackage{natbib}
-                   \\usepackage{amssymb}
-                   \\usepackage{amsmath}
-                   \\usepackage{geometry}
-                   \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
-                  ("\\section{%s}" . "\\section*{%s}")
-                  ("\\subsection{%s}" . "\\subsection*{%s}")
-                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                )
+      (require 'ox-latex)
+      (add-to-list 'org-latex-classes
+                   '("bjmarticle"
+                     "\\documentclass{article}
+                      \\usepackage[utf8]{inputenc}
+                      \\usepackage[T1]{fontenc}
+                      \\usepackage{graphicx}
+                      \\usepackage{longtable}
+                      \\usepackage{hyperref}
+                      \\usepackage{natbib}
+                      \\usepackage{amssymb}
+                      \\usepackage{amsmath}
+                      \\usepackage{geometry}
+                      \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                   )
     #+END_SRC
+
+    A latex-template that is actually useful and that I will use for my bachelor-thesis.
+    #+BEGIN_SRC emacs-lisp
+      ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+      (require 'ox-latex)
+      (add-to-list 'org-latex-classes
+                   '("stsreport"
+                     "\\documentclass[
+                                    %%%%% Styles and Sizes
+                                          %10pt,
+                                          %11pt,
+                                          %12pt,
+                                          fancyheadings, % headings with seplines and logo
+                                          %
+                                          %%%%% Printing, Color and Binding
+                                          %a4paper,
+                                          %a5paper,
+                                          %twoside, % single sided printout
+                                          %oneside, % duplex printout (default)
+                                          %% binding correction is used to compensate for the paper lost during binding
+                                          %% of the document
+                                          %BCOR=0.7cm, % binding correction
+                                          %nobcorignoretitle, % do not ignore BCOR for title page
+                                          %% the following two options only concern the graphics included by the document
+                                          %% class
+                                          %grayscaletitle, % keep the title in grayscale
+                                          %grayscalebody, % keep the rest of the document in grayscale
+                                          %
+                                          %%%%% expert options: your mileage may vary
+                                          %baseclass=..., % special option to use a different document baseclass
+                                          ]{stsreprt}")
+                   )
+    #+END_SRC
+
 *** Org-mode ox-latex extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
