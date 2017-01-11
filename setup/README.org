@@ -35,6 +35,8 @@
   - http://vgoulet.act.ulaval.ca/en/emacs/windows/
     - breaks html export for some font lock reason
     - good image support
+  - http://emacs-bootstrap.com/
+    - haven't tried this yet, seems really useful for getting an IDE-like setup with emacs easily
 
 * Update on linux
   Used this approach on my laptop. Taken from askubuntu.com
