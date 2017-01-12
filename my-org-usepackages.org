@@ -790,6 +790,18 @@
 ;;   (set-background-color "grey12")
 ;;   )
    #+END_SRC
+** zenburn theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package zenburn-theme
+       :ensure t
+       :config
+       (load-theme 'zenburn t)
+     )
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
 ** Other unused themes
    #+BEGIN_SRC emacs-lisp
      ;; (use-package dark-mint-theme
@@ -798,11 +810,11 @@
      ;;   (load-theme 'dark-mint t)
      ;;   )
 
-     (use-package twilight-bright-theme
-       :ensure t
-       :config
-       (load-theme 'twilight-bright t)
-       )
+     ;; (use-package twilight-bright-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'twilight-bright t)
+     ;;   )
 
      ;; temporary disabled
      ;; (use-package oceanic-theme
