@@ -366,7 +366,6 @@
         '(
           (lisp . t)
           (sh . t)
-          (shell . t)
           (perl . t)
           (dot . t) ;; activates graphviz dot support
           ))
@@ -444,34 +443,35 @@
      (setq org-agenda-window-setup 'current-window)
    #+END_SRC
 
-   The faulty code that allows me to have those super-cool appointment-reminders.
-   #+BEGIN_SRC emacs-lisp :tangle no
-       ;; Make appt aware of appointments from the agenda
-     ;;  (defun fbr/org-agenda-to-appt ()
-     ;;    "Activate appointments found in `org-agenda-files'."
-     ;;    (interactive)
-     ;;    (require 'org)
-     ;;    (let* ((today (org-date-to-gregorian
-     ;;                   (time-to-days (current-time))))
-     ;;           (files org-agenda-files) entries file)
-     ;;      (while (setq file (pop files))
-     ;;        (setq entries (append entries (org-agenda-get-day-entries
-     ;;                                       file today :timestamp))))
-     ;;      (setq entries (delq nil entries))
-     ;;      (mapc (lambda(x)
-     ;;              (let* ((event (org-trim (get-text-property 1 'txt x)))
-     ;;                     (time-of-day (get-text-property 1 'time-of-day x)) tod)
-     ;;                (when time-of-day
-     ;;                  (setq tod (number-to-string time-of-day)
-     ;;                        tod (when (string-match
-     ;;                                   "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
-     ;;                              (concat (match-string 1 tod) ":"
-     ;;                                      (match-string 2 tod))))
-     ;;                  (if tod (appt-add tod event))))) entries)))
-     ;;  (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
-     ;;    "Clear the appt-time-msg-list."
-     ;;    (setq appt-time-msg-list nil))
-     ;;  (org-agenda-to-appt)
+   This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
+   #+BEGIN_SRC emacs-lisp
+      ;; Make appt aware of appointments from the agenda
+      (defun fbr/org-agenda-to-appt ()
+        "Activate appointments found in `org-agenda-files'."
+        (interactive)
+        (require 'org)
+        (let* ((today (org-date-to-gregorian
+                       (time-to-days (current-time))))
+               (files org-agenda-files) entries file)
+          (while (setq file (pop files))
+            (setq entries (append entries (org-agenda-get-day-entries
+                                           file today :timestamp))))
+          (setq entries (delq nil entries))
+          (mapc (lambda(x)
+                  (let* ((event (org-trim (get-text-property 1 'txt x)))
+                         (time-of-day (get-text-property 1 'time-of-day x)) tod)
+                    (when time-of-day
+                      (setq tod (number-to-string time-of-day)
+                            tod (when (string-match
+                                       "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
+                                  (concat (match-string 1 tod) ":"
+                                          (match-string 2 tod))))
+                      (if tod (appt-add tod event))))) entries)))
+      (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
+        "Clear the appt-time-msg-list."
+        (defvar appt-time-msg-list)
+        (setq appt-time-msg-list nil))
+      (org-agenda-to-appt)
    #+END_SRC
 
 *** TODO Fix the error that comes on startup
@@ -574,13 +574,11 @@
 
    Im pretty sure this makes my "fbr/tea-timer" possible which is defined somewhere else. This way
    i can basically remind myself to not spend too much time on a task by setting a timer
-   before-hand. This can also be done with "C-c C-x C-e" after clocking into a task. This way an
+   before-hand. This can also be done similarly with "C-c C-x C-e" after clocking into a task. This way an
    expected time-consumption can be set and the timer gets red once we exceed this time, which is
    not as convenient as having an extra alert-window in my oppinion.
 
-   For windows i have found a small programm that can simply display notifications =notifu.exe=
-   which is included in this repository, but i havent found a way yet of implementing this. The
-   following code only works for my linux-laptop
+   The following code only works for my linux-laptop.
    #+BEGIN_SRC emacs-lisp
 (use-package org-alert
   :ensure t
@@ -702,7 +700,7 @@
 
    your =~/.emacs_secrets.el.gpg= might look like:
 
-   #+BEGIN_SRC emacs-lisp :tangle never
+   #+BEGIN_SRC emacs-lisp :tangle no
    (setq my-sql-servers-alist
          '("serverA" "serverB"))
 
@@ -759,7 +757,7 @@
 
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 ;; (use-package seti-theme
 ;;   :ensure t
 ;;   :config
