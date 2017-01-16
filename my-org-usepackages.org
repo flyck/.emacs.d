@@ -788,6 +788,15 @@
 ;;   (set-background-color "grey12")
 ;;   )
    #+END_SRC
+** Eziam theme
+   Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
+   It isn't on melpa yet.
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+   (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+   (load-theme 'eziam-light t)
+   #+END_SRC
+
 ** zenburn theme
    #+BEGIN_SRC emacs-lisp
      (use-package zenburn-theme
