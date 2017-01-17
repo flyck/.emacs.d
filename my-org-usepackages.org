@@ -748,7 +748,7 @@
   )
   #+END_SRC
 * Themes
-  This section should be add the end, since some of the modes come with their own color-settings
+  This section should be at the end, since some of the modes come with their own color-settings
   and these are supposed to be overwritten by the theme-config, the theme-config should have the
   final say in coloring, so I can appreciate the themes in all their beauty.
 
@@ -788,7 +788,12 @@
 ;;   (set-background-color "grey12")
 ;;   )
    #+END_SRC
+
 ** Eziam theme
+   This is a new-comer, the grayscaling really is a new take on themes for me and the
+   source-blocks look much nicer. However headlines in org-mode are really chunky and I'm not used
+   to that yet.
+
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
    #+BEGIN_SRC emacs-lisp
@@ -797,13 +802,19 @@
    (load-theme 'eziam-light t)
    #+END_SRC
 
+   For installation execute the following:
+   #+BEGIN_SRC sh :dir ~/.emacs.d/elpa/
+   git clone https://github.com/thblt/eziam-theme-emacs.git
+   #+END_SRC
+
 ** zenburn theme
+   A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp
-     (use-package zenburn-theme
-       :ensure t
-       :config
-       (load-theme 'zenburn t)
-     )
+     ;; (use-package zenburn-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'zenburn t)
+     ;; )
    #+END_SRC
 
    #+RESULTS:
