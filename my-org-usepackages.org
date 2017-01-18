@@ -10,6 +10,7 @@
   #+BEGIN_SRC emacs-lisp
     (require 'use-package)
     ;; (setq debug-on-error t) (turn on if needed)
+    (setq package-check-signature nil) ;; disables public key errors that i dont feel like investigating
 
     (setq cl-selection-background "ivory1")
     (setq cl-selection-foreground "gray5")
@@ -474,13 +475,7 @@
       (org-agenda-to-appt)
    #+END_SRC
 
-*** TODO Fix the error that comes on startup
-    The "appt-add" function i use for the appointment-mode causes this error, i copied the code
-    from somewhere.
-
-    Isolated the code..
-
-*** Latex-settings
+*** Latex-settings                                          :research:
     Including this into the usepackage-definition of org doesnt seem to work.
     This is some sample-template called bjmarticle i copied from the webs.
     #+BEGIN_SRC emacs-lisp
@@ -539,7 +534,19 @@
                    )
     #+END_SRC
 
-*** Org-mode ox-latex extension
+*** Orgmode bibliography                                    :research:
+    Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-ref
+        :ensure t
+        :config
+        (require 'org-ref)
+        (require 'org-ref-pdf) ;; enable pdf drag n' drop
+        )
+    #+END_SRC
+
+*** Org-mode org-clocl-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
    #+BEGIN_SRC emacs-lisp
@@ -547,6 +554,7 @@
   :ensure t
   )
    #+END_SRC
+
 *** Org-mode openwith extension
     Open pdfs with an external pdf-viewer to get a good resolution (Only use this for my laptop,
     needs to be fixed for my windows PC if i ever use it for them).
