@@ -805,24 +805,28 @@
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-   (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-   (load-theme 'eziam-light t)
+     ;; (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+     ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+     ;; (load-theme 'eziam-light t)
    #+END_SRC
 
+   #+RESULTS:
+   : t
+
    For installation execute the following:
-   #+BEGIN_SRC sh :dir ~/.emacs.d/elpa/
+   #+BEGIN_SRC sh :dir ~/.emacs.d/elpa/ :results silent
    git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
+
 
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp
-     ;; (use-package zenburn-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'zenburn t)
-     ;; )
+     (use-package zenburn-theme
+       :ensure t
+       :config
+       (load-theme 'zenburn t)
+     )
    #+END_SRC
 
    #+RESULTS:
