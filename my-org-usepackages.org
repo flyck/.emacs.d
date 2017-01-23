@@ -852,6 +852,12 @@
      ;;   :config
      ;;   (load-theme 'oceanic t)
      ;;   )
+
+     (use-package avk-emacs-themes
+       :ensure t
+       :config
+       (load-theme 'avk-darkblue-white t)
+       )
    #+END_SRC
 
 ** Org-mode Size settings
