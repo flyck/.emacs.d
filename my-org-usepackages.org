@@ -805,14 +805,14 @@
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-   (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-   (load-theme 'eziam-light t)
+     ;; (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+     ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+     ;; (load-theme 'eziam-light t)
    #+END_SRC
 
    For installation execute the following:
    #+BEGIN_SRC sh :dir ~/.emacs.d/elpa/
-   git clone https://github.com/thblt/eziam-theme-emacs.git
+   #git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
 
 ** zenburn theme
@@ -848,6 +848,12 @@
      ;;   :config
      ;;   (load-theme 'oceanic t)
      ;;   )
+
+     (use-package avk-emacs-themes
+       :ensure t
+       :config
+       (load-theme 'avk-darkblue-white t)
+       )
    #+END_SRC
 
 ** Org-mode Size settings
