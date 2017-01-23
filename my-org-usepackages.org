@@ -822,11 +822,11 @@
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp
-     (use-package zenburn-theme
-       :ensure t
-       :config
-       (load-theme 'zenburn t)
-     )
+     ;; (use-package zenburn-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'zenburn t)
+     ;; )
    #+END_SRC
 
    #+RESULTS:
@@ -853,10 +853,16 @@
      ;;   (load-theme 'oceanic t)
      ;;   )
 
-     (use-package avk-emacs-themes
+     ;; (use-package avk-emacs-themes
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'avk-darkblue-white t)
+     ;;   )
+
+     (use-package monokai-theme
        :ensure t
        :config
-       (load-theme 'avk-darkblue-white t)
+       (load-theme 'monokai t)
        )
    #+END_SRC
 
