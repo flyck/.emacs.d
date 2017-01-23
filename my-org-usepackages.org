@@ -422,6 +422,28 @@
        ;; remove the "validate"-link from the org-html export
        (setq org-export-html-validation-link nil)
        (setq org-tags-match-list-sublevels 'indented)
+       ;; do my org-ref settings need to be in here?
+       ;; (setq org-ref-completion-library 'org-ref-ivy-cite)
+       ;; (require 'org-ref)
+       ;; (require 'org-ref-pdf) ;; enable pdf drag n' drop
+       ;; (require 'doi-utils)
+       ;; (require 'org-ref-latex)
+       ;; (require 'org-ref-bibtex)
+       ;; (require 'org-ref-url-utils)
+
+       ;; ;; see org-ref for use of these variables
+       ;; (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
+       ;;       org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
+       ;;       org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
+       ;;       ;; org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
+       ;;       )
+       ;; (setq org-latex-pdf-process
+       ;;       '("pdflatex -interaction nonstopmode -output-directory %o %f"
+       ;;         "bibtex %b"
+       ;;         "pdflatex -interaction nonstopmode -output-directory %o %f"
+       ;;         "pdflatex -interaction nonstopmode -output-directory %o %f")
+       ;;       )
+       ;; (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
        )
    #+END_SRC
 
@@ -541,9 +563,33 @@
       (use-package org-ref
         :ensure t
         :config
+        (setq org-ref-completion-library 'org-ref-helm-cite)
         (require 'org-ref)
         (require 'org-ref-pdf) ;; enable pdf drag n' drop
+        (require 'doi-utils)
+        (require 'org-ref-latex)
+        (require 'org-ref-bibtex)
+        (require 'org-ref-url-utils)
+
+        ;; see org-ref for use of these variables
+        (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
+              org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
+              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
+              ;; org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
+              )
+        (setq org-latex-pdf-process
+              '("pdflatex -interaction nonstopmode -output-directory %o %f"
+                "bibtex %b"
+                "pdflatex -interaction nonstopmode -output-directory %o %f"
+                "pdflatex -interaction nonstopmode -output-directory %o %f")
+              )
+        (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
         )
+
+      ;; apparently this doesnt exist
+      ;; (use-package ox-bibtex
+      ;;   :ensure t
+      ;; )
     #+END_SRC
 
 *** Org-mode org-clocl-csv extension
@@ -805,9 +851,9 @@
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-   (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-   (load-theme 'eziam-light t)
+     ;; (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+     ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
+     ;; (load-theme 'eziam-light t)
    #+END_SRC
 
    For installation execute the following:
