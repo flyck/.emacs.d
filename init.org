@@ -310,7 +310,8 @@
       ;; Windows-specific settings
       (if (eq system-type 'windows-nt)
           ;; Set the font
-          (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
+          ;; (set-default-font "-outline-Consolas-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
+          (set-default-font "-outline-Hack-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1")
           )
     #+END_SRC
 *** Eshell
