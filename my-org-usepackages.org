@@ -904,11 +904,28 @@
      ;;   :config
      ;;   (load-theme 'avk-darkblue-white t)
      ;;   )
+   #+END_SRC
 
+** Monokai +gnome madness
+   Installed packages ontop of gnome:
+   - Inspired by: https://www.reddit.com/r/unixporn/comments/5pk5p1/gala_with_emacs_made_pretty/
+   - https://github.com/optimisme/gnome-shell-simple-dock
+     - installable using a simple click in the browser
+   - https://github.com/andreisergiu98/arc-flatabulous-theme
+     - has to be installed manually
+     - commands that helped me on Ubuntu 16.04 LTS that uses lightdm by default:
+       #+BEGIN_SRC sh :tangle no
+       apt-get install ubuntu-gnome-desktop gnome-shell gdm
+       dpkg-reconfigure gdm/lightdm
+       #+END_SRC
+   - https://github.com/horst3180/arc-icon-theme
+
+   #+BEGIN_SRC emacs-lisp
      (use-package monokai-theme
        :ensure t
        :config
        (load-theme 'monokai t)
+       (set-background-color "#2f343f")
        )
    #+END_SRC
 
