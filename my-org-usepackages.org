@@ -592,6 +592,34 @@
       ;; )
     #+END_SRC
 
+*** Writeroom
+    #+BEGIN_SRC emacs-lisp
+    (use-package writeroom-mode
+    :ensure t
+    :config
+    (setq writeroom-width 100)
+    )
+    #+END_SRC
+*** More latex settings - cdlatex
+    From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
+    "speed-up insertion of environments and math templates"
+
+    From cdlatex.el:
+    "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
+    #+BEGIN_SRC emacs-lisp
+      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
+      ;; (use-package auctex
+      ;; :ensure t
+      ;; )
+
+      ;; (use-package cdlatex
+      ;; :ensure t
+      ;; :config
+      ;; (require 'auctex)
+      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+      ;; )
+
+    #+END_SRC
 *** Org-mode org-clocl-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
@@ -600,7 +628,6 @@
   :ensure t
   )
    #+END_SRC
-
 *** Org-mode openwith extension
     Open pdfs with an external pdf-viewer to get a good resolution (Only use this for my laptop,
     needs to be fixed for my windows PC if i ever use it for them).
