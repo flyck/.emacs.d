@@ -346,6 +346,12 @@
               (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
               (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
               ))
+        (if (equal "work" (getenv "SYSENV"))
+            (progn
+              (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
+              ))
         (kill-emacs)
         )
     #+END_SRC

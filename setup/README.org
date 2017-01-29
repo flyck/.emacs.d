@@ -38,6 +38,26 @@
   - http://emacs-bootstrap.com/
     - haven't tried this yet, seems really useful for getting an IDE-like setup with emacs easily
 
+* Installation tips on linux
+  The [[file:compile_emacs.sh]] usually does fine until it calls ~./configure~. Here missing libraries
+  are checked which should be installed.
+
+** Centos
+   Installing the typically missing packages one by one:n
+   #+BEGIN_SRC sh
+   # if you get the error: “configure: error: You seem to be running X, but no X development libraries”
+   yum install gtk2-devel
+   # for missing image libraries:
+   yum install libXpm-devel.i386 giflib-devel.i386 libtiff-devel.i386 libjpeg-devel.i386
+   #+END_SRC
+
+   The attempt to automate that:
+   #+BEGIN_SRC sh
+   yum install yum-utils
+   yum-builddep emacs
+   #+END_SRC
+
+
 * Update on linux
   Used this approach on my laptop. Taken from askubuntu.com
   This uses this ppa: https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
