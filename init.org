@@ -425,17 +425,14 @@
                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
                   ;; org-capture setup
-                  (setq org-default-notes-file "projects.org")
+                  (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
                   (setq org-capture-templates
-                        '(("t" "todo" entry (file org-default-notes-file)
+                        '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
                            "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                          ("m" "Meeting" entry (file org-default-notes-file)
+                          ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
                            "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                          ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
+                          ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
                            "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                          ;; I dont have NEXT implemented yet into my workflow / config
-                          ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                          ;;  "** NEXT %? \nDEADLINE: %t")
                           )
                         )
                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))

@@ -1,4 +1,4 @@
-#+Title:   My use-package configuration in org-mode
+e#+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 #+STARTUP: showall
 
@@ -328,7 +328,7 @@
     i can go back into the file-history to bring it back. The emacs backup-files dont help in this
     scenario.
 
-    #+BEGIN_SRC emacs-lisp :tangle no
+    #+BEGIN_SRC emacs-lisp
       ;; define function to shutdown emacs server instance
       (defun server-shutdown ()
         "Save buffers, Quit, and Shutdown (kill) server"
@@ -343,6 +343,12 @@
         (if (equal "home" (getenv "SYSENV"))
             (progn
               (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\gtd\\"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
+              ))
+        (if (equal "work" (getenv "SYSENV"))
+            (progn
+              (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\"))
               (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
               (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
               ))
@@ -592,23 +598,34 @@
       ;; )
     #+END_SRC
 
-*** Org-gcal
+*** Writeroom
     #+BEGIN_SRC emacs-lisp
-    ;; dont commit this to public!
-    (use-package org-gcal
-        :if (equal "home" (getenv "SYSENV"))
-        :config
-        (require 'org-gcal)
-        (setq org-gcal-client-id "598031872633-tv73udova1emgokmceet2bktcu17e0ab.apps.googleusercontent.com"
-              org-gcal-client-secret "64bWsqdFylIJ5BDqQuBQavmf "
-              org-gcal-file-alist '(("felix.brilej@googlemail.com" .  "C:/Users/Scat666/Dropbox/org/gtd/gcal.org")
-                                    ))
-        )
-
-    ;;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync)))
-    ;;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync)))
+    (use-package writeroom-mode
+    :ensure t
+    :config
+    (setq writeroom-width 100)
+    )
     #+END_SRC
+*** More latex settings - cdlatex
+    From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
+    "speed-up insertion of environments and math templates"
 
+    From cdlatex.el:
+    "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
+    #+BEGIN_SRC emacs-lisp
+      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
+      ;; (use-package auctex
+      ;; :ensure t
+      ;; )
+
+      ;; (use-package cdlatex
+      ;; :ensure t
+      ;; :config
+      ;; (require 'auctex)
+      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+      ;; )
+
+    #+END_SRC
 *** Org-mode org-clocl-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
@@ -617,7 +634,6 @@
   :ensure t
   )
    #+END_SRC
-
 *** Org-mode openwith extension
     Open pdfs with an external pdf-viewer to get a good resolution (Only use this for my laptop,
     needs to be fixed for my windows PC if i ever use it for them).
@@ -921,11 +937,28 @@
      ;;   :config
      ;;   (load-theme 'avk-darkblue-white t)
      ;;   )
+   #+END_SRC
 
+** Monokai +gnome madness
+   Installed packages ontop of gnome:
+   - Inspired by: https://www.reddit.com/r/unixporn/comments/5pk5p1/gala_with_emacs_made_pretty/
+   - https://github.com/optimisme/gnome-shell-simple-dock
+     - installable using a simple click in the browser
+   - https://github.com/andreisergiu98/arc-flatabulous-theme
+     - has to be installed manually
+     - commands that helped me on Ubuntu 16.04 LTS that uses lightdm by default:
+       #+BEGIN_SRC sh :tangle no
+       apt-get install ubuntu-gnome-desktop gnome-shell gdm
+       dpkg-reconfigure gdm/lightdm
+       #+END_SRC
+   - https://github.com/horst3180/arc-icon-theme
+
+   #+BEGIN_SRC emacs-lisp
      (use-package monokai-theme
        :ensure t
        :config
        (load-theme 'monokai t)
+       (set-background-color "#2f343f")
        )
    #+END_SRC
 
