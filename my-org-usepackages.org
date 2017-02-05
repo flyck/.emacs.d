@@ -467,7 +467,7 @@
    #+END_SRC
 
    This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
       ;; Make appt aware of appointments from the agenda
       (defun fbr/org-agenda-to-appt ()
         "Activate appointments found in `org-agenda-files'."
@@ -590,6 +590,23 @@
       ;; (use-package ox-bibtex
       ;;   :ensure t
       ;; )
+    #+END_SRC
+
+*** Org-gcal
+    #+BEGIN_SRC emacs-lisp
+    ;; dont commit this to public!
+    (use-package org-gcal
+        :if (equal "home" (getenv "SYSENV"))
+        :config
+        (require 'org-gcal)
+        (setq org-gcal-client-id "598031872633-tv73udova1emgokmceet2bktcu17e0ab.apps.googleusercontent.com"
+              org-gcal-client-secret "64bWsqdFylIJ5BDqQuBQavmf "
+              org-gcal-file-alist '(("felix.brilej@googlemail.com" .  "C:/Users/Scat666/Dropbox/org/gtd/gcal.org")
+                                    ))
+        )
+
+    ;;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync)))
+    ;;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync)))
     #+END_SRC
 
 *** Org-mode org-clocl-csv extension
