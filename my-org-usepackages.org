@@ -1,4 +1,4 @@
-#+Title:   My use-package configuration in org-mode
+e#+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 #+STARTUP: showall
 
@@ -473,7 +473,7 @@
    #+END_SRC
 
    This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
       ;; Make appt aware of appointments from the agenda
       (defun fbr/org-agenda-to-appt ()
         "Activate appointments found in `org-agenda-files'."

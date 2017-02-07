@@ -207,12 +207,10 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
 
     Customize the interface to be more slim
     #+BEGIN_SRC emacs-lisp :tangle yes
-(when window-system
-  (tooltip-mode -1)
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  )
+      (tooltip-mode 0)
+      (tool-bar-mode 0)
+      (menu-bar-mode 0)
+      (scroll-bar-mode 0)
     #+END_SRC
 
     Stop cursor from blinking
@@ -333,8 +331,14 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
       ;; Windows-specific settings
       (if (eq system-type 'windows-nt)
           ;; Set the font
-          (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")
+          (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1") ;; doesnt seem to work when using the daemon
+          (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
           )
+      ;; Try to work around the daemon
+      (if (equal (getenv "SYSENV") "home")
+          (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
+      )
+
     #+END_SRC
 *** Eshell
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -399,6 +403,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
        (if (equal "home" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
               			    ))
@@ -420,7 +425,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
                       ;;  "** NEXT %? \nDEADLINE: %t")
                       )
                     )
-              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
               )
          )
        (if (equal "laptop" (getenv "SYSENV"))
