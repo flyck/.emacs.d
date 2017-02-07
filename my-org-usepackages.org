@@ -598,6 +598,16 @@
       ;; )
     #+END_SRC
 
+*** Make presentations with org-reveal                      :research:
+    Downloaded this repo: https://github.com/hakimel/reveal.js.git
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-reveal
+      :ensure t
+      :config
+      (if (equal "laptop" (getenv "SYSENV"))
+          (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
+      )
+    #+END_SRC
 *** Writeroom
     #+BEGIN_SRC emacs-lisp
     (use-package writeroom-mode
