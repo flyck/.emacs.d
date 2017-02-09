@@ -38,3 +38,14 @@
    - Editing my configs or files from the Windows Default Editor doesn't work
    - My colleagues are not able to visit my config files since they dont care and only use the
      dos-coding system
+
+** Research enabled by this config
+   I'm writing my bachelor-thesis with this config.
+
+   Configuration that specifically enables me to do that is tagged with "research". On linux i had
+   to install packages ontop of simple configuratino inside emacs:
+   #+BEGIN_SRC sh
+   sudo apt-get install texlive #required for pdf rendering (and more?)
+   sudo apt-get install texlive-latex-extra #stop the pdf-export from failing due to missing package "wrapfig.sty"
+   sudo apt-get install r-base #enables the creation of graphs from emacs
+   #+END_SRC

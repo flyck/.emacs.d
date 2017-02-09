@@ -119,7 +119,7 @@
     Emacs Startup changes
     #+BEGIN_SRC emacs-lisp :tangle yes
     (setq inhibit-default-init t)
-    (setq inhibit-splash-screen t)
+    (setq inhibit-startup-screen t)
     (setq transient-mark-mode 1)
     #+END_SRC
 
@@ -183,7 +183,7 @@
     #+END_SRC
 
     Code to easily, incrementally adjust the transparency settings:
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
 (defun my--set-transparency (inc)
   "Increase or decrease the selected frame transparency"
   (let* ((alpha (frame-parameter (selected-frame) 'alpha))
@@ -308,36 +308,38 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
         (interactive
          (if w32-use-w32-font-dialog
              (let ((chosen-font (w32-select-font (selected-frame)
-    					     w32-list-proportional-fonts)))
-    	   (and chosen-font (list chosen-font)))
+            				     w32-list-proportional-fonts)))
+               (and chosen-font (list chosen-font)))
            (x-popup-menu
             last-nonmenu-event
             ;; Append list of fontsets currently defined.
             ;; Conditional on new-fontset so bootstrapping works on non-GUI compiles
             (if (fboundp 'new-fontset)
-            (append w32-fixed-font-alist (list (generate-fontset-menu)))))))
+                (append w32-fixed-font-alist (list (generate-fontset-menu)))))))
         (if fonts
             (let (font)
-    	  (while fonts
-    	    (condition-case nil
-    	        (progn
+              (while fonts
+                (condition-case nil
+                    (progn
                       (setq font (car fonts))
-    		  (set-default-font font)
+            	  (set-default-font font)
                       (setq fonts nil))
-    	      (error (setq fonts (cdr fonts)))))
-    	  (if (null font)
-    	      (error "Font not found")))))
+                  (error (setq fonts (cdr fonts)))))
+              (if (null font)
+                  (error "Font not found")))))
 
       ;; Windows-specific settings
       (if (eq system-type 'windows-nt)
-          ;; Set the font
-          (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1") ;; doesnt seem to work when using the daemon
-          (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
-          )
+          (progn
+            ;; Set the font
+            (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1") ;; doesnt seem to work when using the daemon
+            (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
+            )
+        )
       ;; Try to work around the daemon
       (if (equal (getenv "SYSENV") "home")
           (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
-      )
+        )
 
     #+END_SRC
 *** Eshell
@@ -435,11 +437,17 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
               ;; org-capture setup
+              (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
               (setq org-capture-templates
-              	  '(("a" "Add a task to tasks.org." entry
-              	     (file "tasks.org")
-              	     "* TODO %? SCHEDULED: %t")))
-              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 1))))
+                    '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
                   )
          )
        (if (equal "work" (getenv "SYSENV"))
