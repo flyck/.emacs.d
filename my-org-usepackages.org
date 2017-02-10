@@ -1,4 +1,4 @@
-e#+Title:   My use-package configuration in org-mode
+#+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 #+STARTUP: showall
 
