@@ -36,6 +36,7 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
       (unless (assoc-default "melpa" package-archives)
         (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+        (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; added for org-plus-contrib package
 	; (package-refresh-contents)
       )
     #+END_SRC

@@ -362,7 +362,7 @@
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
      (use-package org
-       :ensure t
+       :ensure org-plus-contrib
        :config
        (setq org-export-coding-system 'utf-8-unix)
        (setq org-export-with-clocks t)
@@ -371,6 +371,7 @@
        (org-babel-do-load-languages
         'org-babel-load-languages
         '(
+          (R . t)
           (lisp . t)
           (sh . t)
           (perl . t)
@@ -534,7 +535,7 @@
       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
       (require 'ox-latex)
       (add-to-list 'org-latex-classes
-                   '("stsreport"
+                   '("stsreprt"
                      "\\documentclass[
                                     %%%%% Styles and Sizes
                                           %10pt,
@@ -558,7 +559,14 @@
                                           %
                                           %%%%% expert options: your mileage may vary
                                           %baseclass=..., % special option to use a different document baseclass
-                                          ]{stsreprt}")
+                                          ]{stsreprt}"
+                     ("\\chapter{%s}" . "\\chapter*{%s}")
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                     )
                    )
     #+END_SRC
 
@@ -608,6 +616,33 @@
           (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
       )
     #+END_SRC
+*** Enable specific latex-headers                           :research:
+    Taken from here:
+    http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :ensure org-plus-contrib
+       :config
+       (require 'ox-extra)
+       (ox-extras-activate '(ignore-headlines))
+       )
+   #+END_SRC
+
+*** Enable R codeblocks                                     :research:
+    For this to work i had to install the ess-package:
+    #+BEGIN_SRC sh :tangle no
+    sudo apt-get install ess
+    #+END_SRC
+    After having installed this the following works
+    #+BEGIN_SRC emacs-lisp
+    (require 'ess-site)
+
+    #+END_SRC
+
+    In addition we also need to load the org-babel language R over here:
+    [[*Org-mode][Org-mode section]].
+
 *** Writeroom
     #+BEGIN_SRC emacs-lisp
     (use-package writeroom-mode
