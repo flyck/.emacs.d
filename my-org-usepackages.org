@@ -637,7 +637,6 @@
     After having installed this the following works
     #+BEGIN_SRC emacs-lisp
     (require 'ess-site)
-
     #+END_SRC
 
     In addition we also need to load the org-babel language R over here:
