@@ -610,7 +610,9 @@
     #+END_SRC
     After having installed this the following works
     #+BEGIN_SRC emacs-lisp
-    (require 'ess-site)
+      (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
+          (require 'ess-site)
+      )
     #+END_SRC
 
     In addition we also need to load the org-babel language R over here:
@@ -976,14 +978,32 @@
    - https://github.com/horst3180/arc-icon-theme
 
    #+BEGIN_SRC emacs-lisp
-     (use-package monokai-theme
-       :ensure t
-       :config
-       (load-theme 'monokai t)
-       (set-background-color "#2f343f")
-       )
+     ;; (use-package monokai-theme
+     ;;   :ensure t
+     ;;   :config
+     ;;   (load-theme 'monokai t)
+     ;;   (set-background-color "#2f343f")
+     ;;   )
    #+END_SRC
 
+** Prassee theme
+   Taken from: https://github.com/prassee/prassee-emacs-theme
+   #+BEGIN_SRC sh :dir ~/.emacs.d :tangle no
+     mkdir -p themes
+     cd themes
+     git clone https://github.com/prassee/prassee-emacs-theme
+   #+END_SRC
+
+   Check content of download:
+   #+BEGIN_SRC sh :tangle no
+     ls -l ~/.emacs.d/themes/prassee-emacs-theme
+   #+END_SRC
+
+   Load the theme
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
+     (load-theme 'prassee t)
+   #+END_SRC
 ** Org-mode Size settings (temporarily disabled)
    Regardless of the theme i got used to having the org-headlines at certain sizes.
    #+BEGIN_SRC emacs-lisp :tangle no
@@ -1052,4 +1072,26 @@
 ;;   (nyan-mode 1)
 ;;   (nyan-start-animation)
 ;;   )
+  #+END_SRC
+
+  Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
+  #+BEGIN_SRC emacs-lisp
+    (use-package spaceline
+      :init
+      (progn
+        (require 'spaceline-config)
+        (setq powerline-default-separator 'slant)
+        (setq spaceline-workspace-numbers-unicode t)
+        (setq spaceline-separator-dir-left '(left . left))
+        (setq spaceline-separator-dir-right '(right . right))
+        (setq powerline-height 27)
+        (spaceline-toggle-window-number-on)
+        (spaceline-toggle-buffer-modified-on)
+        (spaceline-toggle-major-mode-on)
+        (spaceline-toggle-battery-on)
+        (spaceline-toggle-hud-on)
+        (spaceline-toggle-projectile-root-on)
+        (spaceline-emacs-theme)
+        (spaceline-toggle-minor-modes-off)
+        ))
   #+END_SRC
