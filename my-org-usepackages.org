@@ -364,28 +364,8 @@
      (use-package org
        :ensure org-plus-contrib
        :config
-       (setq org-export-coding-system 'utf-8-unix)
-       (setq org-export-with-clocks t)
-       (setq org-export-preserve-breaks t)
-       ;; Org Babel
-       (org-babel-do-load-languages
-        'org-babel-load-languages
-        '(
-          (R . t)
-          (lisp . t)
-          (sh . t)
-          (perl . t)
-          (dot . t) ;; activates graphviz dot support
-          ))
-       ;; Remove ^M Errors in Babel
-       (add-to-list 'process-coding-system-alist
-                    '("bash" . (undecided-unix)))
        (add-hook 'comint-output-filter-functions
                  'comint-strip-ctrl-m)
-       ;; Send stderror into the result drawer instead of an extra window
-       (setq org-babel-default-header-args:sh
-             '((:prologue . "exec 2>&1") (:epilogue . ":"))
-             )
        ;; Custom Keybindings
        (fset 'fbr/convert-listitem-into-checklistitem
              "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
@@ -399,14 +379,6 @@
        (define-key org-mode-map "\C-m" 'nil)
        (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
        (global-set-key (kbd "<f9>") 'org-todo)
-       ;; Load syntax-highlighting for source-blocks
-       (setq org-src-fontify-natively t)
-       ;; log the time when a task is "done"
-       (setq org-log-done t)
-       ;; put "CLOCK" times into a drawer
-       (setq org-log-into-drawer t)
-       ;; makes sure LOGBOOK and PROPERTIES go first
-       (setq org-log-state-notes-insert-after-drawers t)
        (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
        ;; Visual modifications
        ;; Strike through DONE headlines
@@ -414,72 +386,18 @@
        ;; autofill hooks for automatic indentation
        (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
        (add-hook 'org-mode-hook 'turn-on-auto-fill)
+       ;; dont scroll automatically such that "point" is visible
        (setq auto-hscroll-mode nil)
        (setq org-hide-emphasis-markers t)
        (setq org-tags-column -70)
        ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
        ;; change from ... to the arrow
        (setq org-ellipsis "⤵")
-       ;; Circulate Bullets instead of asteriks
+       ;; Circulate Bullets instead of asteriks for list items
        (font-lock-add-keywords 'org-mode
                                '(("^ +\\([-*]\\) "
                                   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-       ;; what does this even do?
-       (setq org-export-with-sub-superscripts nil)
-       ;; remove the "validate"-link from the org-html export
-       (setq org-export-html-validation-link nil)
-       (setq org-tags-match-list-sublevels 'indented)
        )
-   #+END_SRC
-
-   Org-Agenda Settings
-   #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-start-with-clockreport-mode t)
-     ;; Set default column view headings: Task Total-Time Time-Stamp
-     (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
-     ;; A package to visualize repeated tasks in the org agenda
-     (require 'org-habit)
-     (add-to-list 'org-modules 'org-habit)
-     (setq org-habit-show-habits-only-for-today nil)
-     ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
-     (setq org-agenda-archives-mode t)
-     (defun fbr/org-agenda-reduce-to-current-file()
-       (interactive)
-       (setq org-agenda-files (list (buffer-file-name)))
-       )
-     ;; start the agenda in a full window
-     (setq org-agenda-window-setup 'current-window)
-   #+END_SRC
-
-   This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
-   #+BEGIN_SRC emacs-lisp :tangle no
-      ;; Make appt aware of appointments from the agenda
-      (defun fbr/org-agenda-to-appt ()
-        "Activate appointments found in `org-agenda-files'."
-        (interactive)
-        (require 'org)
-        (let* ((today (org-date-to-gregorian
-                       (time-to-days (current-time))))
-               (files org-agenda-files) entries file)
-          (while (setq file (pop files))
-            (setq entries (append entries (org-agenda-get-day-entries
-                                           file today :timestamp))))
-          (setq entries (delq nil entries))
-          (mapc (lambda(x)
-                  (let* ((event (org-trim (get-text-property 1 'txt x)))
-                         (time-of-day (get-text-property 1 'time-of-day x)) tod)
-                    (when time-of-day
-                      (setq tod (number-to-string time-of-day)
-                            tod (when (string-match
-                                       "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
-                                  (concat (match-string 1 tod) ":"
-                                          (match-string 2 tod))))
-                      (if tod (appt-add tod event))))) entries)))
-      (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
-        "Clear the appt-time-msg-list."
-        (defvar appt-time-msg-list)
-        (setq appt-time-msg-list nil))
-      (org-agenda-to-appt)
    #+END_SRC
 
 *** Latex-settings                                          :research:
@@ -618,15 +536,6 @@
     In addition we also need to load the org-babel language R over here:
     [[*Org-mode][Org-mode section]].
 
-*** Writeroom
-    #+BEGIN_SRC emacs-lisp
-    (use-package writeroom-mode
-    :ensure t
-    :config
-    (setq writeroom-width 100)
-    )
-    #+END_SRC
-
 *** More latex settings - cdlatex
     From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
     "speed-up insertion of environments and math templates"
@@ -648,6 +557,154 @@
 
     #+END_SRC
 
+*** Org-Agenda Settings
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-start-with-clockreport-mode t)
+     ;; Set default column view headings: Task Total-Time Time-Stamp
+     (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
+     ;; A package to visualize repeated tasks in the org agenda
+     (require 'org-habit)
+     (add-to-list 'org-modules 'org-habit)
+     (setq org-habit-show-habits-only-for-today nil)
+     ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
+     (setq org-agenda-archives-mode t)
+     (defun fbr/org-agenda-reduce-to-current-file()
+       (interactive)
+       (setq org-agenda-files (list (buffer-file-name)))
+       )
+     ;; start the agenda in a full window
+     (setq org-agenda-window-setup 'current-window)
+     ;; indicate the markdown-level when displaying tasks in agenda
+     (setq org-tags-match-list-sublevels 'indented)
+   #+END_SRC
+
+*** Org-mode triggered alerts
+    This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
+    #+BEGIN_SRC emacs-lisp :tangle no
+       ;; Make appt aware of appointments from the agenda
+       (defun fbr/org-agenda-to-appt ()
+         "Activate appointments found in `org-agenda-files'."
+         (interactive)
+         (require 'org)
+         (let* ((today (org-date-to-gregorian
+                        (time-to-days (current-time))))
+                (files org-agenda-files) entries file)
+           (while (setq file (pop files))
+             (setq entries (append entries (org-agenda-get-day-entries
+                                            file today :timestamp))))
+           (setq entries (delq nil entries))
+           (mapc (lambda(x)
+                   (let* ((event (org-trim (get-text-property 1 'txt x)))
+                          (time-of-day (get-text-property 1 'time-of-day x)) tod)
+                     (when time-of-day
+                       (setq tod (number-to-string time-of-day)
+                             tod (when (string-match
+                                        "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
+                                   (concat (match-string 1 tod) ":"
+                                           (match-string 2 tod))))
+                       (if tod (appt-add tod event))))) entries)))
+       (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
+         "Clear the appt-time-msg-list."
+         (defvar appt-time-msg-list)
+         (setq appt-time-msg-list nil))
+       (org-agenda-to-appt)
+    #+END_SRC
+
+*** Org-mode sourceblocks / org-babel
+    Languages to load
+    #+BEGIN_SRC emacs-lisp
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '(
+         (R . t)
+         (lisp . t)
+         (sh . t)
+         (perl . t)
+         (dot . t) ;; activates graphviz dot support
+         ))
+    #+END_SRC
+
+    Remove ^M Errors in Babel
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'process-coding-system-alist
+                   '("bash" . (undecided-unix)))
+    #+END_SRC
+
+    Send stderror into the result drawer instead of an extra window (does this result in the rare
+    deletion of text-chunks? I think that startet occuring when i introducted this setting)
+    #+BEGIN_SRC emacs-lisp
+      (setq org-babel-default-header-args:sh
+            '((:prologue . "exec 2>&1") (:epilogue . ":"))
+            )
+    #+END_SRC
+
+    Make TAB act as if it were issued in a buffer of the language’s major mode (doesnt work
+    completely how i want it to yet)
+    #+BEGIN_SRC emacs-lisp
+      ;; (setq org-src-tab-acts-natively t)
+    #+END_SRC
+
+    When editing a code snippet, use the current window rather than opening up a new one (which
+    shows the same information). This feels so much better!
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-window-setup 'current-window)
+    #+END_SRC
+
+    Load syntax-highlighting for source-blocks
+    #+BEGIN_SRC emacs-lisp
+    (setq org-src-fontify-natively t)
+    #+END_SRC
+
+*** Org-mode time logging
+    log the time when a task is "done"
+    #+BEGIN_SRC emacs-lisp
+    (setq org-log-done t)
+    #+END_SRC
+
+    Set the format of the logged time
+    #+BEGIN_SRC emacs-lisp
+    ;; log times into a hideable logbook drawer
+    (setq org-log-into-drawer t)
+    ;; makes sure LOGBOOK and PROPERTIES go first
+    (setq org-log-state-notes-insert-after-drawers t)
+    #+END_SRC
+
+*** Org-mode html export settings
+    remove the "validate"-link from the org-html export
+    #+BEGIN_SRC emacs-lisp
+    (setq org-html-postamble nil)
+    #+END_SRC
+
+    Makes it so that names that include underscores dont look weird on html-export in case the
+    org-mode exporter recognizes it as a superscript (my_hostname otherwise gets exported weird)
+    #+BEGIN_SRC emacs-lisp
+    (setq org-export-with-sub-superscripts nil)
+    #+END_SRC
+
+    Include a couple of information into the html-export and set the codig-system
+    #+BEGIN_SRC emacs-lisp
+    (setq org-export-coding-system 'utf-8-unix)
+    (setq org-export-with-clocks t)
+    (setq org-export-preserve-breaks t)
+    #+END_SRC
+
+**** Orgmode htmlize extension
+    Inserts highlighting of Org Source-Blocks on Html-Export
+    #+BEGIN_SRC emacs-lisp
+ (use-package htmlize
+   :ensure t
+   )
+    #+END_SRC
+
+*** Writeroom extension
+    #+BEGIN_SRC emacs-lisp
+    (use-package writeroom-mode
+    :ensure t
+    :config
+    (setq writeroom-width 100)
+    )
+    #+END_SRC
+
 *** Org-mode org-clocl-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
@@ -661,12 +718,12 @@
     Open pdfs with an external pdf-viewer to get a good resolution (Only use this for my laptop,
     needs to be fixed for my windows PC if i ever use it for them).
     #+BEGIN_SRC emacs-lisp
-(use-package openwith
-  :ensure t
-  :config
-  (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
-  (openwith-mode t)
-)
+      (use-package openwith
+        :ensure t
+        :config
+        (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
+        (openwith-mode t)
+      )
    #+END_SRC
 
 *** Orgmode calendar extension
@@ -697,14 +754,6 @@
   (setq alert-default-style 'libnotify)
   (setq org-alert-enable t)
   (setq org-alert-interval 60)
-  )
-   #+END_SRC
-
-*** Orgmode htmlize extension
-   Inserts highlighting of Org Source-Blocks on Html-Export
-   #+BEGIN_SRC emacs-lisp
-(use-package htmlize
-  :ensure t
   )
    #+END_SRC
 
@@ -988,7 +1037,7 @@
 
 ** Prassee theme
    Taken from: https://github.com/prassee/prassee-emacs-theme
-   #+BEGIN_SRC sh :dir ~/.emacs.d :tangle no
+   #+BEGIN_SRC shell :dir ~/.emacs.d :tangle no
      mkdir -p themes
      cd themes
      git clone https://github.com/prassee/prassee-emacs-theme
@@ -1004,6 +1053,10 @@
      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
      (load-theme 'prassee t)
    #+END_SRC
+
+   #+RESULTS:
+   : t
+
 ** Org-mode Size settings (temporarily disabled)
    Regardless of the theme i got used to having the org-headlines at certain sizes.
    #+BEGIN_SRC emacs-lisp :tangle no
