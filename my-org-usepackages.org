@@ -294,6 +294,26 @@
 (setq save-interprogram-paste-before-kill t)
    #+END_SRC
 
+** Jump to split window
+   When splitting a window, I invariably want to switch to the new window. This makes that automatic.
+   #+BEGIN_SRC emacs-lisp
+(defun fbr/split-window-below-and-switch ()
+  "Split the window horizontally, then switch to the new pane."
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1))
+
+(defun fbr/split-window-right-and-switch ()
+  "Split the window vertically, then switch to the new pane."
+  (interactive)
+  (split-window-right)
+  (balance-windows)
+  (other-window 1))
+
+(global-set-key (kbd "C-x 2") 'fbr/split-window-below-and-switch)
+(global-set-key (kbd "C-x 3") 'fbr/split-window-right-and-switch)
+   #+END_SRC
 * The big guns
 
 ** Magit
@@ -576,6 +596,37 @@
      (setq org-agenda-window-setup 'current-window)
      ;; indicate the markdown-level when displaying tasks in agenda
      (setq org-tags-match-list-sublevels 'indented)
+   #+END_SRC
+
+   Spice the agenda with my 1-month, 1-year and 5-year goals.
+
+   The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
+   which also match the tag-search this is based on - get excluded from the results which is
+   convenient.
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-custom-commands
+           '(("c" "Agenda and monthly goals"
+              (
+               (tags "month1+prof+TODO=\"TODO\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "Monatliche professionelle Ziele")
+                     )
+                     )
+               (tags "month1+priv+TODO=\"TODO\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "Monatliche persönliche Ziele")))
+                (agenda "")
+               (tags "year1+TODO=\"TODO\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "1-Jahres-Ziele")
+                     )
+                     )
+               (tags "year5+TODO=\"TODO\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "5-Jahres-Ziele")))
+                ))
+             )
+           )
    #+END_SRC
 
 *** Org-mode triggered alerts
