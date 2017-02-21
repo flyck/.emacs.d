@@ -798,6 +798,13 @@
     (setq org-src-fontify-natively t)
     #+END_SRC
 
+    Dont try to evaluate source-blocks on export (this setting has fixed a weird bug for me, which
+    showed this message: org-babel-exp-process-buffer: Wrong type argument: stringp, nil).
+    #+BEGIN_SRC emacs-lisp
+    ;; for debugging enable this: (setq debug-on-error t)
+    (setq org-export-babel-evaluate nil)
+    #+END_SRC
+
 *** Org-mode time logging
     log the time when a task is "done"
     #+BEGIN_SRC emacs-lisp
