@@ -81,11 +81,15 @@
         :config (auto-compile-on-load-mode))
       (setq load-prefer-newer t)
     #+END_SRC
+
 ** General configuration
+   Config in here is independant of specific packages.
+
 *** Libraries
     #+begin_src emacs-lisp :tangle yes
     (use-package dash)
     #+end_src
+
 **** TODO What is that for again?
 *** Coding style
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -377,7 +381,32 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
       ;;   (eshell-git-prompt-use-theme 'powerline))
     #+END_SRC
 
+*** Open current directory in nautilus / explorer
+    #+BEGIN_SRC emacs-lisp
+      (defun fbr/open-file-dir ()
+         "Open the directory of the current file in OS file browser."
+         (interactive)
+         (if (string-equal system-type "windows-nt")
+    	  (shell-command (concat "explorer " (replace-regexp-in-string "/" "\\\\" (file-name-directory (buffer-file-name)))))
+
+           )
+         (if (string-equal system-type "gnu/linux")
+    	  (shell-command (concat "nautilus " (file-name-directory (buffer-file-name))))
+           )
+         )
+    #+END_SRC
 *** TODO Fix the problem with the tramp remote path
+*** Keybindings
+    Took this idea from baron42bba's config, together with "which-key" this gives me a
+    launcher-like menu with an overview about all my custom key-bindings
+    #+BEGIN_SRC emacs-lisp
+    (define-prefix-command 'fbr/launcher)
+    (define-key global-map "\C-xl" 'fbr/launcher)
+    (define-key fbr/launcher "o" 'fbr/open-file-dir)
+    (define-key fbr/launcher "t" 'fbr/tea-timer)
+    (define-key fbr/launcher "r" 'fbr/org-agenda-reduce-to-current-file)
+    #+END_SRC
+
 ** System-specific configuration
 *** Org-mode settings (system-specific)
 **** Org-todo-keywords
