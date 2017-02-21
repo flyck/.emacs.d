@@ -556,6 +556,98 @@
     In addition we also need to load the org-babel language R over here:
     [[*Org-mode][Org-mode section]].
 
+*** Org-mode todo-keywords
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (if (equal "work" (getenv "SYSENV"))
+          (progn (setq org-todo-keywords
+    		   '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+        )
+      (if (or (equal "home" (getenv "SYSENV"))
+              (equal "laptop" (getenv "SYSENV"))
+              (equal "linux-vm" (getenv "SYSENV")))
+          (progn (setq org-todo-keywords
+    		   '((sequence "TODO(t)" "|" "DONE(d)")
+    		     (sequence "PENDING(p)" "|" "CANCELED(c)")
+    		     ))
+    	     )
+        )
+      ;; Keyword-faces, these can be set independant from the system
+      (setq org-todo-keyword-faces
+    	'(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+    #+END_SRC
+
+*** Org-mode agenda-files
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (if (equal "home" (getenv "SYSENV"))
+          (progn (setq org-agenda-files (list
+                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
+                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+              			   ))
+             ;; org-capture setup
+             (setq org-capture-templates
+              	 '(("a" "Add a task to tasks.org." entry
+              	    (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              	    "* TODO %? SCHEDULED: %t")))
+             (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+             (setq org-capture-templates
+                   '(("t" "todo" entry (file org-default-notes-file)
+                      "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                     ("m" "Meeting" entry (file org-default-notes-file)
+                      "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                     ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
+                      "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                     ;; I dont have NEXT implemented yet into my workflow / config
+                     ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                     ;;  "** NEXT %? \nDEADLINE: %t")
+                     )
+                   )
+             (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+             )
+        )
+      (if (equal "laptop" (getenv "SYSENV"))
+          (progn (setq org-agenda-files (list
+                                         (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
+                                         (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
+                                         (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                                         (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
+             ;; org-capture setup
+             (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+             (setq org-capture-templates
+                   '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                      "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                     ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                      "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                     ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                      "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                     )
+                   )
+             (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+                 )
+        )
+      (if (equal "work" (getenv "SYSENV"))
+          (progn (setq org-agenda-files
+                       (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+                             (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+                             (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+                 ;; org-capture setup
+                 (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
+                 (setq org-capture-templates
+                       '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
+                          "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                         ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
+                          "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                         ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
+                          "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                         )
+                       )
+                 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+                 )
+        )
+    #+END_SRC
+
 *** More latex settings - cdlatex
     From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
     "speed-up insertion of environments and math templates"

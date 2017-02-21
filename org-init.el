@@ -14,3 +14,4 @@
 ;; Now the emacs config can be processed using the Org-Babel-style
 (org-babel-load-file (expand-file-name "init.org" dotfiles-dir))
 (org-babel-load-file (expand-file-name "my-org-usepackages.org" dotfiles-dir))
+(load "~/.emacs.d/elisp-goodies.el")
