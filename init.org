@@ -18,7 +18,7 @@
 
 ** Starting up
    Here's how we start:
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp
 ;; This sets up the load path so that we can override it
 (package-initialize)
 ;; Override the packages with the git version of Org and other packages
@@ -33,7 +33,7 @@
 ** Emacs bootstrap
 *** Add package sources
     So far I only add melpa, is that enough? Experience will show
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (unless (assoc-default "melpa" package-archives)
         (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
         (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; added for org-plus-contrib package
@@ -50,7 +50,7 @@
     - smartparens crashes when not installed from melpa
 
 *** Proxy settings (system-specific)
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; proxy settings (system-specific)
       (if (equal "work" (getenv "SYSENV"))
           (setq url-proxy-services '(("no_proxy" . "work\\.com")
@@ -66,7 +66,7 @@
     I create the elpa directory if it doesnt exist since emacs will
     otherwise complain while loading the packages
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; Do I need the following?
       ;; (let ((default-directory "~/.emacs.d/elpa/"))
       ;;   (normal-top-level-add-subdirs-to-load-path))
@@ -87,13 +87,13 @@
    emacs.
 
 *** Libraries
-    #+begin_src emacs-lisp :tangle yes
+    #+begin_src emacs-lisp
     (use-package dash)
     #+end_src
 
 **** TODO What is that for again?
 *** Coding style
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (if (or (equal "home" (getenv "SYSENV"))
               (equal "work" (getenv "SYSENV"))
               (equal "laptop" (getenv "SYSENV"))
@@ -109,7 +109,7 @@
     #+END_SRC
 
 *** Line intendation, Linewrap and Word wrap
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (setq-default fill-column 98)
       (setq hscroll-step 1)
       (auto-fill-mode 1) ;; the mode responsible for adding line-endings after fill-column is reached
@@ -123,19 +123,19 @@
 
 *** Conveniences
     Emacs Startup changes
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (setq inhibit-default-init t)
     (setq inhibit-startup-screen t)
     (setq transient-mark-mode 1)
     #+END_SRC
 
     Take the short answer, y/n is yes/no
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (defalias 'yes-or-no-p 'y-or-n-p)
     #+END_SRC
 
     Start the emacs server such that i can open new files conveniently using the explorer
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (require 'server)
       (unless (server-running-p)
         (server-start))
@@ -148,17 +148,17 @@
     #+END_SRC
 
     Overwrite selected text
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (delete-selection-mode t)
     #+END_SRC
 
     Dired
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (setq dired-listing-switches "-alh")
     #+END_SRC
 
     No splash screen please ... jeez
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (setq inhibit-startup-message t)
     #+END_SRC
 
@@ -167,29 +167,29 @@
     backup files in the current directory. These are the files ending in =~= that are cluttering
     up your directory lists. The following code stashes them all in =~/.emacs.d/backups=, where I
     can find them with =C-x C-f= (=find-file=) if I really need to.
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
     #+END_SRC
 
     Default to better frame titles
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
     #+END_SRC
 
     Default to unified diffs
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (setq diff-switches "-u")
     #+END_SRC
 
     Transparency settings
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (set-frame-parameter (selected-frame) 'alpha '(100 100)) ;; affects the current window
       (add-to-list 'default-frame-alist '(alpha 100 100)) ;; affects newly opened windows
     #+END_SRC
 
     Code to easily, incrementally adjust the transparency settings:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
 (defun my--set-transparency (inc)
   "Increase or decrease the selected frame transparency"
   (let* ((alpha (frame-parameter (selected-frame) 'alpha))
@@ -212,7 +212,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     #+END_SRC
 
     Customize the interface to be more slim
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (tooltip-mode 0)
       (tool-bar-mode 0)
       (menu-bar-mode 0)
@@ -220,21 +220,21 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     #+END_SRC
 
     Stop cursor from blinking
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
 (blink-cursor-mode 0)
 (if (fboundp 'blink-cursor-mode)
     (blink-cursor-mode 0))
     #+END_SRC
 
     Control the startup position of emacs
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
 (if (window-system)
   (set-frame-position (selected-frame) 0 0)
   (set-frame-height (selected-frame) 120))
     #+END_SRC
 
     Remove alarm (bell) on scroll
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (setq ring-bell-function 'ignore)
 
       ;; Intuitive Buffer-changing
@@ -246,21 +246,21 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     Problems:
     - Cant install this on my work pc
     - I cant scroll all the way up using C-v
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
 ;;(require 'sublimity)
 ;;(require 'sublimity-scroll)
 ;;(sublimity-mode 1)
     #+END_SRC
 
     Highlight the current line (mostly useful for going through logs)
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; Highlight current line (slows down C-n and C-p immensly)
       ;; (global-hl-line-mode 1)
       ;; (set-face-background 'hl-line "#cc0033") ;; crimson
     #+END_SRC
 
     Highlight matching parenthesis
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; Show matching parenthesis without delay
       (setq show-paren-delay 0)
       ;; Activate the mode
@@ -268,7 +268,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     #+END_SRC
 
     Keep the buffer history as one would expect
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
 ;; Save minibuffer history
 (savehist-mode 1)
 ;; Delete duplicates in minibuffer history
@@ -278,7 +278,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     #+END_SRC
 
     Clean up unnecessary spaces on save and show them while they are still there
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
     (setq show-trailing-whitespace t)
     #+END_SRC
@@ -286,7 +286,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
 **** TODO Fix the scrolling improvement
 *** Fonts
     Font hints for Linux (Ubuntu)
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; Fonts
       ;; (set-frame-font "Source Code Pro-11" nil t)
       ;; How to install on ubuntu:
@@ -301,7 +301,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     #+END_SRC
 
     Font settings for Windows
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; "Select an Emacs font from a list of known good fonts and fontsets.
       (defun mouse-set-font (&rest fonts)
         ;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
@@ -350,7 +350,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     #+END_SRC
 
 *** Eshell
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       ;; Eshell
       (add-hook 'eshell-mode-hook '(lambda ()
         			     ;; Make the eshell behave like a normal shell
@@ -413,7 +413,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
 *** Set certain paths when on university pc
     Manually installed packages / unsorted stuff (system-specific)
     Some packages dont install for some systems. It is stupid but here is the workaround.
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
  (if (equal "" (getenv "SYSENV")) ;; assuming we are on a university pc since we cannot set the SYSENV variable there
      (progn
       ;; test tls connection on windows for successfull download of packages

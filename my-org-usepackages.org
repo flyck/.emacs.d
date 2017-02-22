@@ -557,7 +557,7 @@
     [[*Org-mode][Org-mode section]].
 
 *** Org-mode todo-keywords
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
           (progn (setq org-todo-keywords
     		   '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
@@ -578,7 +578,7 @@
     #+END_SRC
 
 *** Org-mode agenda-files
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (if (equal "home" (getenv "SYSENV"))
           (progn (setq org-agenda-files (list
                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
