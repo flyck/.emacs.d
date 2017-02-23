@@ -765,6 +765,8 @@
 
 *** Org-mode sourceblocks / org-babel
     Languages to load
+
+    This hints towards renaming "sh" to shell: http://thread.gmane.org/gmane.emacs.orgmode/102877/focus=102882
     #+BEGIN_SRC emacs-lisp
       (org-babel-do-load-languages
        'org-babel-load-languages
