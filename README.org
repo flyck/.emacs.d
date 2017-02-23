@@ -45,7 +45,25 @@
    Configuration that specifically enables me to do that is tagged with "research". On linux i had
    to install packages ontop of simple configuratino inside emacs:
    #+BEGIN_SRC sh
+   sudo apt-get install ess
    sudo apt-get install texlive #required for pdf rendering (and more?)
    sudo apt-get install texlive-latex-extra #stop the pdf-export from failing due to missing package "wrapfig.sty"
    sudo apt-get install r-base #enables the creation of graphs from emacs
    #+END_SRC
+
+** The structure of these config files
+   #+BEGIN_SRC sh :results list :exports result
+   ls *.el
+   #+END_SRC
+
+   #+RESULTS:
+   - ("org-init.el")
+     - bootstraps the initialization through org-mode
+   - ("init.el")
+     - customizes the default emacs behaviour
+   - ("my-org-usepackages.el")
+     - adds and customizes packages
+   - ("elisp-goodies.el")
+     - my custom functions and things im working on
+   - ("custom-settings.el")
+     - i cant seem to stop emacs from creating this file

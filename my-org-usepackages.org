@@ -183,6 +183,13 @@
 * Conveniences
 
 ** Undo-tree
+   Undo-tree provides a graphical representation of recent changes made to the file. When I first
+   starting to use it it felt terrible, since a whole new window opens every time i call it. With
+   time it has proven to be very helpful though.
+
+   This package is best used selectively, when i just want to undo something I use ~M-S-_~, when I
+   am not sure what just happened (maybe I deleted text on accident) I'll definately use ~C-x u~ and
+   go through the last couple of iterations.
    #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
   :ensure t
