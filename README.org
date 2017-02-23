@@ -56,7 +56,6 @@
    ls *.el
    #+END_SRC
 
-   #+RESULTS:
    - ("org-init.el")
      - bootstraps the initialization through org-mode
    - ("init.el")
