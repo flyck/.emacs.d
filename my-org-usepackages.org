@@ -549,8 +549,11 @@
     After having installed this the following works
     #+BEGIN_SRC emacs-lisp
       (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
-          (require 'ess-site)
-      )
+          (progn
+            ;; found out about the path with dpkg -L ess
+            (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
+            (require 'ess-site))
+        )
     #+END_SRC
 
     In addition we also need to load the org-babel language R over here:
@@ -761,7 +764,7 @@
        '(
          (R . t)
          (lisp . t)
-         (sh . t)
+         (shell . t)
          (perl . t)
          (dot . t) ;; activates graphviz dot support
          ))

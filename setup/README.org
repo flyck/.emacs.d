@@ -68,6 +68,22 @@
    yum install yum-utils
    yum-builddep emacs
    #+END_SRC
+* Fixing org-mode
+  Errors i get (when i try to execute source-blocks) that got solved by loading org-mode at
+  startup correctly:
+  #+BEGIN_SRC sh
+  Evaluation of this sh code block is disabled.
+  # after removing the org-package from ~/.emacs.d/elpa/ and restarting i get:
+  org-babel-variable-assignments:sh: Symbol’s function definition is void: org-babel-get-header
+  Symbol's function definition is void: org-link-types
+  Invalid function: org-babel-header-args-safe-fn
+  #+END_SRC
+
+  On my way these helped me:
+  #+BEGIN_SRC emacs-lisp
+(byte-recompile-directory (expand-file-name "~/.emacs.d/elpa/org-20170210") 0)
+(byte-recompile-directory (expand-file-name "~/.emacs.d/elpa/org-plus-contrib-20170210") 0)
+  #+END_SRC
 
 * Update on linux
   Used this approach on my laptop. Taken from askubuntu.com

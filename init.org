@@ -19,15 +19,15 @@
 ** Starting up
    Here's how we start:
    #+begin_src emacs-lisp
-;; This sets up the load path so that we can override it
-(package-initialize)
-;; Override the packages with the git version of Org and other packages
-(add-to-list 'load-path "~/elisp/org-mode/lisp")
-(add-to-list 'load-path "~/elisp/org-mode/contrib/lisp")
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
-(setq package-enable-at-startup nil)
-(setq custom-file "~/.emacs.d/custom-settings.el")
-(load custom-file t)
+     ;; This sets up the load path so that we can override it
+     (package-initialize)
+     ;; Override the packages with the git version of Org and other packages
+     ;; example:
+     (add-to-list 'load-path "~/.emacs.d/elisp/org-20170210/")
+     (add-to-list 'load-path "~/.emacs.d/elisp/org-plus-contrib-20170210/")
+     (setq package-enable-at-startup nil)
+     (setq custom-file "~/.emacs.d/custom-settings.el")
+     (load custom-file t)
    #+END_SRC
 
 ** Emacs bootstrap
