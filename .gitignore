@@ -1,6 +1,6 @@
 /auto-save-list/
 /elpa/
-!/elpa/use-package-*
+!elpa/use-package-*
 /server/
 /recentf*
 /projectile*
