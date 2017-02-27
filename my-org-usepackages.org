@@ -1199,25 +1199,34 @@
 
 ** Prassee theme
    Taken from: https://github.com/prassee/prassee-emacs-theme
-   #+BEGIN_SRC shell :dir ~/.emacs.d :tangle no
+   #+BEGIN_SRC sh :dir ~/.emacs.d :tangle no
      mkdir -p themes
      cd themes
      git clone https://github.com/prassee/prassee-emacs-theme
    #+END_SRC
 
    Check content of download:
-   #+BEGIN_SRC sh :tangle no
+   #+BEGIN_SRC sh :tangle no :results drawer
      ls -l ~/.emacs.d/themes/prassee-emacs-theme
    #+END_SRC
+
+   #+RESULTS:
+   :RESULTS:
+   total 36
+   -rwxrwxr-x+ 1 FBrilej Domain Users 11357 Feb 17 12:18 LICENSE
+   -rwxrwxr-x+ 1 FBrilej Domain Users  1576 Feb 17 12:18 README.md
+   -rwxrwxr-x+ 1 FBrilej Domain Users 18403 Feb 20 11:56 prassee-theme.el
+   :END:
 
    Load the theme
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
      (load-theme 'prassee t)
+     ;; do my costumization:
+     (custom-set-faces
+      `(org-block-begin-line      ((t (:background "#3D3D48" :foreground "#65737E"))))
+      )
    #+END_SRC
-
-   #+RESULTS:
-   : t
 
 ** Org-mode Size settings (temporarily disabled)
    Regardless of the theme i got used to having the org-headlines at certain sizes.
