@@ -1225,6 +1225,7 @@
      ;; do my costumization:
      (custom-set-faces
       `(org-block-begin-line      ((t (:background "#3D3D48" :foreground "#65737E"))))
+      `(org-formula      ((t (:foreground "azure4"))))
       )
    #+END_SRC
 
