@@ -1262,60 +1262,62 @@
 * Modeline
   I never learned how to successfully edit the modeline yet, i just keep copying configs from nice
   screenshots which then only work in part so i have to delete them again lol. Some themes come
-  with okay modeline configurations
+  with okay modeline configurations.
 
-  #+BEGIN_SRC emacs-lisp
-;; The mode-line
-;; load it after the theme since themes sometimes set their own mode-line
-;; former problem: use-package doesnt find spaceline-config or spaceline
-;; doest it still exist?
-;; (use-package spaceline-config
-;;   :ensure spaceline
-;;   :config
-;;   (spaceline-emacs-theme)
-;;   (spaceline-helm-mode)
-;;   (spaceline-toggle-buffer-size-off)
-;;   (spaceline-toggle-nyan-cat-on)
-;;   (spaceline-toggle-minor-modes-off)
-;;   (spaceline-toggle-buffer-position-off)
-;;   (custom-set-faces
-;;    '(spaceline-highlight-face ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-;;    '(spaceline-modified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-;;    '(spaceline-unmodified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-;;    '(spaceline-unmodified-p ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
-;;    ;; LightGoldenrod ist die Farbe vom Helm-buffer, nur was ist das Face?
-;;    )
-;;   (spaceline-highlight-face-default)
-;;   (spaceline-highlight-face-modified)
-;;   )
+  I Load it after the theme since themes sometimes set their own mode-line.
 
-;; Sadly results in flickering on my laptop and doesnt install relyably on my windows-pc
-;; (use-package nyan-mode
-;;   :ensure t
-;;   :config
-;;   (nyan-mode 1)
-;;   (nyan-start-animation)
-;;   )
-  #+END_SRC
+  Former problem: use-package doesnt find spaceline-config or spaceline, doest this still exist?
 
-  Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
-  #+BEGIN_SRC emacs-lisp
-    (use-package spaceline
-      :init
-      (progn
-        (require 'spaceline-config)
-        (setq powerline-default-separator 'slant)
-        (setq spaceline-workspace-numbers-unicode t)
-        (setq spaceline-separator-dir-left '(left . left))
-        (setq spaceline-separator-dir-right '(right . right))
-        (setq powerline-height 27)
-        (spaceline-toggle-window-number-on)
-        (spaceline-toggle-buffer-modified-on)
-        (spaceline-toggle-major-mode-on)
-        (spaceline-toggle-battery-on)
-        (spaceline-toggle-hud-on)
-        (spaceline-toggle-projectile-root-on)
-        (spaceline-emacs-theme)
-        (spaceline-toggle-minor-modes-off)
-        ))
-  #+END_SRC
+** Spaceline config
+   Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package spaceline
+       :init
+       (progn
+         (require 'spaceline-config)
+         (setq powerline-default-separator 'slant)
+         (setq spaceline-workspace-numbers-unicode t)
+         (setq spaceline-separator-dir-left '(left . left))
+         (setq spaceline-separator-dir-right '(right . right))
+         (setq powerline-height 27)
+         (spaceline-toggle-window-number-on)
+         (spaceline-toggle-buffer-modified-on)
+         (spaceline-toggle-major-mode-on)
+         (spaceline-toggle-battery-on)
+         (spaceline-toggle-hud-on)
+         (spaceline-toggle-projectile-root-on)
+         (spaceline-emacs-theme)
+         (spaceline-toggle-minor-modes-off)
+         ))
+   #+END_SRC
+
+** Okay modeline that sometimes doesnt work
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package spaceline-config
+       :ensure spaceline
+       :config
+       (spaceline-emacs-theme)
+       (spaceline-helm-mode)
+       (spaceline-toggle-buffer-size-off)
+       (spaceline-toggle-nyan-cat-on)
+       (spaceline-toggle-minor-modes-off)
+       (spaceline-toggle-buffer-position-off)
+       (custom-set-faces
+        '(spaceline-highlight-face ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+        '(spaceline-modified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+        '(spaceline-unmodified ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+        '(spaceline-unmodified-p ((t (:inherit 'mode-line :foreground "#3E3D31" :background "SeaGreen3"))))
+        ;; LightGoldenrod ist die Farbe vom Helm-buffer, nur was ist das Face?
+        )
+       (spaceline-highlight-face-default)
+       (spaceline-highlight-face-modified)
+       )
+
+     ;; Sadly results in flickering on my laptop and doesnt install relyably on my windows-pc
+     (use-package nyan-mode
+       :ensure t
+       :config
+       (nyan-mode 1)
+       (nyan-start-animation)
+       )
+   #+END_SRC
