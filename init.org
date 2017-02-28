@@ -300,54 +300,62 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
       ;; fc-cache -f -v
     #+END_SRC
 
-    Font settings for Windows
+    Switch to a thin font on my laptop. This feels so good after having used the ubuntu font for
+    so long, which is wonderful but very thick.
     #+BEGIN_SRC emacs-lisp
-      ;; "Select an Emacs font from a list of known good fonts and fontsets.
-      (defun mouse-set-font (&rest fonts)
-        ;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
-        ;;font dialog to display the list of possible fonts.  Otherwise use a
-        ;;pop-up menu (like Emacs does on other platforms) initialized with
-        ;;the fonts in `w32-fixed-font-alist'.
-        ;;If `w32-list-proportional-fonts' is non-nil, add proportional fonts
-        ;;to the list in the font selection dialog (the fonts listed by the
-        ;;pop-up menu are unaffected by `w32-list-proportional-fonts')."
-        (interactive
-         (if w32-use-w32-font-dialog
-             (let ((chosen-font (w32-select-font (selected-frame)
-            				     w32-list-proportional-fonts)))
-               (and chosen-font (list chosen-font)))
-           (x-popup-menu
-            last-nonmenu-event
-            ;; Append list of fontsets currently defined.
-            ;; Conditional on new-fontset so bootstrapping works on non-GUI compiles
-            (if (fboundp 'new-fontset)
-                (append w32-fixed-font-alist (list (generate-fontset-menu)))))))
-        (if fonts
-            (let (font)
-              (while fonts
-                (condition-case nil
-                    (progn
-                      (setq font (car fonts))
-            	  (set-default-font font)
-                      (setq fonts nil))
-                  (error (setq fonts (cdr fonts)))))
-              (if (null font)
-                  (error "Font not found")))))
-
-      ;; Windows-specific settings
-      (if (eq system-type 'windows-nt)
-          (progn
-            ;; Set the font
-            (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1") ;; doesnt seem to work when using the daemon
-            (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
-            )
-        )
-      ;; Try to work around the daemon
-      (if (equal (getenv "SYSENV") "home")
-          (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
-        )
-
+      (if (equal "laptop" (getenv "SYSENV"))
+      (set-frame-font "-ADBO-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1" nil t)
+      )
     #+END_SRC
+
+**** Font settings for Windows
+     #+BEGIN_SRC emacs-lisp
+       ;; "Select an Emacs font from a list of known good fonts and fontsets.
+       (defun mouse-set-font (&rest fonts)
+         ;;If `w32-use-w32-font-dialog' is non-nil (the default), use the Windows
+         ;;font dialog to display the list of possible fonts.  Otherwise use a
+         ;;pop-up menu (like Emacs does on other platforms) initialized with
+         ;;the fonts in `w32-fixed-font-alist'.
+         ;;If `w32-list-proportional-fonts' is non-nil, add proportional fonts
+         ;;to the list in the font selection dialog (the fonts listed by the
+         ;;pop-up menu are unaffected by `w32-list-proportional-fonts')."
+         (interactive
+          (if w32-use-w32-font-dialog
+              (let ((chosen-font (w32-select-font (selected-frame)
+            				      w32-list-proportional-fonts)))
+                (and chosen-font (list chosen-font)))
+            (x-popup-menu
+             last-nonmenu-event
+             ;; Append list of fontsets currently defined.
+             ;; Conditional on new-fontset so bootstrapping works on non-GUI compiles
+             (if (fboundp 'new-fontset)
+                 (append w32-fixed-font-alist (list (generate-fontset-menu)))))))
+         (if fonts
+             (let (font)
+               (while fonts
+                 (condition-case nil
+                     (progn
+                       (setq font (car fonts))
+            	   (set-default-font font)
+                       (setq fonts nil))
+                   (error (setq fonts (cdr fonts)))))
+               (if (null font)
+                   (error "Font not found")))))
+
+       ;; Windows-specific settings
+       (if (eq system-type 'windows-nt)
+           (progn
+             ;; Set the font
+             (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1") ;; doesnt seem to work when using the daemon
+             (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
+             )
+         )
+       ;; Try to work around the daemon
+       (if (equal (getenv "SYSENV") "home")
+           (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
+         )
+
+     #+END_SRC
 
 *** Eshell
     #+BEGIN_SRC emacs-lisp
@@ -408,6 +416,7 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     (define-key fbr/launcher "o" 'fbr/open-file-dir)
     (define-key fbr/launcher "t" 'fbr/tea-timer)
     (define-key fbr/launcher "r" 'fbr/org-agenda-reduce-to-current-file)
+    (define-key fbr/launcher "y" 'fbr/reload-yasnippet)
     #+END_SRC
 
 *** Set certain paths when on university pc

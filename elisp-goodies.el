@@ -12,6 +12,12 @@
   (run-with-timer (* minutes 60) nil 'alert "Tea is ready \xF0\x9F\x98\x84" :title "Tea-time")
   )
 
+(defun fbr/reload-yasnippet ()
+  (interactive)
+  (yas-recompile-all)
+  (yas-reload-all)
+  )
+
 ;; (shell-command "Msg asd")
 ;; (call-process "~\\.emacs.d\\notifu\\notifu.exe" nil t nil "/m" "aads" "/d" "10000" "/i" "~\\emacs.d\\emacs.ico")
 ;; ;; ich brauche start-process
