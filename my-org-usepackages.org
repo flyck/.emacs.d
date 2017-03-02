@@ -226,7 +226,7 @@
    #+BEGIN_SRC emacs-lisp
      ;; Currently there is a problem "package does not untar cleanly"
      (use-package yasnippet
-       :ensure nil
+       :ensure t
        :init
        (define-key global-map "\C-cy" 'yas/insert-snippet)
        ;;(setq yas-snippet-dirs (append yas-snippet-dirs
@@ -424,6 +424,9 @@
        (font-lock-add-keywords 'org-mode
                                '(("^ +\\([-*]\\) "
                                   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+       ;; when i narrow down to the current subsection using `org-tree-to-indirect-buffer' i dont want
+       ;; to create a new window, but rather open the new buffer at the current position
+       (setq org-indirect-buffer-display 'current-window)
        )
    #+END_SRC
 
@@ -1289,7 +1292,12 @@
          (spaceline-emacs-theme)
          (spaceline-toggle-minor-modes-off)
          ))
-   #+END_SRC
+
+     ;; first try to make the inactive face more readable
+     ;; (custom-set-faces
+     ;;  `(mode-line-inactive
+     ;;    ((t (:background "grey40")))))
+     #+END_SRC
 
 ** Okay modeline that sometimes doesnt work
    #+BEGIN_SRC emacs-lisp :tangle no
@@ -1321,3 +1329,4 @@
        (nyan-start-animation)
        )
    #+END_SRC
+.
