@@ -1121,33 +1121,29 @@
 
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
-   #+BEGIN_SRC emacs-lisp
-     ;; (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-     ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-     ;; (load-theme 'eziam-light t)
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package eziam-theme
+       :ensure t
+       :config
+       (load-theme 'eziam-light t)
+       )
    #+END_SRC
 
-   #+RESULTS:
-   : t
-
    For installation execute the following:
-   #+BEGIN_SRC sh :dir ~/.emacs.d/elpa/ :results silent
+   #+BEGIN_SRC sh :dir ~/.emacs.d/themes :results silent :tangle no
    git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
 
 
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :results silent
      ;; (use-package zenburn-theme
      ;;   :ensure t
      ;;   :config
      ;;   (load-theme 'zenburn t)
      ;; )
    #+END_SRC
-
-   #+RESULTS:
-   : t
 
 ** Other unused themes
    #+BEGIN_SRC emacs-lisp
@@ -1191,13 +1187,13 @@
        #+END_SRC
    - https://github.com/horst3180/arc-icon-theme
 
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package monokai-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'monokai t)
-     ;;   (set-background-color "#2f343f")
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package monokai-theme
+       :ensure t
+       :config
+       (load-theme 'monokai t)
+       (set-background-color "#2f343f")
+       )
    #+END_SRC
 
 ** Prassee theme
@@ -1213,16 +1209,8 @@
      ls -l ~/.emacs.d/themes/prassee-emacs-theme
    #+END_SRC
 
-   #+RESULTS:
-   :RESULTS:
-   total 36
-   -rwxrwxr-x+ 1 FBrilej Domain Users 11357 Feb 17 12:18 LICENSE
-   -rwxrwxr-x+ 1 FBrilej Domain Users  1576 Feb 17 12:18 README.md
-   -rwxrwxr-x+ 1 FBrilej Domain Users 18403 Feb 20 11:56 prassee-theme.el
-   :END:
-
    Load the theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :results silent
      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
      (load-theme 'prassee t)
      ;; do my costumization:
