@@ -684,7 +684,9 @@
 
 *** Org-Agenda Settings
    #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-start-with-clockreport-mode t)
+     ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
+     ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
+     (setq org-agenda-start-with-clockreport-mode nil)
      ;; Set default column view headings: Task Total-Time Time-Stamp
      (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
      ;; A package to visualize repeated tasks in the org agenda
