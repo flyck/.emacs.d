@@ -78,6 +78,14 @@
   )
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm-swoop
+      :ensure t
+      :config
+      (global-set-key (kbd "C-s") 'helm-swoop)
+      )
+  #+END_SRC
+
 ** Direx
   An attempt to get a folder-view using [F12], the popwin package is simply a dependancy for that.
   Also this makes the pre-packaged dired display status colors according to the git status of the
@@ -132,7 +140,7 @@
 ** Searching for strings
   Deft searches for strings in my org-files, at work this takes forever to load though, so it is
   not a core part of my workflow. I might have to adapt to only search through text-files.
-  #+BEGIN_SRC emacs-elisp
+  #+BEGIN_SRC emacs-lisp
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
   :ensure t ;;doesnt work on work pc (sometimes), unable to install from melpa
