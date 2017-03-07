@@ -712,21 +712,21 @@
      (setq org-agenda-custom-commands
            '(("c" "Agenda and monthly goals"
               (
-               (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\""
+               (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
                      )
                      )
-               (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\""
+               (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
                      ((org-agenda-overriding-header "Monatliche persönliche Ziele")
                      )
                      )
                 (agenda "")
-               (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\""
+               (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "1-Jahres-Ziele")
                      )
                      )
-               (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\""
+               (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "5-Jahres-Ziele")))
                 ))
