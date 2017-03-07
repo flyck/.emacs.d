@@ -359,6 +359,32 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
 
      #+END_SRC
 
+**** Increase font setting globally
+     The default binding for increasing the font-size only increases it for the current
+     frame. With this approch i can increase the font-size globally.
+
+     Taken from here: http://emacsninja.com/posts/making-emacs-more-presentable.html
+     #+BEGIN_SRC emacs-lisp
+       (defun my-alter-frame-font-size (fn)
+         (let* ((current-font-name (frame-parameter nil 'font))
+                (decomposed-font-name (x-decompose-font-name current-font-name))
+                (font-size (string-to-int (aref decomposed-font-name 5))))
+           (aset decomposed-font-name 5 (int-to-string (funcall fn font-size)))
+           (set-frame-font (x-compose-font-name decomposed-font-name))))
+
+       (defun my-inc-frame-font-size ()
+         (interactive)
+         (my-alter-frame-font-size '1+))
+
+       (defun my-dec-frame-font-size ()
+         (interactive)
+         (my-alter-frame-font-size '1-))
+
+       (global-set-key (kbd "C-+") 'my-inc-frame-font-size)
+       (global-set-key (kbd "C-=") 'my-inc-frame-font-size)
+       (global-set-key (kbd "C--") 'my-dec-frame-font-size)
+     #+END_SRC
+
 *** Eshell
     #+BEGIN_SRC emacs-lisp
       ;; Eshell
