@@ -419,6 +419,18 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
       ;;   (eshell-git-prompt-use-theme 'powerline))
     #+END_SRC
 
+*** Disable Secondary selection
+    Taken from here:
+    https://www.reddit.com/r/emacs/comments/3c61zl/abolish_the_secondary_selection_quick_and_easy/
+
+    #+BEGIN_SRC emacs-lisp
+(global-set-key [remap mouse-drag-secondary] 'mouse-drag-region)
+(global-set-key [remap mouse-set-secondary] 'mouse-set-region)
+(global-set-key [remap mouse-start-secondary] 'mouse-set-point)
+(global-set-key [remap mouse-yank-secondary] 'mouse-yank-primary)
+(global-set-key [remap mouse-secondary-save-then-kill] 'mouse-save-then-kill)
+    #+END_SRC
+
 *** Open current directory in nautilus / explorer
     #+BEGIN_SRC emacs-lisp
       (defun fbr/open-file-dir ()
