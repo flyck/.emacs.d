@@ -923,6 +923,12 @@
    #+END_SRC
 
 ** Tramp
+   Tramp can be used to edit remote files.
+
+   How to use tramp:
+   - M-x ~load-file~
+   - /<remote username>@<remote host>:
+
    #+BEGIN_SRC emacs-lisp
      (use-package tramp
        :ensure t
@@ -930,15 +936,12 @@
        (setq tramp-verbose 5)
        ;; sshx is the required for cygwin
        (setq default-tramp-method "sshx")
-       ;; Fix for base64 error
-       ;; see footnotes here: http://www.howardism.org/Technical/Emacs/literate-devops.html
-       ;; you can try this:
-       ;;(setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
        ;; When connecting to a remote server it usually does source the profile, but for some
        ;; reason doesn't do that for $PATH by default. You'll have to specifically tell tramp
-       ;; to do that from your .emacs. with
+       ;; to do that from your .emacs with
        (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
        :config
+       (set-default 'tramp-auto-save-directory (concat "C:\\Users\\" (getenv "USERNAME") "\\AppData\\Local\\Temp"))
        (define-minor-mode sensitive-mode
              "For sensitive files like password lists.
                      It disables backup creation and auto saving.
@@ -964,12 +967,18 @@
              ;; resort to default auto save setting
                (if auto-save-default
                    (auto-save-mode 1))))
-       ;; from howards blog: http://www.howardism.org/Technical/Emacs/literate-devops.html this is
-       ;; supposed to overwrite the standard org-mode function in ob-core.el which is buggy and can
-       ;; completely block the org-babel functinality on windows.
-       ;;
-       ;; On windows the faulty file is here: <path_to_emacs>\emacs\share\emacs\24.5\lisp\org
-       (defun org-babel-temp-file (prefix &optional suffix)
+       :defer 5
+       )
+   #+END_SRC
+
+** Tramp fixes
+   From Howards Blog: http://www.howardism.org/Technical/Emacs/literate-devops.html this is
+   supposed to overwrite the standard org-mode function in ~ob-core.el~ which is buggy and can
+   completely block the org-babel functionality on windows.
+
+   On windows the faulty file is here: <path_to_emacs>\emacs\share\emacs\24.5\lisp\org
+   #+BEGIN_SRC emacs-lisp
+     (defun org-babel-temp-file (prefix &optional suffix)
        "Create a temporary file in the `org-babel-temporary-directory'.
      Passes PREFIX and SUFFIX directly to `make-temp-file' with the
      value of `temporary-file-directory' temporarily set to the value
@@ -990,8 +999,12 @@
                          org-babel-temporary-directory)
                     temporary-file-directory)))
            (make-temp-file prefix nil suffix))))
-       :defer 5
-       )
+   #+END_SRC
+
+   Fix for base64 error (currently unused / unnecessary)
+   See footnotes here: http://www.howardism.org/Technical/Emacs/literate-devops.html
+   #+BEGIN_SRC emacs-lisp :tangle no
+   (setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
    #+END_SRC
 
 ** SQL
