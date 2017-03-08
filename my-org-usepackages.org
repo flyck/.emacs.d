@@ -78,6 +78,14 @@
   )
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm-swoop
+      :ensure t
+      :config
+      (global-set-key (kbd "C-s") 'helm-swoop)
+      )
+  #+END_SRC
+
 ** Direx
   An attempt to get a folder-view using [F12], the popwin package is simply a dependancy for that.
   Also this makes the pre-packaged dired display status colors according to the git status of the
@@ -132,7 +140,7 @@
 ** Searching for strings
   Deft searches for strings in my org-files, at work this takes forever to load though, so it is
   not a core part of my workflow. I might have to adapt to only search through text-files.
-  #+BEGIN_SRC emacs-elisp
+  #+BEGIN_SRC emacs-lisp
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
   :ensure t ;;doesnt work on work pc (sometimes), unable to install from melpa
@@ -321,6 +329,7 @@
 (global-set-key (kbd "C-x 2") 'fbr/split-window-below-and-switch)
 (global-set-key (kbd "C-x 3") 'fbr/split-window-right-and-switch)
    #+END_SRC
+
 * The big guns
 
 ** Magit
@@ -684,7 +693,9 @@
 
 *** Org-Agenda Settings
    #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-start-with-clockreport-mode t)
+     ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
+     ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
+     (setq org-agenda-start-with-clockreport-mode nil)
      ;; Set default column view headings: Task Total-Time Time-Stamp
      (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
      ;; A package to visualize repeated tasks in the org agenda
@@ -712,21 +723,21 @@
      (setq org-agenda-custom-commands
            '(("c" "Agenda and monthly goals"
               (
-               (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\""
+               (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
                      )
                      )
-               (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\""
+               (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
                      ((org-agenda-overriding-header "Monatliche persönliche Ziele")
                      )
                      )
                 (agenda "")
-               (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\""
+               (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "1-Jahres-Ziele")
                      )
                      )
-               (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\""
+               (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "5-Jahres-Ziele")))
                 ))
@@ -818,6 +829,18 @@
     #+BEGIN_SRC emacs-lisp
     ;; for debugging enable this: (setq debug-on-error t)
     (setq org-export-babel-evaluate nil)
+    #+END_SRC
+
+    Enable asynchronous org-babel execution. A ~:async~ flag needs to be added to the code-blocks
+    which should use this behaviour. Can also be set per file with: ~#+PROPERTY: header-args :async~
+
+    Source seems to be over here: https://github.com/astahlman/ob-async
+    #+BEGIN_SRC emacs-lisp
+      (use-package ob-async
+        :ensure t
+        :config
+        (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)
+        )
     #+END_SRC
 
 *** Org-mode time logging
@@ -1134,33 +1157,29 @@
 
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
-   #+BEGIN_SRC emacs-lisp
-     ;; (add-to-list 'load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-     ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/eziam-theme-emacs")
-     ;; (load-theme 'eziam-light t)
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package eziam-theme
+       :ensure t
+       :config
+       (load-theme 'eziam-light t)
+       )
    #+END_SRC
 
-   #+RESULTS:
-   : t
-
    For installation execute the following:
-   #+BEGIN_SRC sh :dir ~/.emacs.d/elpa/ :results silent
+   #+BEGIN_SRC sh :dir ~/.emacs.d/themes :results silent :tangle no
    git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
 
 
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :results silent
      ;; (use-package zenburn-theme
      ;;   :ensure t
      ;;   :config
      ;;   (load-theme 'zenburn t)
      ;; )
    #+END_SRC
-
-   #+RESULTS:
-   : t
 
 ** Other unused themes
    #+BEGIN_SRC emacs-lisp
@@ -1204,13 +1223,13 @@
        #+END_SRC
    - https://github.com/horst3180/arc-icon-theme
 
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package monokai-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'monokai t)
-     ;;   (set-background-color "#2f343f")
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package monokai-theme
+       :ensure t
+       :config
+       (load-theme 'monokai t)
+       (set-background-color "#2f343f")
+       )
    #+END_SRC
 
 ** Prassee theme
@@ -1226,16 +1245,8 @@
      ls -l ~/.emacs.d/themes/prassee-emacs-theme
    #+END_SRC
 
-   #+RESULTS:
-   :RESULTS:
-   total 36
-   -rwxrwxr-x+ 1 FBrilej Domain Users 11357 Feb 17 12:18 LICENSE
-   -rwxrwxr-x+ 1 FBrilej Domain Users  1576 Feb 17 12:18 README.md
-   -rwxrwxr-x+ 1 FBrilej Domain Users 18403 Feb 20 11:56 prassee-theme.el
-   :END:
-
    Load the theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :results silent
      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
      (load-theme 'prassee t)
      ;; do my costumization:
