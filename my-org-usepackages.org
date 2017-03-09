@@ -1118,36 +1118,36 @@
 
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
-   #+BEGIN_SRC emacs-lisp :tangle no
-;; (use-package seti-theme
-;;   :ensure t
-;;   :config
-;;   (custom-set-faces
-;;    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
-;;    '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
-;;    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
-;;    `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
-;;    ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
-;;    `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
-;;    ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
-;;    ;; added the outline definitions to blindly work towards a global color theme
-;;    ;; which variables inherit from these "outline" variables?
-;;    `(org-level-1 ((t (:inherit org-level-1 :foreground ,cl-first-level))))
-;;    `(outline-2 ((t (:foreground ,cl-second-level))))
-;;    `(outline-3 ((t (:foreground ,cl-third-level))))
-;;    `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
-;;    `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-;;    `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
-;;    `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
-;;    ;; Color the Org-Blocks beautifully for color schemes that do not do that
-;;    `(org-block-foreground ((t (:foreground "dark orange"))))
-;;    `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-;;    `(org-block-end-line ((t (:foreground "SlateBlue4"))))
-;;    `(org-document-info ((t (:foreground "medium sea green"))))
-;;    `(org-document-info-keyword ((t (:foreground "light sea green"))))
-;;    )
-;;   (set-background-color "grey12")
-;;   )
+   #+BEGIN_SRC emacs-lisp
+     (use-package seti-theme
+       :ensure t
+       :config
+       (custom-set-faces
+        '(font-lock-function-name-face ((t (:foreground "royal blue"))))
+        '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
+        '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
+        `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
+        ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
+        `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
+        ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
+        ;; added the outline definitions to blindly work towards a global color theme
+        ;; which variables inherit from these "outline" variables?
+        `(org-level-1 ((t (:inherit org-level-1 :foreground ,cl-first-level))))
+        `(outline-2 ((t (:foreground ,cl-second-level))))
+        `(outline-3 ((t (:foreground ,cl-third-level))))
+        `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
+        `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+        `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
+        `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
+        ;; Color the Org-Blocks beautifully for color schemes that do not do that
+        `(org-block-foreground ((t (:foreground "dark orange"))))
+        `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
+        `(org-block-end-line ((t (:foreground "SlateBlue4"))))
+        `(org-document-info ((t (:foreground "medium sea green"))))
+        `(org-document-info-keyword ((t (:foreground "light sea green"))))
+        )
+       (set-background-color "grey12")
+       )
    #+END_SRC
 
 ** Eziam theme
@@ -1170,7 +1170,6 @@
    git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
 
-
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp :results silent
@@ -1181,32 +1180,38 @@
      ;; )
    #+END_SRC
 
-** Other unused themes
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package dark-mint-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'dark-mint t)
-     ;;   )
+** Themes i never used for long
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package dark-mint-theme
+       :ensure t
+       :config
+       (load-theme 'dark-mint t)
+       )
+   #+END_SRC
 
-     ;; (use-package twilight-bright-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'twilight-bright t)
-     ;;   )
+   Seems not to have a good contrast even though the color palette works together well.
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package twilight-bright-theme
+       :ensure t
+       :config
+       (load-theme 'twilight-bright t)
+       )
+   #+END_SRC
 
-     ;; temporary disabled
-     ;; (use-package oceanic-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'oceanic t)
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package oceanic-theme
+       :ensure t
+       :config
+       (load-theme 'oceanic t)
+       )
+   #+END_SRC
 
-     ;; (use-package avk-emacs-themes
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'avk-darkblue-white t)
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package avk-emacs-themes
+        :ensure t
+        :config
+        (load-theme 'avk-darkblue-white t)
+        )
    #+END_SRC
 
 ** Monokai +gnome madness
@@ -1246,7 +1251,7 @@
    #+END_SRC
 
    Load the theme
-   #+BEGIN_SRC emacs-lisp :results silent
+   #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
      (load-theme 'prassee t)
      ;; do my costumization:
@@ -1298,7 +1303,7 @@
 
 ** Spaceline config
    Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package spaceline
        :init
        (progn
