@@ -40,7 +40,9 @@
      dos-coding system
 
 ** Research enabled by this config
-   I'm writing my bachelor-thesis with this config.
+   I'm writing my bachelor-thesis with this config. In order to do that i included quite alot of
+   config settings into my emacs config. An alternative to this would be downloading an emacs
+   distribution / config that is designed just for writing scientifical papers, like [[https://github.com/jkitchin/scimax][Scimax]].
 
    Configuration that specifically enables me to do that is tagged with "research". On linux i had
    to install packages ontop of simple configuratino inside emacs:
