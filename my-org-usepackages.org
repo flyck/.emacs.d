@@ -250,7 +250,11 @@
    to the middle, top and bottom. Using C-l to put the current line to the top of the buffer and
    then pressing UP results in an unpleasant shift of the buffer position. However for simple
    scrolling this is nice.
-   #+BEGIN_SRC emacs-lisp
+
+   This mode also makes next-line and previous-line so slow that it is uncomfortable to use.
+
+   However scrolling is nice with this, lol. I have it disabled right now for its disadvantages
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package smooth-scrolling
   :ensure t
   :init
@@ -406,15 +410,6 @@
        (fset 'fbr/convert-listitem-into-checklistitem
              "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
        (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
-       ;; Custom commands
-       (define-key global-map "\C-cl" 'org-store-link)
-       (define-key global-map "\C-ca" 'org-agenda)
-       (define-key global-map "\C-cc" 'org-capture)
-       (define-key global-map "\M-n" 'org-metadown)
-       (define-key global-map "\M-p" 'org-metaup)
-       (define-key org-mode-map "\C-m" 'nil)
-       (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
-       (global-set-key (kbd "<f9>") 'org-todo)
        (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
        ;; Visual modifications
        ;; Strike through DONE headlines
@@ -429,6 +424,7 @@
        ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
        ;; change from ... to the arrow
        (setq org-ellipsis "⤵")
+       (custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
        ;; Circulate Bullets instead of asteriks for list items
        (font-lock-add-keywords 'org-mode
                                '(("^ +\\([-*]\\) "
@@ -439,164 +435,23 @@
        )
    #+END_SRC
 
-*** Latex-settings                                          :research:
-    Including this into the usepackage-definition of org doesnt seem to work.
-    This is some sample-template called bjmarticle i copied from the webs.
+*** Org-mode operation speed improvments
+    Keyboard shortcuts are probably the first place to start
     #+BEGIN_SRC emacs-lisp
-      (require 'ox-latex)
-      (add-to-list 'org-latex-classes
-                   '("bjmarticle"
-                     "\\documentclass{article}
-                      \\usepackage[utf8]{inputenc}
-                      \\usepackage[T1]{fontenc}
-                      \\usepackage{graphicx}
-                      \\usepackage{longtable}
-                      \\usepackage{hyperref}
-                      \\usepackage{natbib}
-                      \\usepackage{amssymb}
-                      \\usepackage{amsmath}
-                      \\usepackage{geometry}
-                      \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                   )
+      (define-key global-map "\C-cl" 'org-store-link)
+      (define-key global-map "\C-ca" 'org-agenda)
+      (define-key global-map "\C-cc" 'org-capture)
+      (define-key global-map "\M-n" 'org-metadown)
+      (define-key global-map "\M-p" 'org-metaup)
+      (define-key org-mode-map "\C-m" 'nil) ;; why do i do this?
+      (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
+      (global-set-key (kbd "<f9>") 'org-todo)
     #+END_SRC
 
-    A latex-template that is actually useful and that I will use for my bachelor-thesis.
+    Jump to beginning / end of heading by default (should make navigation faster once i get used
+    to this)
     #+BEGIN_SRC emacs-lisp
-      ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-      (require 'ox-latex)
-      (add-to-list 'org-latex-classes
-                   '("stsreprt"
-                     "\\documentclass[
-                                    %%%%% Styles and Sizes
-                                          %10pt,
-                                          %11pt,
-                                          %12pt,
-                                          fancyheadings, % headings with seplines and logo
-                                          %
-                                          %%%%% Printing, Color and Binding
-                                          %a4paper,
-                                          %a5paper,
-                                          %twoside, % single sided printout
-                                          %oneside, % duplex printout (default)
-                                          %% binding correction is used to compensate for the paper lost during binding
-                                          %% of the document
-                                          %BCOR=0.7cm, % binding correction
-                                          %nobcorignoretitle, % do not ignore BCOR for title page
-                                          %% the following two options only concern the graphics included by the document
-                                          %% class
-                                          %grayscaletitle, % keep the title in grayscale
-                                          %grayscalebody, % keep the rest of the document in grayscale
-                                          %
-                                          %%%%% expert options: your mileage may vary
-                                          %baseclass=..., % special option to use a different document baseclass
-                                          ]{stsreprt}"
-                     ("\\chapter{%s}" . "\\chapter*{%s}")
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
-                     )
-                   )
-    #+END_SRC
-
-*** Orgmode bibliography                                    :research:
-    Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-ref
-        :ensure t
-        :config
-        (setq org-ref-completion-library 'org-ref-helm-cite)
-        (require 'org-ref)
-        (require 'org-ref-pdf) ;; enable pdf drag n' drop
-        (require 'doi-utils)
-        (require 'org-ref-latex)
-        (require 'org-ref-bibtex)
-        (require 'org-ref-url-utils)
-
-        ;; see org-ref for use of these variables
-        (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
-              org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
-              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
-              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
-              )
-        (setq org-latex-pdf-process
-              '("pdflatex -interaction nonstopmode -output-directory %o %f"
-                "bibtex %b"
-                "pdflatex -interaction nonstopmode -output-directory %o %f"
-                "pdflatex -interaction nonstopmode -output-directory %o %f")
-              )
-        (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
-        )
-    #+END_SRC
-
-*** Make presentations with org-reveal                      :research:
-    Downloaded this repo: https://github.com/hakimel/reveal.js.git
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-reveal
-      :ensure t
-      :config
-      (if (equal "laptop" (getenv "SYSENV"))
-          (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
-      )
-    #+END_SRC
-
-*** Enable specific latex-headers                           :research:
-    Taken from here:
-    http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package org
-       :ensure org-plus-contrib
-       :config
-       (require 'ox-extra)
-       (ox-extras-activate '(ignore-headlines))
-       )
-   #+END_SRC
-
-*** Enable R codeblocks                                     :research:
-    For this to work i had to install the ess-package:
-    #+BEGIN_SRC sh :tangle no
-    sudo apt-get install ess
-    #+END_SRC
-    After having installed this the following works
-    #+BEGIN_SRC emacs-lisp
-      (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
-          (progn
-            ;; found out about the path with dpkg -L ess
-            (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
-            (require 'ess-site))
-        )
-    #+END_SRC
-
-    In addition we also need to load the org-babel language R over here:
-    [[*Org-mode][Org-mode section]].
-
-*** Org-mode todo-keywords
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "work" (getenv "SYSENV"))
-          (progn (setq org-todo-keywords
-    		   '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
-        )
-      (if (or (equal "home" (getenv "SYSENV"))
-              (equal "laptop" (getenv "SYSENV"))
-              (equal "linux-vm" (getenv "SYSENV")))
-          (progn (setq org-todo-keywords
-    		   '((sequence "TODO(t)" "|" "DONE(d)")
-    		     (sequence "PENDING(p)" "|" "CANCELED(c)")
-    		     ))
-    	     )
-        )
-      ;; Keyword-faces, these can be set independant from the system
-      (setq org-todo-keyword-faces
-    	'(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
-              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+      (setq org-special-ctrl-a/e t)
     #+END_SRC
 
 *** Org-mode agenda-files
@@ -670,28 +525,7 @@
         )
     #+END_SRC
 
-*** More latex settings - cdlatex
-    From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
-    "speed-up insertion of environments and math templates"
-
-    From cdlatex.el:
-    "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
-    #+BEGIN_SRC emacs-lisp
-      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
-      ;; (use-package auctex
-      ;; :ensure t
-      ;; )
-
-      ;; (use-package cdlatex
-      ;; :ensure t
-      ;; :config
-      ;; (require 'auctex)
-      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-      ;; )
-
-    #+END_SRC
-
-*** Org-Agenda Settings
+*** Org-mode agenda settings
    #+BEGIN_SRC emacs-lisp
      ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
      ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
@@ -744,6 +578,186 @@
              )
            )
    #+END_SRC
+
+*** Org-mode todo-keywords
+    #+BEGIN_SRC emacs-lisp
+      (if (equal "work" (getenv "SYSENV"))
+          (progn (setq org-todo-keywords
+    		   '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+        )
+      (if (or (equal "home" (getenv "SYSENV"))
+              (equal "laptop" (getenv "SYSENV"))
+              (equal "linux-vm" (getenv "SYSENV")))
+          (progn (setq org-todo-keywords
+    		   '((sequence "TODO(t)" "|" "DONE(d)")
+    		     (sequence "PENDING(p)" "|" "CANCELED(c)")
+    		     ))
+    	     )
+        )
+      ;; Keyword-faces, these can be set independant from the system
+      (setq org-todo-keyword-faces
+    	'(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+    #+END_SRC
+
+*** Latex-settings                                          :research:
+    Including this into the usepackage-definition of org doesnt seem to work.
+    This is some sample-template called bjmarticle i copied from the webs.
+    #+BEGIN_SRC emacs-lisp
+      (require 'ox-latex)
+      (add-to-list 'org-latex-classes
+                   '("bjmarticle"
+                     "\\documentclass{article}
+                      \\usepackage[utf8]{inputenc}
+                      \\usepackage[T1]{fontenc}
+                      \\usepackage{graphicx}
+                      \\usepackage{longtable}
+                      \\usepackage{hyperref}
+                      \\usepackage{natbib}
+                      \\usepackage{amssymb}
+                      \\usepackage{amsmath}
+                      \\usepackage{geometry}
+                      \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                   )
+    #+END_SRC
+
+    A latex-template that is actually useful and that I will use for my bachelor-thesis.
+    #+BEGIN_SRC emacs-lisp
+      ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+      (require 'ox-latex)
+      (add-to-list 'org-latex-classes
+                   '("stsreprt"
+                     "\\documentclass[
+                                    %%%%% Styles and Sizes
+                                          %10pt,
+                                          %11pt,
+                                          %12pt,
+                                          fancyheadings, % headings with seplines and logo
+                                          %
+                                          %%%%% Printing, Color and Binding
+                                          %a4paper,
+                                          %a5paper,
+                                          %twoside, % single sided printout
+                                          %oneside, % duplex printout (default)
+                                          %% binding correction is used to compensate for the paper lost during binding
+                                          %% of the document
+                                          %BCOR=0.7cm, % binding correction
+                                          %nobcorignoretitle, % do not ignore BCOR for title page
+                                          %% the following two options only concern the graphics included by the document
+                                          %% class
+                                          %grayscaletitle, % keep the title in grayscale
+                                          %grayscalebody, % keep the rest of the document in grayscale
+                                          %
+                                          %%%%% expert options: your mileage may vary
+                                          %baseclass=..., % special option to use a different document baseclass
+                                          ]{stsreprt}"
+                     ("\\chapter{%s}" . "\\chapter*{%s}")
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                     )
+                   )
+    #+END_SRC
+*** Orgmode bibliography                                    :research:
+    Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-ref
+        :ensure t
+        :config
+        (setq org-ref-completion-library 'org-ref-helm-cite)
+        (require 'org-ref)
+        (require 'org-ref-pdf) ;; enable pdf drag n' drop
+        (require 'doi-utils)
+        (require 'org-ref-latex)
+        (require 'org-ref-bibtex)
+        (require 'org-ref-url-utils)
+
+        ;; see org-ref for use of these variables
+        (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
+              org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
+              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
+              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
+              )
+        (setq org-latex-pdf-process
+              '("pdflatex -interaction nonstopmode -output-directory %o %f"
+                "bibtex %b"
+                "pdflatex -interaction nonstopmode -output-directory %o %f"
+                "pdflatex -interaction nonstopmode -output-directory %o %f")
+              )
+        (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+        )
+    #+END_SRC
+
+*** Make presentations with org-reveal                      :research:
+    Downloaded this repo: https://github.com/hakimel/reveal.js.git
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-reveal
+      :ensure t
+      :config
+      (if (equal "laptop" (getenv "SYSENV"))
+          (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
+      )
+    #+END_SRC
+
+*** Enable specific latex-headers                           :research:
+    Taken from here:
+    http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :ensure org-plus-contrib
+       :config
+       (require 'ox-extra)
+       (ox-extras-activate '(ignore-headlines))
+       )
+   #+END_SRC
+
+*** Enable R codeblocks                                     :research:
+    For this to work i had to install the ess-package:
+    #+BEGIN_SRC sh :tangle no
+    sudo apt-get install ess
+    #+END_SRC
+    After having installed this the following works
+    #+BEGIN_SRC emacs-lisp
+      (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
+          (progn
+            ;; found out about the path with dpkg -L ess
+            (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
+            (require 'ess-site))
+        )
+    #+END_SRC
+
+    In addition we also need to load the org-babel language R over here:
+    [[*Org-mode][Org-mode section]].
+
+*** More latex settings - cdlatex
+    From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
+    "speed-up insertion of environments and math templates"
+
+    From cdlatex.el:
+    "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
+    #+BEGIN_SRC emacs-lisp
+      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
+      ;; (use-package auctex
+      ;; :ensure t
+      ;; )
+
+      ;; (use-package cdlatex
+      ;; :ensure t
+      ;; :config
+      ;; (require 'auctex)
+      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+      ;; )
+
+    #+END_SRC
 
 *** Org-mode triggered alerts
     This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
@@ -893,7 +907,7 @@
     )
     #+END_SRC
 
-*** Org-mode org-clocl-csv extension
+*** Org-mode org-clock-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
    #+BEGIN_SRC emacs-lisp
