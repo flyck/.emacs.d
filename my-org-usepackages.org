@@ -1132,6 +1132,7 @@
 
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
+   Care for the workaround though!
    #+BEGIN_SRC emacs-lisp
      (use-package seti-theme
        :ensure t
@@ -1163,6 +1164,20 @@
        (set-background-color "grey12")
        )
    #+END_SRC
+
+*** Seti-theme workaround
+    I had to uncomment two lines in the official package for this theme. If i dont do so the
+    html-export breaks.
+    #+BEGIN_SRC sh :results drawer :tangle no
+    # Here are the two lines
+    grep "breaks" ~/.emacs.d/elpa/seti-theme-20161208.836/seti-theme.el
+    #+END_SRC
+
+    #+RESULTS:
+    :RESULTS:
+       ;; `(font-lock-comment-delimiter-face ((t (:inherit (font-lock-comment-face))))) ;;disabled because it breaks the html-export
+       ;; `(font-lock-comment-face ((t (:foreground ,text-3)))) ;;disabled because it breaks the html-export
+    :END:
 
 ** Eziam theme
    This is a new-comer, the grayscaling really is a new take on themes for me and the
@@ -1275,9 +1290,9 @@
       )
    #+END_SRC
 
-** Org-mode Size settings (temporarily disabled)
+** Org-mode Size settings
    Regardless of the theme i got used to having the org-headlines at certain sizes.
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
 ;; Org-mode Size-Customizations
 (custom-set-faces
  `(org-level-1 ((t (:inherit outline-1 :height 1.4))))
@@ -1317,7 +1332,7 @@
 
 ** Spaceline config
    Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
      (use-package spaceline
        :init
        (progn
