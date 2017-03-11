@@ -27,7 +27,7 @@
      (add-to-list 'load-path "~/.emacs.d/elisp/org-plus-contrib-20170210/")
      (setq package-enable-at-startup nil)
      (setq custom-file "~/.emacs.d/custom-settings.el")
-     (load custom-file t)
+     ;;(load custom-file t)
    #+END_SRC
 
 ** Emacs bootstrap

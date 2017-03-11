@@ -1,3 +1,13 @@
+* About Emacs in general
+  This config is obviously is highly customized and no good for a beginner. Even for emacs users
+  this config is probably only interesting in specific points they can then copy to their own
+  config. However I also found some nice tutorials on emacs in general listed here which I'd like
+  to point out:
+  - https://www.inkandben.com/org-mode-resources for a nice collection of tutorials
+  - http://emacs.sexy/ a well done advertisement-like site on emacs
+  - https://emacsthemes.com/
+  - https://github.com/emacs-tw/awesome-emacs
+
 * About this repository
   Started to maintain my emacs-config here on github when I noticed there were more than a handful
   of things I wanted to configure about emacs, and it was too annoying to set them each time by
