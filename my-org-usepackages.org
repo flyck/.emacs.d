@@ -82,7 +82,7 @@
     (use-package helm-swoop
       :ensure t
       :config
-      (global-set-key (kbd "C-s") 'helm-swoop)
+      (global-set-key (kbd "C-s") 'helm-swoop-without-pre-input)
       )
   #+END_SRC
 
@@ -1162,10 +1162,14 @@
         `(org-document-info-keyword ((t (:foreground "light sea green"))))
         ;; make ~words~ pop in this theme
         `(org-code ((t (:inherit shadow :foreground "DarkOrange3"))))
+        ;; my attempt to remove the line striking through the modeline by resetting the face
+        `(mode-line ((t (:foreground "#D4D7D6"))))
         )
        (set-background-color "grey12")
        )
    #+END_SRC
+
+   Manually uncommented "mode-line" settings of this theme in the package itself for now.
 
 *** Seti-theme workaround
     I had to uncomment two lines in the official package for this theme. If i dont do so the
