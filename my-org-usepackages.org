@@ -1160,6 +1160,8 @@
         `(org-block-end-line ((t (:foreground "SlateBlue4"))))
         `(org-document-info ((t (:foreground "medium sea green"))))
         `(org-document-info-keyword ((t (:foreground "light sea green"))))
+        ;; make ~words~ pop in this theme
+        `(org-code ((t (:inherit shadow :foreground "DarkOrange3"))))
         )
        (set-background-color "grey12")
        )
