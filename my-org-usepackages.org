@@ -516,6 +516,7 @@
                   )
          )
       #+END_SRC
+
 **** Work
       #+BEGIN_SRC emacs-lisp
         (if (equal "work" (getenv "SYSENV"))
@@ -571,6 +572,14 @@
      (setq org-tags-match-list-sublevels 'indented)
    #+END_SRC
 
+   Set the default priority to C. This reflects how i use priorities:
+   - ~A~: urgent, do this right now or it will blow up in your face
+   - ~B~: do this one of these days, a possible candidate for priority ~A~
+   - ~C~: do this whenever you feel like it some day in the future
+   #+BEGIN_SRC emacs-lisp
+   (setq org-default-priority 67) ;; the ascii code for C
+   #+END_SRC
+
    Spice the agenda with my 1-month, 1-year and 5-year goals.
 
    The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
@@ -582,22 +591,26 @@
               (
                (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
-                     )
+                      )
                      )
                (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
                      ((org-agenda-overriding-header "Monatliche persönliche Ziele")
+                      )
                      )
-                     )
-                (agenda "")
+               (agenda "")
                (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "1-Jahres-Ziele")
-                     )
+                      )
                      )
                (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "5-Jahres-Ziele")))
-                ))
+               ))
+             ("t" "TODOs sorted by priority"
+              todo "TODO|PENDING"
+              ((org-agenda-overriding-header "All open TODOs sorted by priority")
+               (org-agenda-sorting-strategy '(priority-down todo-state-down))))
              )
            )
    #+END_SRC
@@ -605,20 +618,22 @@
     #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
           (progn (setq org-todo-keywords
-    		   '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+                       '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
         )
       (if (or (equal "home" (getenv "SYSENV"))
               (equal "laptop" (getenv "SYSENV"))
               (equal "linux-vm" (getenv "SYSENV")))
           (progn (setq org-todo-keywords
-    		   '((sequence "TODO(t)" "|" "DONE(d)")
-    		     (sequence "PENDING(p)" "|" "CANCELED(c)")
-    		     ))
-    	     )
+                       '((sequence "TODO(t)" "|" "DONE(d)")
+                         (sequence "PENDING(p)" "|" "CANCELED(c)")
+                         ;;'((sequence "TODO(t)" "PENDING(p)" "|" "CANCELED(c)" "DONE(d)") ;; wouldnt this
+                         ;;be correct? Whatever, it works..
+                         ))
+                 )
         )
       ;; Keyword-faces, these can be set independant from the system
       (setq org-todo-keyword-faces
-    	'(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+            '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
               ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
     #+END_SRC
 
