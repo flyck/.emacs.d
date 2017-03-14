@@ -1,5 +1,5 @@
 * About Emacs in general
-  This config is obviously is highly customized and no good for a beginner. Even for emacs users
+  This config obviously is highly customized and no good for a beginner. Even for emacs users
   this config is probably only interesting in specific points they can then copy to their own
   config. However I also found some nice tutorials on emacs in general listed here which I'd like
   to point out:
@@ -55,7 +55,7 @@
    distribution / config that is designed just for writing scientifical papers, like [[https://github.com/jkitchin/scimax][Scimax]].
 
    Configuration that specifically enables me to do that is tagged with "research". On linux i had
-   to install packages ontop of simple configuratino inside emacs:
+   to install packages ontop of simple configuration inside emacs:
    #+BEGIN_SRC sh
    sudo apt-get install ess
    sudo apt-get install texlive #required for pdf rendering (and more?)
@@ -64,17 +64,11 @@
    #+END_SRC
 
 ** The structure of these config files
-   #+BEGIN_SRC sh :results list :exports result
-   ls *.el
-   #+END_SRC
-
-   - ("org-init.el")
+   1) ("org-init.el")
      - bootstraps the initialization through org-mode
-   - ("init.el")
+   2) ("init.org")
      - customizes the default emacs behaviour
-   - ("my-org-usepackages.el")
+   3) ("my-org-usepackages.org")
      - adds and customizes packages
-   - ("elisp-goodies.el")
-     - my custom functions and things im working on
-   - ("custom-settings.el")
-     - i cant seem to stop emacs from creating this file
+   4) ("elisp-goodies.el")
+     - some of my custom functions and things im working on
