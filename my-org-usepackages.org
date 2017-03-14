@@ -455,75 +455,98 @@
     #+END_SRC
 
 *** Org-mode agenda-files
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "home" (getenv "SYSENV"))
-          (progn (setq org-agenda-files (list
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-              			   ))
-             ;; org-capture setup
-             (setq org-capture-templates
-              	 '(("a" "Add a task to tasks.org." entry
-              	    (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-              	    "* TODO %? SCHEDULED: %t")))
-             (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-             (setq org-capture-templates
-                   '(("t" "todo" entry (file org-default-notes-file)
-                      "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                     ("m" "Meeting" entry (file org-default-notes-file)
-                      "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                     ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
-                      "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                     ;; I dont have NEXT implemented yet into my workflow / config
-                     ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                     ;;  "** NEXT %? \nDEADLINE: %t")
-                     )
-                   )
-             (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-             )
-        )
-      (if (equal "laptop" (getenv "SYSENV"))
-          (progn (setq org-agenda-files (list
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
-             ;; org-capture setup
-             (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-             (setq org-capture-templates
-                   '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                     ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                     ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                     )
-                   )
-             (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-                 )
-        )
-      (if (equal "work" (getenv "SYSENV"))
-          (progn (setq org-agenda-files
-                       (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-                             (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
-                             (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
-                 ;; org-capture setup
-                 (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
-                 (setq org-capture-templates
-                       '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
-                          "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                         ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
-                          "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                         ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
-                          "* %? :idea: \n%t" :clock-in t :clock-resume t)
+    Depending on my system-environment which i deduce from the system environment variable
+    "SYSENV" which i manually set on the systems i use i have different workflows.
+
+    At work i have more todo states, and different agenda files than for example at home. This is
+    reflected by the following settings.
+
+**** Home
+     #+BEGIN_SRC emacs-lisp
+       (if (equal "home" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+              			    ))
+              ;; org-capture setup
+              (setq org-capture-templates
+              	  '(("a" "Add a task to tasks.org." entry
+              	     (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              	     "* TODO %? SCHEDULED: %t")))
+              (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              (setq org-capture-templates
+                    '(("t" "todo" entry (file org-default-notes-file)
+                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file org-default-notes-file)
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      ;; I dont have NEXT implemented yet into my workflow / config
+                      ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                      ;;  "** NEXT %? \nDEADLINE: %t")
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+              )
+         )
+     #+END_SRC
+
+**** Laptop
+      #+BEGIN_SRC emacs-lisp
+       (if (equal "laptop" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
+              ;; org-capture setup
+              (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              (setq org-capture-templates
+                    '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+                  )
+         )
+      #+END_SRC
+**** Work
+      #+BEGIN_SRC emacs-lisp
+        (if (equal "work" (getenv "SYSENV"))
+            (progn (setq org-agenda-files
+                         (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+                   ;; org-capture setup
+                   (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
+                   (setq org-capture-templates
+                         '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                           ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                           ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                           )
                          )
-                       )
-                 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
-                 )
-        )
-    #+END_SRC
+                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+                   )
+          )
+       #+END_SRC
+
+**** Shortcut to open my main agenda file
+     #+BEGIN_SRC emacs-lisp
+       (define-key global-map (kbd "<f6>") 'fbr/open_tasks)
+       (defun fbr/open_tasks()
+         (interactive)
+         (find-file "~//Dropbox//org//gtd//tasks.org")
+         )
+     #+END_SRC
 
 *** Org-mode agenda settings
    #+BEGIN_SRC emacs-lisp
@@ -578,7 +601,6 @@
              )
            )
    #+END_SRC
-
 *** Org-mode todo-keywords
     #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
