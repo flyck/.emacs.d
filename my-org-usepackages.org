@@ -618,7 +618,7 @@
                       (org-agenda-overriding-header "1-Jahres-Ziele")
                       )
                      )
-               (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
+               (tags "year5+TODO=\"TODO\"|year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "5-Jahres-Ziele")))
                ))
