@@ -286,6 +286,21 @@
   )
    #+END_SRC
 
+** Flyspell mode for spelling correction
+   Prerequisite on ubuntu is the following
+   #+BEGIN_SRC sh :tangle no :results silent
+   sudo apt-get install aspell-de
+   #+END_SRC
+
+   I dont use this right now since it slow editing down a bit and correct spelling is actually not
+   that crucial. Also writing german and english in the same document seems confusing for flyspell
+   (as for every / most grammar correction programms).
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (if (equal "laptop" (getenv "SYSENV"))
+         (add-hook 'org-mode-hook 'turn-on-flyspell)
+     )
+   #+END_SRC
+
 ** Emoji-autocomplete (company-emoji)
    #+BEGIN_SRC emacs-lisp
 ;; If i dont uncomment this this attempts to get installed at work?!? TODO
