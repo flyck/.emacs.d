@@ -557,11 +557,16 @@
 
 **** Shortcut to open my main agenda file
      #+BEGIN_SRC emacs-lisp
-       (define-key global-map (kbd "<f6>") 'fbr/open_tasks)
-       (defun fbr/open_tasks()
-         (interactive)
-         (find-file "~//Dropbox//org//gtd//tasks.org")
-         )
+              (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
+              (defun fbr/open_main_agenda_file()
+                (interactive)
+                (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
+                    (find-file "~//Dropbox//org//gtd//tasks.org")
+                  )
+                (if (equal "work" (getenv "SYSENV"))
+                    (find-file (concat "C://Users//" (getenv "USERNAME") "//Desktop//Projekte//org//projects.org"))
+                  )
+                )
      #+END_SRC
 
 *** Org-mode agenda settings
