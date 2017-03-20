@@ -1190,9 +1190,9 @@
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
    Care for the workaround though!
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :results silent
      (use-package seti-theme
-       :ensure t
+       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
        :config
        (custom-set-faces
         '(font-lock-function-name-face ((t (:foreground "royal blue"))))
@@ -1249,17 +1249,20 @@
 
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp :results silent
      (use-package eziam-theme
-       :ensure t
-       :config
+       :if (equal "laptop" (getenv "SYSENV"))
+       :init
+       ;; alternative for loading the manually downloaded package
+       ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/eziam-emacs-theme")
        (load-theme 'eziam-light t)
        )
    #+END_SRC
 
    For installation execute the following:
    #+BEGIN_SRC sh :dir ~/.emacs.d/themes :results silent :tangle no
-   git clone https://github.com/thblt/eziam-theme-emacs.git
+     rm -rf eziam-theme-emacs #makes sure the directory is clean
+     git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
 
 ** zenburn theme
