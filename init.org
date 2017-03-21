@@ -226,8 +226,9 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     (blink-cursor-mode 0))
     #+END_SRC
 
-    Control the startup position of emacs
-    #+BEGIN_SRC emacs-lisp
+    My attempt to control the startup position of emacs (currently deactivated). I'd like for
+    emacs to always start in full-screen position but thats not really an urgent issue.
+    #+BEGIN_SRC emacs-lisp :tangle no
 (if (window-system)
   (set-frame-position (selected-frame) 0 0)
   (set-frame-height (selected-frame) 120))
