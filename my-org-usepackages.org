@@ -1281,8 +1281,8 @@
         `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
         ;; Color the Org-Blocks beautifully for color schemes that do not do that
         `(org-block-foreground ((t (:foreground "dark orange"))))
-        `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-        `(org-block-end-line ((t (:foreground "SlateBlue4"))))
+        `(org-block-begin-line ((t (:foreground "medium slate blue"))))
+        `(org-block-end-line ((t (:foreground "medium slate blue"))))
         `(org-document-info ((t (:foreground "medium sea green"))))
         `(org-document-info-keyword ((t (:foreground "light sea green"))))
         ;; make ~words~ pop in this theme
