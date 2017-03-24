@@ -17,7 +17,8 @@
 
     (setq cl-headline "ghost white")
     (setq cl-first-level "royal blue")
-    (setq cl-second-level "IndianRed3")
+    ;; (setq cl-second-level "IndianRed3")
+    (setq cl-second-level "cornflower blue")
     (setq cl-third-level "SlateBlue3")
     ;; alternative for sunny days
     ;; (setq cl-third-level "SkyBlue1")
@@ -74,7 +75,7 @@
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
   ;; automatically resize the search window based on results (feels convenient)
-  (helm-autoresize-mode 1)
+  ;; (helm-autoresize-mode 1) ;; currently disabled since i keep using track of it due to the resizing
   )
   #+END_SRC
 
