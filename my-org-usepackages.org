@@ -558,7 +558,7 @@
                             "* %? :idea: \n%t" :clock-in t :clock-resume t)
                            )
                          )
-                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
                    )
           )
        #+END_SRC
