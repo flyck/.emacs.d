@@ -610,6 +610,15 @@
 
    Spice the agenda with my 1-month, 1-year and 5-year goals.
 
+   Make it so that tags are put to the right-hand side of the window in org-agenda
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
+     (defun place-agenda-tags ()
+       "Put the agenda tags by the right border of the agenda window."
+       (setq org-agenda-tags-column (- 4 (window-width)))
+       (org-agenda-align-tags))
+   #+END_SRC
+
    The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
    which also match the tag-search this is based on - get excluded from the results which is
    convenient.
