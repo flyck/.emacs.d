@@ -492,6 +492,9 @@
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2015")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2016")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2017")
               			    ))
               ;; org-capture setup
               (setq org-capture-templates
@@ -523,7 +526,11 @@
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2015")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2016")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2017")
+                                          ))
               ;; org-capture setup
               (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
               (setq org-capture-templates
