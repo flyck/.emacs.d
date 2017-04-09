@@ -80,3 +80,10 @@
   An idea to mitigate this problem is to make caps-lock a second ctrl key.
 
   On Ubuntu this can be done using the ~gnome-tweak-tool~.
+
+* The Server-Client Setup
+  The client link on windows looks like this:
+  "C:\Program Files (x86)\GNU Emacs 25.1\bin\emacsclientw.exe" -c -n
+
+  The daemon link on windows looks like this (should be in autostart)
+  "C:\Program Files (x86)\GNU Emacs 25.1\bin\runemacs.exe" --daemon
