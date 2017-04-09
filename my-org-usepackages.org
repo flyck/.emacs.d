@@ -625,38 +625,80 @@
        (org-agenda-align-tags))
    #+END_SRC
 
-   The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
-   which also match the tag-search this is based on - get excluded from the results which is
-   convenient.
-   #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-custom-commands
-           '(("c" "Agenda and monthly goals"
-              (
-               (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
-                     ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+*** Org-mode agenda custom views
+    The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
+    which also match the tag-search this is based on - get excluded from the results which is
+    convenient.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-agenda-custom-commands
+            '(("c" "Agenda and monthly goals"
+               (
+                (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
+                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                       )
                       )
-                     )
-               (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
-                     ((org-agenda-overriding-header "Monatliche persönliche Ziele")
+                (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
+                      ((org-agenda-overriding-header "Monatliche persönliche Ziele")
+                       )
                       )
-                     )
-               (agenda "")
-               (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
-                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "1-Jahres-Ziele")
+                (agenda "")
+                (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                       (org-agenda-overriding-header "1-Jahres-Ziele")
+                       )
                       )
-                     )
-               (tags "year5+TODO=\"TODO\"|year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
-                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "5-Jahres-Ziele")))
-               ))
-             ("t" "TODOs sorted by priority"
-              todo "TODO|PENDING"
-              ((org-agenda-overriding-header "All open TODOs sorted by priority")
-               (org-agenda-sorting-strategy '(priority-down todo-state-down))))
-             )
-           )
-   #+END_SRC
+                (tags "year5+TODO=\"TODO\"|year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                       (org-agenda-overriding-header "5-Jahres-Ziele")))
+                ))
+              ("t" "TODOs sorted by priority"
+               todo "TODO|PENDING"
+               ((org-agenda-overriding-header "All open TODOs sorted by priority")
+                (org-agenda-sorting-strategy '(priority-down todo-state-down))))
+              )
+            )
+    #+END_SRC
+
+**** Monthly budget view
+     Taken from here:
+     http://jcardente.blogspot.de/2010/06/org-mode-hack-tasks-done-last-month.html
+
+     I use it to create my monthly financial report.
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'calendar)
+
+       (defun fbr/org-tasks-closed-in-month (&optional month year match-string)
+         "Produces an org agenda tags view list of the tasks completed
+       in the specified month and year. Month parameter expects a number
+       from 1 to 12. Year parameter expects a four digit number. Defaults
+       to the current month when arguments are not provided. Additional search
+       criteria can be provided via the optional match-string argument "
+         (interactive)
+         (let* ((today (calendar-current-date))
+                (for-month (or month (calendar-extract-month today)))
+                (for-year  (or year  (calendar-extract-year today))))
+           (org-tags-view nil
+                 (concat
+                  match-string
+                  (format "+CLOSED>=\"[%d-%02d-01]\""
+                          for-year for-month)
+                  (format "+CLOSED<=\"[%d-%02d-%02d]\""
+                          for-year for-month
+                          (calendar-last-day-of-month for-month for-year))))))
+
+       (defun fbr/budget-tasks-last-month ()
+         "Produces an org agenda tags view list of all the tasks completed
+       last month with the tag budget."
+         (interactive)
+         (let* ((today (calendar-current-date))
+                (for-month (calendar-extract-month today))
+                (for-year  (calendar-extract-year today)))
+              (calendar-increment-month for-month for-year -1)
+              (fbr/org-tasks-closed-in-month
+               for-month for-year "TODO=\"DONE\"+budget")))
+     #+END_SRC
+
 *** Org-mode todo-keywords
     #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
