@@ -489,7 +489,6 @@
        (if (equal "home" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2015")
