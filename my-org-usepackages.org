@@ -394,7 +394,7 @@
 *** TODO Warn if username and useremail are not set
 
 *** Define emacs shutdown function (taken from baron42bba)
-    Emacs is a powerfull tool, so powerfull that i need to protect myself from deleting huge
+    Emacs is a powerful tool, so powerfull that i need to protect myself from deleting huge
     chunks of my org-files on accident without noticing. I can do this by committing after each
     day of work, so if i find out today that recently i must have deleted some part of my org-file
     i can go back into the file-history to bring it back. The emacs backup-files dont help in this
@@ -427,9 +427,6 @@
         (kill-emacs)
         )
     #+END_SRC
-
-**** TODO Make sure that i actually have a server running and adapt this config
-     smirk
 
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
@@ -1087,6 +1084,15 @@
     (setq org-export-preserve-breaks t)
     #+END_SRC
 
+**** ox-twbs package for better html export
+     This package really has a good, yet simply html export and conveniently adds itself as a
+     menu-entry to the html export-menu (triggered by C-c C-e and w o)
+     #+BEGIN_SRC emacs-lisp
+       (use-package ox-twbs
+         :ensure t
+       )
+     #+END_SRC
+
 **** Orgmode htmlize extension
      Inserts highlighting of Org Source-Blocks on Html-Export
      #+BEGIN_SRC emacs-lisp
@@ -1099,11 +1105,11 @@
      Downloaded this repo: https://github.com/hakimel/reveal.js.git
      #+BEGIN_SRC emacs-lisp
        (use-package ox-reveal
-       :ensure t
-       :config
-       (if (equal "laptop" (getenv "SYSENV"))
-           (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
-       )
+         :ensure t
+         :config
+         (if (equal "laptop" (getenv "SYSENV"))
+             (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
+         )
      #+END_SRC
 
 *** Org-mode org-clock-csv extension
