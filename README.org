@@ -1,8 +1,7 @@
-* About Emacs in general
-  This config obviously is highly customized and no good for a beginner. Even for emacs users
-  this config is probably only interesting in specific points they can then copy to their own
-  config. However I also found some nice tutorials on emacs in general listed here which I'd like
-  to point out:
+* If you are new here
+  This config is highly customized and no good for a beginner. Even for emacs users this config is
+  probably only interesting in specific points they can then copy to their own config. However
+  along the way I found some nice tutorials on emacs in general which I'd like to point out:
   - https://www.inkandben.com/org-mode-resources for a nice collection of tutorials
   - http://emacs.sexy/ a well done advertisement-like site on emacs
   - https://emacsthemes.com/
@@ -22,12 +21,9 @@
   - The overall file-structure is not a mess
 
   🌵 Things I struggle with:
-  - Some packages can't be installed on some of the environments I use because of install-errors
-    like "this package doesn't untar cleanly". This behaviour is unexpected and a big
-    inconvenience. I am still to come up with a solution for this.
-  - My coding-system is set to linux now on every system I use. This means I cannot use the
-    standart windows editor anymore to edit my files, which is an inconvenience. Alot of my
-    colleagues use that editor... There are alot of pros though.
+  - My customized org-agenda takes forever to load (~11 seconds on my laptop)
+  - Indenting and line-wrapping in org-mode
+  - Empty lines in new headings in org-mode
 
 ** The ongoing debate about the right coding-system
    Right now I use the unix coding system everywhere, this might be subject to change though.
