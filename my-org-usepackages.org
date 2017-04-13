@@ -277,6 +277,15 @@
   )
    #+END_SRC
 
+** Writeroom extension
+   #+BEGIN_SRC emacs-lisp
+   (use-package writeroom-mode
+   :ensure t
+   :config
+   (setq writeroom-width 100)
+   )
+   #+END_SRC
+
 ** Rainbow delimiters
    This package is kind of a useless extension since the colors it uses are way too subtle
    #+BEGIN_SRC emacs-lisp
@@ -723,69 +732,85 @@
     #+END_SRC
 
 *** Latex-settings                                          :research:
-    Including this into the usepackage-definition of org doesnt seem to work.
-    This is some sample-template called bjmarticle i copied from the webs.
-    #+BEGIN_SRC emacs-lisp
-      (require 'ox-latex)
-      (add-to-list 'org-latex-classes
-                   '("bjmarticle"
-                     "\\documentclass{article}
-                      \\usepackage[utf8]{inputenc}
-                      \\usepackage[T1]{fontenc}
-                      \\usepackage{graphicx}
-                      \\usepackage{longtable}
-                      \\usepackage{hyperref}
-                      \\usepackage{natbib}
-                      \\usepackage{amssymb}
-                      \\usepackage{amsmath}
-                      \\usepackage{geometry}
-                      \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                   )
-    #+END_SRC
 
-    A latex-template that is actually useful and that I will use for my bachelor-thesis.
+**** bjm-article Template
+     Including this into the usepackage-definition of org doesnt seem to work.
+     This is some sample-template called bjmarticle i copied from the webs.
+     #+BEGIN_SRC emacs-lisp
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("bjmarticle"
+                      "\\documentclass{article}
+                       \\usepackage[utf8]{inputenc}
+                       \\usepackage[T1]{fontenc}
+                       \\usepackage{graphicx}
+                       \\usepackage{longtable}
+                       \\usepackage{hyperref}
+                       \\usepackage{natbib}
+                       \\usepackage{amssymb}
+                       \\usepackage{amsmath}
+                       \\usepackage{geometry}
+                       \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                    )
+     #+END_SRC
+
+**** stsreport Template
+     A latex-template that is actually useful and that I will use for my bachelor-thesis.
+     #+BEGIN_SRC emacs-lisp
+       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("stsreprt"
+                      "\\documentclass[
+                                     %%%%% Styles and Sizes
+                                           %10pt,
+                                           %11pt,
+                                           %12pt,
+                                           fancyheadings, % headings with seplines and logo
+                                           %
+                                           %%%%% Printing, Color and Binding
+                                           %a4paper,
+                                           %a5paper,
+                                           %twoside, % single sided printout
+                                           %oneside, % duplex printout (default)
+                                           %% binding correction is used to compensate for the paper lost during binding
+                                           %% of the document
+                                           %BCOR=0.7cm, % binding correction
+                                           %nobcorignoretitle, % do not ignore BCOR for title page
+                                           %% the following two options only concern the graphics included by the document
+                                           %% class
+                                           %grayscaletitle, % keep the title in grayscale
+                                           %grayscalebody, % keep the rest of the document in grayscale
+                                           %
+                                           %%%%% expert options: your mileage may vary
+                                           %baseclass=..., % special option to use a different document baseclass
+                                           ]{stsreprt}"
+                      ("\\chapter{%s}" . "\\chapter*{%s}")
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                      )
+                    )
+     #+END_SRC
+
+**** Enable specific latex-headers                          :research:
+     Taken from here:
+     http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
+
     #+BEGIN_SRC emacs-lisp
-      ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-      (require 'ox-latex)
-      (add-to-list 'org-latex-classes
-                   '("stsreprt"
-                     "\\documentclass[
-                                    %%%%% Styles and Sizes
-                                          %10pt,
-                                          %11pt,
-                                          %12pt,
-                                          fancyheadings, % headings with seplines and logo
-                                          %
-                                          %%%%% Printing, Color and Binding
-                                          %a4paper,
-                                          %a5paper,
-                                          %twoside, % single sided printout
-                                          %oneside, % duplex printout (default)
-                                          %% binding correction is used to compensate for the paper lost during binding
-                                          %% of the document
-                                          %BCOR=0.7cm, % binding correction
-                                          %nobcorignoretitle, % do not ignore BCOR for title page
-                                          %% the following two options only concern the graphics included by the document
-                                          %% class
-                                          %grayscaletitle, % keep the title in grayscale
-                                          %grayscalebody, % keep the rest of the document in grayscale
-                                          %
-                                          %%%%% expert options: your mileage may vary
-                                          %baseclass=..., % special option to use a different document baseclass
-                                          ]{stsreprt}"
-                     ("\\chapter{%s}" . "\\chapter*{%s}")
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
-                     )
-                   )
+      (use-package org
+        :ensure org-plus-contrib
+        :config
+        (require 'ox-extra)
+        (ox-extras-activate '(ignore-headlines))
+        )
     #+END_SRC
 *** Orgmode bibliography                                    :research:
     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
@@ -817,30 +842,6 @@
         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
         )
     #+END_SRC
-
-*** Make presentations with org-reveal                      :research:
-    Downloaded this repo: https://github.com/hakimel/reveal.js.git
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-reveal
-      :ensure t
-      :config
-      (if (equal "laptop" (getenv "SYSENV"))
-          (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
-      )
-    #+END_SRC
-
-*** Enable specific latex-headers                           :research:
-    Taken from here:
-    http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package org
-       :ensure org-plus-contrib
-       :config
-       (require 'ox-extra)
-       (ox-extras-activate '(ignore-headlines))
-       )
-   #+END_SRC
 
 *** Enable R codeblocks                                     :research:
     For this to work i had to install the ess-package:
@@ -881,7 +882,7 @@
 
     #+END_SRC
 
-*** Org-mode triggered alerts
+*** Org-mode alerts
     This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
     #+BEGIN_SRC emacs-lisp :tangle no
        ;; Make appt aware of appointments from the agenda
@@ -979,73 +980,73 @@
         )
     #+END_SRC
 
-*** Copy previous source-block
-    This is helpful in training sessions (or when being lazy). (taken from here:
-    https://github.com/baron42bba/.emacs.d/commit/41e2ab53e32abc12a1fbaf050e277228605f1338)
+**** Copy previous source-block
+     This is helpful in training sessions (or when being lazy). (taken from here:
+     https://github.com/baron42bba/.emacs.d/commit/41e2ab53e32abc12a1fbaf050e277228605f1338)
 
-    #+BEGIN_SRC emacs-lisp
-      (defun bba-copy-and-yank-org-src-block()
-        "copy last org src block and insert it at point.
-      If region is active copy only the src begin and src end lines."
-        (interactive)
-        (if (use-region-p)
-            (progn
-              (let (-p1 -p2 srclength)
-                (setq -p1 (region-beginning) -p2 (region-end))
-                (setq mark-active nil)
-                (re-search-backward "\#\\+BEGIN_SRC")
-                (set-mark-command nil)
-                (forward-line)
-                (beginning-of-line)
-                (kill-ring-save 1 1 1)
-                (goto-char -p1)
-                (set-mark-command nil)
-                (insert (pop kill-ring))
-                (setq srclength (- (region-end) (region-beginning)))
-                (setq mark-active nil)
-                (re-search-backward "\#\\+END_SRC")
-                (set-mark-command nil)
-                (forward-line)
-                (beginning-of-line)
-                (kill-ring-save 1 1 1)
-                (kill-append "\n" nil)
-                (goto-char (+ -p2 srclength))
-                (insert (pop kill-ring))
-                )
-              )
-          (progn
-            (push-mark)
-            (re-search-backward "\#\\+BEGIN_SRC")
-            (set-mark-command nil)
-            (re-search-forward "\#\\+END_SRC")
-            (forward-line)
-            (beginning-of-line)
-            (kill-ring-save 1 1 1)
-            (set-mark-command '1)
-            (set-mark-command '1)
-            (insert (pop kill-ring))
-            (re-search-backward "\#\\+BEGIN_SRC")
-            (forward-line)
-            ))
-        )
+     #+BEGIN_SRC emacs-lisp
+       (defun bba-copy-and-yank-org-src-block()
+         "copy last org src block and insert it at point.
+       If region is active copy only the src begin and src end lines."
+         (interactive)
+         (if (use-region-p)
+             (progn
+               (let (-p1 -p2 srclength)
+                 (setq -p1 (region-beginning) -p2 (region-end))
+                 (setq mark-active nil)
+                 (re-search-backward "\#\\+BEGIN_SRC")
+                 (set-mark-command nil)
+                 (forward-line)
+                 (beginning-of-line)
+                 (kill-ring-save 1 1 1)
+                 (goto-char -p1)
+                 (set-mark-command nil)
+                 (insert (pop kill-ring))
+                 (setq srclength (- (region-end) (region-beginning)))
+                 (setq mark-active nil)
+                 (re-search-backward "\#\\+END_SRC")
+                 (set-mark-command nil)
+                 (forward-line)
+                 (beginning-of-line)
+                 (kill-ring-save 1 1 1)
+                 (kill-append "\n" nil)
+                 (goto-char (+ -p2 srclength))
+                 (insert (pop kill-ring))
+                 )
+               )
+           (progn
+             (push-mark)
+             (re-search-backward "\#\\+BEGIN_SRC")
+             (set-mark-command nil)
+             (re-search-forward "\#\\+END_SRC")
+             (forward-line)
+             (beginning-of-line)
+             (kill-ring-save 1 1 1)
+             (set-mark-command '1)
+             (set-mark-command '1)
+             (insert (pop kill-ring))
+             (re-search-backward "\#\\+BEGIN_SRC")
+             (forward-line)
+             ))
+         )
 
-      (defun bba-copy-org-src-block()
-        "copy last org src block and insert it at point."
-        (interactive)
-        (push-mark)
-        (re-search-backward "\#\\+BEGIN_SRC")
-        (set-mark-command nil)
-        (re-search-forward "\#\\+END_SRC")
-        (forward-line)
-        (beginning-of-line)
-        (kill-ring-save 1 1 1)
-        (set-mark-command '1)
-        (set-mark-command '1)
-        )
+       (defun bba-copy-org-src-block()
+         "copy last org src block and insert it at point."
+         (interactive)
+         (push-mark)
+         (re-search-backward "\#\\+BEGIN_SRC")
+         (set-mark-command nil)
+         (re-search-forward "\#\\+END_SRC")
+         (forward-line)
+         (beginning-of-line)
+         (kill-ring-save 1 1 1)
+         (set-mark-command '1)
+         (set-mark-command '1)
+         )
 
-      (define-key org-mode-map "\C-c\S-w" 'bba-copy-and-yank-org-src-block)
-      (define-key org-mode-map (kbd "C-c s-w") 'bba-copy-org-src-block)
-    #+END_SRC
+       (define-key org-mode-map "\C-c\S-w" 'bba-copy-and-yank-org-src-block)
+       (define-key org-mode-map (kbd "C-c s-w") 'bba-copy-org-src-block)
+     #+END_SRC
 
 *** Org-mode time logging
     log the time when a task is "done"
@@ -1061,8 +1062,14 @@
     (setq org-log-state-notes-insert-after-drawers t)
     #+END_SRC
 
-*** Org-mode html export settings
-    remove the "validate"-link from the org-html export
+*** Org-mode html export
+    I have a bunch of css files within the "styles"-folder which i use on and off. They can then
+    be used by adding the following line to the beginning of the file (path has to be adapted).
+    #+BEGIN_SRC emacs-lisp :tangle no
+    #+HTML_HEAD:   <link rel="stylesheet" type="text/css" href="styles\\markdown.css" />
+    #+END_SRC
+
+    Remove the "validate"-link from the org-html export
     #+BEGIN_SRC emacs-lisp
     (setq org-html-postamble nil)
     #+END_SRC
@@ -1081,21 +1088,23 @@
     #+END_SRC
 
 **** Orgmode htmlize extension
-    Inserts highlighting of Org Source-Blocks on Html-Export
-    #+BEGIN_SRC emacs-lisp
- (use-package htmlize
-   :ensure t
-   )
-    #+END_SRC
+     Inserts highlighting of Org Source-Blocks on Html-Export
+     #+BEGIN_SRC emacs-lisp
+       (use-package htmlize
+         :ensure t
+         )
+     #+END_SRC
 
-*** Writeroom extension
-    #+BEGIN_SRC emacs-lisp
-    (use-package writeroom-mode
-    :ensure t
-    :config
-    (setq writeroom-width 100)
-    )
-    #+END_SRC
+**** Make presentations with org-reveal                     :research:
+     Downloaded this repo: https://github.com/hakimel/reveal.js.git
+     #+BEGIN_SRC emacs-lisp
+       (use-package ox-reveal
+       :ensure t
+       :config
+       (if (equal "laptop" (getenv "SYSENV"))
+           (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
+       )
+     #+END_SRC
 
 *** Org-mode org-clock-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
