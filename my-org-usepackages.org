@@ -375,11 +375,14 @@
        :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
                  ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
                  ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
+                 ((equal nil (getenv "SYSENV")) (message "Loading magit"))
                  )
        :ensure t
        :config
        (add-to-list 'exec-path "C:/Program Files/Git/bin")
        (setenv "GIT_ASKPASS" "git-gui--askpass")
+       ;; set git home for university setup
+       (if (equal nil (getenv "SYSENV")) (setq magit-git-executable "/fibus/fs0/10/sefb1704/bin/git"))
        :defer 5
        )
    #+END_SRC
