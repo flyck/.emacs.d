@@ -17,7 +17,8 @@
 
     (setq cl-headline "ghost white")
     (setq cl-first-level "royal blue")
-    (setq cl-second-level "IndianRed3")
+    ;; (setq cl-second-level "IndianRed3")
+    (setq cl-second-level "cornflower blue")
     (setq cl-third-level "SlateBlue3")
     ;; alternative for sunny days
     ;; (setq cl-third-level "SkyBlue1")
@@ -74,7 +75,7 @@
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
   ;; automatically resize the search window based on results (feels convenient)
-  (helm-autoresize-mode 1)
+  ;; (helm-autoresize-mode 1) ;; currently disabled since i keep using track of it due to the resizing
   )
   #+END_SRC
 
@@ -82,7 +83,7 @@
     (use-package helm-swoop
       :ensure t
       :config
-      (global-set-key (kbd "C-s") 'helm-swoop)
+      (global-set-key (kbd "C-s") 'helm-swoop-without-pre-input)
       )
   #+END_SRC
 
@@ -250,7 +251,11 @@
    to the middle, top and bottom. Using C-l to put the current line to the top of the buffer and
    then pressing UP results in an unpleasant shift of the buffer position. However for simple
    scrolling this is nice.
-   #+BEGIN_SRC emacs-lisp
+
+   This mode also makes next-line and previous-line so slow that it is uncomfortable to use.
+
+   However scrolling is nice with this, lol. I have it disabled right now for its disadvantages
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package smooth-scrolling
   :ensure t
   :init
@@ -272,6 +277,15 @@
   )
    #+END_SRC
 
+** Writeroom extension
+   #+BEGIN_SRC emacs-lisp
+   (use-package writeroom-mode
+   :ensure t
+   :config
+   (setq writeroom-width 100)
+   )
+   #+END_SRC
+
 ** Rainbow delimiters
    This package is kind of a useless extension since the colors it uses are way too subtle
    #+BEGIN_SRC emacs-lisp
@@ -280,6 +294,21 @@
   :init
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
   )
+   #+END_SRC
+
+** Flyspell mode for spelling correction
+   Prerequisite on ubuntu is the following
+   #+BEGIN_SRC sh :tangle no :results silent
+   sudo apt-get install aspell-de
+   #+END_SRC
+
+   I dont use this right now since it slow editing down a bit and correct spelling is actually not
+   that crucial. Also writing german and english in the same document seems confusing for flyspell
+   (as for every / most grammar correction programms).
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (if (equal "laptop" (getenv "SYSENV"))
+         (add-hook 'org-mode-hook 'turn-on-flyspell)
+     )
    #+END_SRC
 
 ** Emoji-autocomplete (company-emoji)
@@ -355,10 +384,17 @@
        )
    #+END_SRC
 
+   Also use this:
+   #+BEGIN_SRC emacs-lisp
+     (use-package git-timemachine
+       :ensure t
+       )
+   #+END_SRC
+
 *** TODO Warn if username and useremail are not set
 
 *** Define emacs shutdown function (taken from baron42bba)
-    Emacs is a powerfull tool, so powerfull that i need to protect myself from deleting huge
+    Emacs is a powerful tool, so powerfull that i need to protect myself from deleting huge
     chunks of my org-files on accident without noticing. I can do this by committing after each
     day of work, so if i find out today that recently i must have deleted some part of my org-file
     i can go back into the file-history to bring it back. The emacs backup-files dont help in this
@@ -392,9 +428,6 @@
         )
     #+END_SRC
 
-**** TODO Make sure that i actually have a server running and adapt this config
-     smirk
-
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
      (use-package org
@@ -406,15 +439,6 @@
        (fset 'fbr/convert-listitem-into-checklistitem
              "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
        (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
-       ;; Custom commands
-       (define-key global-map "\C-cl" 'org-store-link)
-       (define-key global-map "\C-ca" 'org-agenda)
-       (define-key global-map "\C-cc" 'org-capture)
-       (define-key global-map "\M-n" 'org-metadown)
-       (define-key global-map "\M-p" 'org-metaup)
-       (define-key org-mode-map "\C-m" 'nil)
-       (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
-       (global-set-key (kbd "<f9>") 'org-todo)
        (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
        ;; Visual modifications
        ;; Strike through DONE headlines
@@ -429,6 +453,7 @@
        ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
        ;; change from ... to the arrow
        (setq org-ellipsis "⤵")
+       (custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
        ;; Circulate Bullets instead of asteriks for list items
        (font-lock-add-keywords 'org-mode
                                '(("^ +\\([-*]\\) "
@@ -439,72 +464,351 @@
        )
    #+END_SRC
 
+*** Org-mode operation speed improvments
+    Keyboard shortcuts are probably the first place to start
+    #+BEGIN_SRC emacs-lisp
+      (define-key global-map "\C-cl" 'org-store-link)
+      (define-key global-map "\C-ca" 'org-agenda)
+      (define-key global-map "\C-cc" 'org-capture)
+      (define-key global-map "\M-n" 'org-metadown)
+      (define-key global-map "\M-p" 'org-metaup)
+      (define-key org-mode-map "\C-m" 'nil) ;; why do i do this?
+      (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
+      (global-set-key (kbd "<f9>") 'org-todo)
+    #+END_SRC
+
+    Jump to beginning / end of heading by default (should make navigation faster once i get used
+    to this)
+    #+BEGIN_SRC emacs-lisp
+      (setq org-special-ctrl-a/e t)
+    #+END_SRC
+
+*** Org-mode agenda-files
+    Depending on my system-environment which i deduce from the system environment variable
+    "SYSENV" which i manually set on the systems i use i have different workflows.
+
+    At work i have more todo states, and different agenda files than for example at home. This is
+    reflected by the following settings.
+
+**** Home
+     #+BEGIN_SRC emacs-lisp
+       (if (equal "home" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2015")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2016")
+                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2017")
+              			    ))
+              ;; org-capture setup
+              (setq org-capture-templates
+              	  '(("a" "Add a task to tasks.org." entry
+              	     (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              	     "* TODO %? SCHEDULED: %t")))
+              (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              (setq org-capture-templates
+                    '(("t" "todo" entry (file org-default-notes-file)
+                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file org-default-notes-file)
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      ;; I dont have NEXT implemented yet into my workflow / config
+                      ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                      ;;  "** NEXT %? \nDEADLINE: %t")
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+              )
+         )
+     #+END_SRC
+
+**** Laptop
+      #+BEGIN_SRC emacs-lisp
+       (if (equal "laptop" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2015")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2016")
+                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2017")
+                                          ))
+              ;; org-capture setup
+              (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              (setq org-capture-templates
+                    '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+                  )
+         )
+      #+END_SRC
+
+**** Work
+      #+BEGIN_SRC emacs-lisp
+        (if (equal "work" (getenv "SYSENV"))
+            (progn (setq org-agenda-files
+                         (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+                   ;; org-capture setup
+                   (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
+                   (setq org-capture-templates
+                         '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                           ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                           ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                           )
+                         )
+                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+                   )
+          )
+       #+END_SRC
+
+**** Shortcut to open my main agenda file
+     #+BEGIN_SRC emacs-lisp
+              (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
+              (defun fbr/open_main_agenda_file()
+                (interactive)
+                (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
+                    (find-file "~//Dropbox//org//gtd//tasks.org")
+                  )
+                (if (equal "work" (getenv "SYSENV"))
+                    (find-file (concat "C://Users//" (getenv "USERNAME") "//Desktop//Projekte//org//projects.org"))
+                  )
+                )
+     #+END_SRC
+
+*** Org-mode agenda settings
+   #+BEGIN_SRC emacs-lisp
+     ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
+     ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
+     (setq org-agenda-start-with-clockreport-mode nil)
+     ;; Set default column view headings: Task Total-Time Time-Stamp
+     (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
+     ;; A package to visualize repeated tasks in the org agenda
+     (require 'org-habit)
+     (add-to-list 'org-modules 'org-habit)
+     (setq org-habit-show-habits-only-for-today nil)
+     ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
+     (setq org-agenda-archives-mode t)
+     (defun fbr/org-agenda-reduce-to-current-file()
+       (interactive)
+       (setq org-agenda-files (list (buffer-file-name)))
+       )
+     ;; start the agenda in a full window
+     (setq org-agenda-window-setup 'current-window)
+     ;; indicate the markdown-level when displaying tasks in agenda
+     (setq org-tags-match-list-sublevels 'indented)
+   #+END_SRC
+
+   Set the default priority to C. This reflects how i use priorities:
+   - ~A~: urgent, do this right now or it will blow up in your face
+   - ~B~: do this one of these days, a possible candidate for priority ~A~
+   - ~C~: do this whenever you feel like it some day in the future
+   #+BEGIN_SRC emacs-lisp
+   (setq org-default-priority 67) ;; the ascii code for C
+   #+END_SRC
+
+   Spice the agenda with my 1-month, 1-year and 5-year goals.
+
+   Make it so that tags are put to the right-hand side of the window in org-agenda
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
+     (defun place-agenda-tags ()
+       "Put the agenda tags by the right border of the agenda window."
+       (setq org-agenda-tags-column (- 4 (window-width)))
+       (org-agenda-align-tags))
+   #+END_SRC
+
+*** Org-mode agenda custom views
+    The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
+    which also match the tag-search this is based on - get excluded from the results which is
+    convenient.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-agenda-custom-commands
+            '(("c" "Agenda and monthly goals"
+               (
+                (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
+                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                       )
+                      )
+                (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
+                      ((org-agenda-overriding-header "Monatliche persönliche Ziele")
+                       )
+                      )
+                (agenda "")
+                (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                       (org-agenda-overriding-header "1-Jahres-Ziele")
+                       )
+                      )
+                (tags "year5+TODO=\"TODO\"|year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                       (org-agenda-overriding-header "5-Jahres-Ziele")))
+                ))
+              ("t" "TODOs sorted by priority"
+               todo "TODO|PENDING"
+               ((org-agenda-overriding-header "All open TODOs sorted by priority")
+                (org-agenda-sorting-strategy '(priority-down todo-state-down))))
+              )
+            )
+    #+END_SRC
+
+**** Monthly budget view
+     Taken from here:
+     http://jcardente.blogspot.de/2010/06/org-mode-hack-tasks-done-last-month.html
+
+     I use it to create my monthly financial report.
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'calendar)
+
+       (defun fbr/org-tasks-closed-in-month (&optional month year match-string)
+         "Produces an org agenda tags view list of the tasks completed
+       in the specified month and year. Month parameter expects a number
+       from 1 to 12. Year parameter expects a four digit number. Defaults
+       to the current month when arguments are not provided. Additional search
+       criteria can be provided via the optional match-string argument "
+         (interactive)
+         (let* ((today (calendar-current-date))
+                (for-month (or month (calendar-extract-month today)))
+                (for-year  (or year  (calendar-extract-year today))))
+           (org-tags-view nil
+                 (concat
+                  match-string
+                  (format "+CLOSED>=\"[%d-%02d-01]\""
+                          for-year for-month)
+                  (format "+CLOSED<=\"[%d-%02d-%02d]\""
+                          for-year for-month
+                          (calendar-last-day-of-month for-month for-year))))))
+
+       (defun fbr/budget-tasks-last-month ()
+         "Produces an org agenda tags view list of all the tasks completed
+       last month with the tag budget."
+         (interactive)
+         (let* ((today (calendar-current-date))
+                (for-month (calendar-extract-month today))
+                (for-year  (calendar-extract-year today)))
+              (calendar-increment-month for-month for-year -1)
+              (fbr/org-tasks-closed-in-month
+               for-month for-year "TODO=\"DONE\"+budget")))
+     #+END_SRC
+
+*** Org-mode todo-keywords
+    #+BEGIN_SRC emacs-lisp
+      (if (equal "work" (getenv "SYSENV"))
+          (progn (setq org-todo-keywords
+                       '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+        )
+      (if (or (equal "home" (getenv "SYSENV"))
+              (equal "laptop" (getenv "SYSENV"))
+              (equal "linux-vm" (getenv "SYSENV")))
+          (progn (setq org-todo-keywords
+                       '((sequence "TODO(t)" "|" "DONE(d)")
+                         (sequence "PENDING(p)" "|" "CANCELED(c)")
+                         ;;'((sequence "TODO(t)" "PENDING(p)" "|" "CANCELED(c)" "DONE(d)") ;; wouldnt this
+                         ;;be correct? Whatever, it works..
+                         ))
+                 )
+        )
+      ;; Keyword-faces, these can be set independant from the system
+      (setq org-todo-keyword-faces
+            '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+    #+END_SRC
+
 *** Latex-settings                                          :research:
-    Including this into the usepackage-definition of org doesnt seem to work.
-    This is some sample-template called bjmarticle i copied from the webs.
-    #+BEGIN_SRC emacs-lisp
-      (require 'ox-latex)
-      (add-to-list 'org-latex-classes
-                   '("bjmarticle"
-                     "\\documentclass{article}
-                      \\usepackage[utf8]{inputenc}
-                      \\usepackage[T1]{fontenc}
-                      \\usepackage{graphicx}
-                      \\usepackage{longtable}
-                      \\usepackage{hyperref}
-                      \\usepackage{natbib}
-                      \\usepackage{amssymb}
-                      \\usepackage{amsmath}
-                      \\usepackage{geometry}
-                      \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                   )
-    #+END_SRC
 
-    A latex-template that is actually useful and that I will use for my bachelor-thesis.
-    #+BEGIN_SRC emacs-lisp
-      ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-      (require 'ox-latex)
-      (add-to-list 'org-latex-classes
-                   '("stsreprt"
-                     "\\documentclass[
-                                    %%%%% Styles and Sizes
-                                          %10pt,
-                                          %11pt,
-                                          %12pt,
-                                          fancyheadings, % headings with seplines and logo
-                                          %
-                                          %%%%% Printing, Color and Binding
-                                          %a4paper,
-                                          %a5paper,
-                                          %twoside, % single sided printout
-                                          %oneside, % duplex printout (default)
-                                          %% binding correction is used to compensate for the paper lost during binding
-                                          %% of the document
-                                          %BCOR=0.7cm, % binding correction
-                                          %nobcorignoretitle, % do not ignore BCOR for title page
-                                          %% the following two options only concern the graphics included by the document
-                                          %% class
-                                          %grayscaletitle, % keep the title in grayscale
-                                          %grayscalebody, % keep the rest of the document in grayscale
-                                          %
-                                          %%%%% expert options: your mileage may vary
-                                          %baseclass=..., % special option to use a different document baseclass
-                                          ]{stsreprt}"
-                     ("\\chapter{%s}" . "\\chapter*{%s}")
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
-                     )
-                   )
-    #+END_SRC
+**** bjm-article Template
+     Including this into the usepackage-definition of org doesnt seem to work.
+     This is some sample-template called bjmarticle i copied from the webs.
+     #+BEGIN_SRC emacs-lisp
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("bjmarticle"
+                      "\\documentclass{article}
+                       \\usepackage[utf8]{inputenc}
+                       \\usepackage[T1]{fontenc}
+                       \\usepackage{graphicx}
+                       \\usepackage{longtable}
+                       \\usepackage{hyperref}
+                       \\usepackage{natbib}
+                       \\usepackage{amssymb}
+                       \\usepackage{amsmath}
+                       \\usepackage{geometry}
+                       \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                    )
+     #+END_SRC
 
+**** stsreport Template
+     A latex-template that is actually useful and that I will use for my bachelor-thesis.
+     #+BEGIN_SRC emacs-lisp
+       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("stsreprt"
+                      "\\documentclass[
+                                     %%%%% Styles and Sizes
+                                           %10pt,
+                                           %11pt,
+                                           %12pt,
+                                           fancyheadings, % headings with seplines and logo
+                                           %
+                                           %%%%% Printing, Color and Binding
+                                           %a4paper,
+                                           %a5paper,
+                                           %twoside, % single sided printout
+                                           %oneside, % duplex printout (default)
+                                           %% binding correction is used to compensate for the paper lost during binding
+                                           %% of the document
+                                           %BCOR=0.7cm, % binding correction
+                                           %nobcorignoretitle, % do not ignore BCOR for title page
+                                           %% the following two options only concern the graphics included by the document
+                                           %% class
+                                           %grayscaletitle, % keep the title in grayscale
+                                           %grayscalebody, % keep the rest of the document in grayscale
+                                           %
+                                           %%%%% expert options: your mileage may vary
+                                           %baseclass=..., % special option to use a different document baseclass
+                                           ]{stsreprt}"
+                      ("\\chapter{%s}" . "\\chapter*{%s}")
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                      )
+                    )
+     #+END_SRC
+
+**** Enable specific latex-headers                          :research:
+     Taken from here:
+     http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package org
+        :ensure org-plus-contrib
+        :config
+        (require 'ox-extra)
+        (ox-extras-activate '(ignore-headlines))
+        )
+    #+END_SRC
 *** Orgmode bibliography                                    :research:
     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
 
@@ -536,30 +840,6 @@
         )
     #+END_SRC
 
-*** Make presentations with org-reveal                      :research:
-    Downloaded this repo: https://github.com/hakimel/reveal.js.git
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-reveal
-      :ensure t
-      :config
-      (if (equal "laptop" (getenv "SYSENV"))
-          (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
-      )
-    #+END_SRC
-
-*** Enable specific latex-headers                           :research:
-    Taken from here:
-    http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package org
-       :ensure org-plus-contrib
-       :config
-       (require 'ox-extra)
-       (ox-extras-activate '(ignore-headlines))
-       )
-   #+END_SRC
-
 *** Enable R codeblocks                                     :research:
     For this to work i had to install the ess-package:
     #+BEGIN_SRC sh :tangle no
@@ -577,98 +857,6 @@
 
     In addition we also need to load the org-babel language R over here:
     [[*Org-mode][Org-mode section]].
-
-*** Org-mode todo-keywords
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "work" (getenv "SYSENV"))
-          (progn (setq org-todo-keywords
-    		   '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
-        )
-      (if (or (equal "home" (getenv "SYSENV"))
-              (equal "laptop" (getenv "SYSENV"))
-              (equal "linux-vm" (getenv "SYSENV")))
-          (progn (setq org-todo-keywords
-    		   '((sequence "TODO(t)" "|" "DONE(d)")
-    		     (sequence "PENDING(p)" "|" "CANCELED(c)")
-    		     ))
-    	     )
-        )
-      ;; Keyword-faces, these can be set independant from the system
-      (setq org-todo-keyword-faces
-    	'(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
-              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
-    #+END_SRC
-
-*** Org-mode agenda-files
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "home" (getenv "SYSENV"))
-          (progn (setq org-agenda-files (list
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/gcal.org")
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                      (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-              			   ))
-             ;; org-capture setup
-             (setq org-capture-templates
-              	 '(("a" "Add a task to tasks.org." entry
-              	    (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-              	    "* TODO %? SCHEDULED: %t")))
-             (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-             (setq org-capture-templates
-                   '(("t" "todo" entry (file org-default-notes-file)
-                      "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                     ("m" "Meeting" entry (file org-default-notes-file)
-                      "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                     ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
-                      "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                     ;; I dont have NEXT implemented yet into my workflow / config
-                     ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                     ;;  "** NEXT %? \nDEADLINE: %t")
-                     )
-                   )
-             (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-             )
-        )
-      (if (equal "laptop" (getenv "SYSENV"))
-          (progn (setq org-agenda-files (list
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                                         (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")))
-             ;; org-capture setup
-             (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-             (setq org-capture-templates
-                   '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                     ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                     ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                     )
-                   )
-             (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-                 )
-        )
-      (if (equal "work" (getenv "SYSENV"))
-          (progn (setq org-agenda-files
-                       (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-                             (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
-                             (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
-                 ;; org-capture setup
-                 (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
-                 (setq org-capture-templates
-                       '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
-                          "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                         ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
-                          "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                         ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
-                          "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                         )
-                       )
-                 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
-                 )
-        )
-    #+END_SRC
 
 *** More latex settings - cdlatex
     From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
@@ -691,61 +879,7 @@
 
     #+END_SRC
 
-*** Org-Agenda Settings
-   #+BEGIN_SRC emacs-lisp
-     ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
-     ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
-     (setq org-agenda-start-with-clockreport-mode nil)
-     ;; Set default column view headings: Task Total-Time Time-Stamp
-     (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
-     ;; A package to visualize repeated tasks in the org agenda
-     (require 'org-habit)
-     (add-to-list 'org-modules 'org-habit)
-     (setq org-habit-show-habits-only-for-today nil)
-     ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
-     (setq org-agenda-archives-mode t)
-     (defun fbr/org-agenda-reduce-to-current-file()
-       (interactive)
-       (setq org-agenda-files (list (buffer-file-name)))
-       )
-     ;; start the agenda in a full window
-     (setq org-agenda-window-setup 'current-window)
-     ;; indicate the markdown-level when displaying tasks in agenda
-     (setq org-tags-match-list-sublevels 'indented)
-   #+END_SRC
-
-   Spice the agenda with my 1-month, 1-year and 5-year goals.
-
-   The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
-   which also match the tag-search this is based on - get excluded from the results which is
-   convenient.
-   #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-custom-commands
-           '(("c" "Agenda and monthly goals"
-              (
-               (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
-                     ((org-agenda-overriding-header "Monatliche professionelle Ziele")
-                     )
-                     )
-               (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
-                     ((org-agenda-overriding-header "Monatliche persönliche Ziele")
-                     )
-                     )
-                (agenda "")
-               (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
-                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "1-Jahres-Ziele")
-                     )
-                     )
-               (tags "year5+TODO=\"TODO\"year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
-                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "5-Jahres-Ziele")))
-                ))
-             )
-           )
-   #+END_SRC
-
-*** Org-mode triggered alerts
+*** Org-mode alerts
     This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
     #+BEGIN_SRC emacs-lisp :tangle no
        ;; Make appt aware of appointments from the agenda
@@ -843,6 +977,74 @@
         )
     #+END_SRC
 
+**** Copy previous source-block
+     This is helpful in training sessions (or when being lazy). (taken from here:
+     https://github.com/baron42bba/.emacs.d/commit/41e2ab53e32abc12a1fbaf050e277228605f1338)
+
+     #+BEGIN_SRC emacs-lisp
+       (defun bba-copy-and-yank-org-src-block()
+         "copy last org src block and insert it at point.
+       If region is active copy only the src begin and src end lines."
+         (interactive)
+         (if (use-region-p)
+             (progn
+               (let (-p1 -p2 srclength)
+                 (setq -p1 (region-beginning) -p2 (region-end))
+                 (setq mark-active nil)
+                 (re-search-backward "\#\\+BEGIN_SRC")
+                 (set-mark-command nil)
+                 (forward-line)
+                 (beginning-of-line)
+                 (kill-ring-save 1 1 1)
+                 (goto-char -p1)
+                 (set-mark-command nil)
+                 (insert (pop kill-ring))
+                 (setq srclength (- (region-end) (region-beginning)))
+                 (setq mark-active nil)
+                 (re-search-backward "\#\\+END_SRC")
+                 (set-mark-command nil)
+                 (forward-line)
+                 (beginning-of-line)
+                 (kill-ring-save 1 1 1)
+                 (kill-append "\n" nil)
+                 (goto-char (+ -p2 srclength))
+                 (insert (pop kill-ring))
+                 )
+               )
+           (progn
+             (push-mark)
+             (re-search-backward "\#\\+BEGIN_SRC")
+             (set-mark-command nil)
+             (re-search-forward "\#\\+END_SRC")
+             (forward-line)
+             (beginning-of-line)
+             (kill-ring-save 1 1 1)
+             (set-mark-command '1)
+             (set-mark-command '1)
+             (insert (pop kill-ring))
+             (re-search-backward "\#\\+BEGIN_SRC")
+             (forward-line)
+             ))
+         )
+
+       (defun bba-copy-org-src-block()
+         "copy last org src block and insert it at point."
+         (interactive)
+         (push-mark)
+         (re-search-backward "\#\\+BEGIN_SRC")
+         (set-mark-command nil)
+         (re-search-forward "\#\\+END_SRC")
+         (forward-line)
+         (beginning-of-line)
+         (kill-ring-save 1 1 1)
+         (set-mark-command '1)
+         (set-mark-command '1)
+         )
+
+       (define-key org-mode-map "\C-c\S-w" 'bba-copy-and-yank-org-src-block)
+       (define-key org-mode-map (kbd "C-c s-w") 'bba-copy-org-src-block)
+     #+END_SRC
+
 *** Org-mode time logging
     log the time when a task is "done"
     #+BEGIN_SRC emacs-lisp
@@ -857,8 +1059,14 @@
     (setq org-log-state-notes-insert-after-drawers t)
     #+END_SRC
 
-*** Org-mode html export settings
-    remove the "validate"-link from the org-html export
+*** Org-mode html export
+    I have a bunch of css files within the "styles"-folder which i use on and off. They can then
+    be used by adding the following line to the beginning of the file (path has to be adapted).
+    #+BEGIN_SRC emacs-lisp :tangle no
+    #+HTML_HEAD:   <link rel="stylesheet" type="text/css" href="styles\\markdown.css" />
+    #+END_SRC
+
+    Remove the "validate"-link from the org-html export
     #+BEGIN_SRC emacs-lisp
     (setq org-html-postamble nil)
     #+END_SRC
@@ -876,24 +1084,35 @@
     (setq org-export-preserve-breaks t)
     #+END_SRC
 
+**** ox-twbs package for better html export
+     This package really has a good, yet simply html export and conveniently adds itself as a
+     menu-entry to the html export-menu (triggered by C-c C-e and w o)
+     #+BEGIN_SRC emacs-lisp
+       (use-package ox-twbs
+         :ensure t
+       )
+     #+END_SRC
+
 **** Orgmode htmlize extension
-    Inserts highlighting of Org Source-Blocks on Html-Export
-    #+BEGIN_SRC emacs-lisp
- (use-package htmlize
-   :ensure t
-   )
-    #+END_SRC
+     Inserts highlighting of Org Source-Blocks on Html-Export
+     #+BEGIN_SRC emacs-lisp
+       (use-package htmlize
+         :ensure t
+         )
+     #+END_SRC
 
-*** Writeroom extension
-    #+BEGIN_SRC emacs-lisp
-    (use-package writeroom-mode
-    :ensure t
-    :config
-    (setq writeroom-width 100)
-    )
-    #+END_SRC
+**** Make presentations with org-reveal                     :research:
+     Downloaded this repo: https://github.com/hakimel/reveal.js.git
+     #+BEGIN_SRC emacs-lisp
+       (use-package ox-reveal
+         :ensure t
+         :config
+         (if (equal "laptop" (getenv "SYSENV"))
+             (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
+         )
+     #+END_SRC
 
-*** Org-mode org-clocl-csv extension
+*** Org-mode org-clock-csv extension
    Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
    this topic though.
    #+BEGIN_SRC emacs-lisp
@@ -994,41 +1213,72 @@
        )
    #+END_SRC
 
-** Tramp fixes
-   From Howards Blog: http://www.howardism.org/Technical/Emacs/literate-devops.html this is
-   supposed to overwrite the standard org-mode function in ~ob-core.el~ which is buggy and can
-   completely block the org-babel functionality on windows.
+*** Make bash files executable on save
+    #+BEGIN_SRC emacs-lisp
+ (add-hook `after-save-hook
+           #'(lambda ()
+               (if (not
+                    (or
+                     (string-match ".htm" buffer-file-name)
+                     (string-match ".org" buffer-file-name))
+                    )
+                   (check-parens))
 
-   On windows the faulty file is here: <path_to_emacs>\emacs\share\emacs\24.5\lisp\org
-   #+BEGIN_SRC emacs-lisp
-     (defun org-babel-temp-file (prefix &optional suffix)
-       "Create a temporary file in the `org-babel-temporary-directory'.
-     Passes PREFIX and SUFFIX directly to `make-temp-file' with the
-     value of `temporary-file-directory' temporarily set to the value
-     of `org-babel-temporary-directory'."
-       (if (file-remote-p default-directory)
-           (let ((prefix
-                  ;; We cannot use `temporary-file-directory' as local part
-                  ;; on the remote host, because it might be another OS
-                  ;; there.  So we assume "/tmp", which ought to exist on
-                  ;; relevant architectures.
-                  (concat (file-remote-p default-directory)
-                          ;; REPLACE temporary-file-directory with /tmp:
-                          (expand-file-name prefix "/tmp/"))))
-             (make-temp-file prefix nil suffix))
-         (let ((temporary-file-directory
-                (or (and (boundp 'org-babel-temporary-directory)
-                         (file-exists-p org-babel-temporary-directory)
-                         org-babel-temporary-directory)
-                    temporary-file-directory)))
-           (make-temp-file prefix nil suffix))))
-   #+END_SRC
+               (and (save-excursion
+                      (save-restriction
+                        (widen)
+                        (goto-char (point-min))
+                        (save-match-data
+                          (looking-at "^#!"))))
+                    (if (file-remote-p buffer-file-name)
+                        (progn
+                          (not (file-executable-p buffer-file-name))
+                          (shell-command (concat "chmod u+x " (file-name-nondirectory buffer-file-name)))
+                          (message
+                           (concat "Saved as script via tramp: " buffer-file-name))
+                          )
+                      (progn
+                        (not (file-executable-p buffer-file-name))
+                        (shell-command (concat "chmod u+x " buffer-file-name))
+                        (message
+                         (concat "Saved as script: " buffer-file-name)))))))
+    #+END_SRC
 
-   Fix for base64 error (currently unused / unnecessary)
-   See footnotes here: http://www.howardism.org/Technical/Emacs/literate-devops.html
-   #+BEGIN_SRC emacs-lisp :tangle no
-   (setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
-   #+END_SRC
+*** Tramp fixes
+    From Howards Blog: http://www.howardism.org/Technical/Emacs/literate-devops.html this is
+    supposed to overwrite the standard org-mode function in ~ob-core.el~ which is buggy and can
+    completely block the org-babel functionality on windows.
+
+    On windows the faulty file is here: <path_to_emacs>\emacs\share\emacs\24.5\lisp\org
+    #+BEGIN_SRC emacs-lisp
+      (defun org-babel-temp-file (prefix &optional suffix)
+        "Create a temporary file in the `org-babel-temporary-directory'.
+      Passes PREFIX and SUFFIX directly to `make-temp-file' with the
+      value of `temporary-file-directory' temporarily set to the value
+      of `org-babel-temporary-directory'."
+        (if (file-remote-p default-directory)
+            (let ((prefix
+                   ;; We cannot use `temporary-file-directory' as local part
+                   ;; on the remote host, because it might be another OS
+                   ;; there.  So we assume "/tmp", which ought to exist on
+                   ;; relevant architectures.
+                   (concat (file-remote-p default-directory)
+                           ;; REPLACE temporary-file-directory with /tmp:
+                           (expand-file-name prefix "/tmp/"))))
+              (make-temp-file prefix nil suffix))
+          (let ((temporary-file-directory
+                 (or (and (boundp 'org-babel-temporary-directory)
+                          (file-exists-p org-babel-temporary-directory)
+                          org-babel-temporary-directory)
+                     temporary-file-directory)))
+            (make-temp-file prefix nil suffix))))
+    #+END_SRC
+
+    Fix for base64 error (currently unused / unnecessary)
+    See footnotes here: http://www.howardism.org/Technical/Emacs/literate-devops.html
+    #+BEGIN_SRC emacs-lisp :tangle no
+    (setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
+    #+END_SRC
 
 ** SQL
    Thanks to baron42bba and https://truongtx.me/2014/08/23/setup-emacs-as-an-sql-database-client
@@ -1118,37 +1368,62 @@
 
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
-   #+BEGIN_SRC emacs-lisp :tangle no
-;; (use-package seti-theme
-;;   :ensure t
-;;   :config
-;;   (custom-set-faces
-;;    '(font-lock-function-name-face ((t (:foreground "royal blue"))))
-;;    '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
-;;    '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
-;;    `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
-;;    ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
-;;    `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
-;;    ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
-;;    ;; added the outline definitions to blindly work towards a global color theme
-;;    ;; which variables inherit from these "outline" variables?
-;;    `(org-level-1 ((t (:inherit org-level-1 :foreground ,cl-first-level))))
-;;    `(outline-2 ((t (:foreground ,cl-second-level))))
-;;    `(outline-3 ((t (:foreground ,cl-third-level))))
-;;    `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
-;;    `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
-;;    `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
-;;    `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
-;;    ;; Color the Org-Blocks beautifully for color schemes that do not do that
-;;    `(org-block-foreground ((t (:foreground "dark orange"))))
-;;    `(org-block-begin-line ((t (:foreground "SlateBlue4"))))
-;;    `(org-block-end-line ((t (:foreground "SlateBlue4"))))
-;;    `(org-document-info ((t (:foreground "medium sea green"))))
-;;    `(org-document-info-keyword ((t (:foreground "light sea green"))))
-;;    )
-;;   (set-background-color "grey12")
-;;   )
+   Care for the workaround though!
+   #+BEGIN_SRC emacs-lisp :results silent :tangle no
+     (use-package seti-theme
+       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       :config
+       (custom-set-faces
+        '(font-lock-function-name-face ((t (:foreground "royal blue"))))
+        '(font-lock-comment-face ((t (:foreground "light sea green")))) ;9FCA56
+        '(helm-source-header ((t (:background "gray14" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
+        `(helm-candidate-number ((t (:foreground ,cl-meta-information-one))))
+        ;;'(helm-candidate-number ((t (:foreground "goldenrod2"))))
+        `(helm-selection ((t (:background ,cl-selection-background :foreground ,cl-selection-foreground))))
+        ;;'(helm-selection ((t (:background "light gray" :foreground "gray5"))))
+        ;; added the outline definitions to blindly work towards a global color theme
+        ;; which variables inherit from these "outline" variables?
+        `(org-level-1 ((t (:inherit org-level-1 :foreground ,cl-first-level))))
+        `(outline-2 ((t (:foreground ,cl-second-level))))
+        `(outline-3 ((t (:foreground ,cl-third-level))))
+        `(org-document-title ((t (:foreground ,cl-headline :weight bold :height 1.44))))
+        `(org-headline-done ((((class color) (min-colors 16) (background dark)) (:strike-through t))))
+        `(org-date ((t (:foreground ,cl-meta-information-one :underline t))))
+        `(org-link ((t (:inherit nil :foreground ,cl-meta-information-one))))
+        ;; Color the Org-Blocks beautifully for color schemes that do not do that
+        `(org-block-foreground ((t (:foreground "dark orange"))))
+        `(org-block-begin-line ((t (:foreground "medium slate blue"))))
+        `(org-block-end-line ((t (:foreground "medium slate blue"))))
+        `(org-document-info ((t (:foreground "medium sea green"))))
+        `(org-document-info-keyword ((t (:foreground "light sea green"))))
+        ;; make ~words~ pop in this theme
+        `(org-code ((t (:inherit shadow :foreground "DarkOrange3"))))
+        ;; my attempt to remove the line striking through the modeline by resetting the face
+        `(mode-line ((t (:foreground "#D4D7D6"))))
+        )
+       (set-background-color "grey12")
+       )
    #+END_SRC
+
+   Manually uncommented "mode-line" settings of this theme in the package itself for now.
+
+*** Seti-theme workaround
+    I had to uncomment two lines in the official package for this theme. If i dont do so the
+    html-export breaks.
+    #+BEGIN_SRC sh :results drawer :tangle no
+    # Here are the two lines
+    grep "breaks" ~/.emacs.d/elpa/seti-theme-20161208.836/seti-theme.el
+    #+END_SRC
+
+    #+RESULTS:
+    :RESULTS:
+       ;; `(font-lock-comment-delimiter-face ((t (:inherit (font-lock-comment-face))))) ;;disabled because it breaks the html-export
+       ;; `(font-lock-comment-face ((t (:foreground ,text-3)))) ;;disabled because it breaks the html-export
+    :END:
+
+    Apart from that i now (<2017-04-13 Do>) get an error that the face "bold" does not exist. A
+    bunch of settings in the theme inherit from this face. I guess i have to fix this or use a
+    different theme.
 
 ** Eziam theme
    This is a new-comer, the grayscaling really is a new take on themes for me and the
@@ -1157,56 +1432,64 @@
 
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp :results silent
      (use-package eziam-theme
-       :ensure t
-       :config
+       :if (equal "laptop" (getenv "SYSENV"))
+       :init
+       ;; alternative for loading the manually downloaded package
+       ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/eziam-emacs-theme")
        (load-theme 'eziam-light t)
        )
    #+END_SRC
 
    For installation execute the following:
    #+BEGIN_SRC sh :dir ~/.emacs.d/themes :results silent :tangle no
-   git clone https://github.com/thblt/eziam-theme-emacs.git
+     rm -rf eziam-theme-emacs #makes sure the directory is clean
+     git clone https://github.com/thblt/eziam-theme-emacs.git
    #+END_SRC
-
 
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp :results silent
-     ;; (use-package zenburn-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'zenburn t)
-     ;; )
+     (use-package zenburn-theme
+       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       :config
+       (load-theme 'zenburn t)
+     )
    #+END_SRC
 
-** Other unused themes
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package dark-mint-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'dark-mint t)
-     ;;   )
+** Themes i never used for long
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package dark-mint-theme
+       :ensure t
+       :config
+       (load-theme 'dark-mint t)
+       )
+   #+END_SRC
 
-     ;; (use-package twilight-bright-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'twilight-bright t)
-     ;;   )
+   Seems not to have a good contrast even though the color palette works together well.
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package twilight-bright-theme
+       :ensure t
+       :config
+       (load-theme 'twilight-bright t)
+       )
+   #+END_SRC
 
-     ;; temporary disabled
-     ;; (use-package oceanic-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'oceanic t)
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package oceanic-theme
+       :ensure t
+       :config
+       (load-theme 'oceanic t)
+       )
+   #+END_SRC
 
-     ;; (use-package avk-emacs-themes
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'avk-darkblue-white t)
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package avk-emacs-themes
+        :ensure t
+        :config
+        (load-theme 'avk-darkblue-white t)
+        )
    #+END_SRC
 
 ** Monokai +gnome madness
@@ -1246,7 +1529,7 @@
    #+END_SRC
 
    Load the theme
-   #+BEGIN_SRC emacs-lisp :results silent
+   #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/prassee-emacs-theme")
      (load-theme 'prassee t)
      ;; do my costumization:
@@ -1256,9 +1539,9 @@
       )
    #+END_SRC
 
-** Org-mode Size settings (temporarily disabled)
+** Org-mode Size settings
    Regardless of the theme i got used to having the org-headlines at certain sizes.
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
 ;; Org-mode Size-Customizations
 (custom-set-faces
  `(org-level-1 ((t (:inherit outline-1 :height 1.4))))
