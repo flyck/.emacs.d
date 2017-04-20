@@ -68,6 +68,28 @@
    yum install yum-utils
    yum-builddep emacs
    #+END_SRC
+
+** Without root privileges
+   1) Download emacs archive to ~/src/ and unpack it
+   2) Configure with these parameters (you might have to add some --with-no options)
+      #+BEGIN_SRC sh
+      cd ~/src/emacs-25.1
+      ./configure --prefix=$home/emacs --bindir=$home/bin
+      #+END_SRC
+   3) Install emacs
+      #+BEGIN_SRC sh
+      make && make install
+      #+END_SRC
+
+** Ubuntu
+   Used this approach on my laptop. Taken from askubuntu.com
+   This uses this ppa: https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
+   #+BEGIN_SRC sh
+ sudo add-apt-repository ppa:ubuntu-elisp/ppa
+ sudo apt-get update
+ sudo apt-get install emacs-snapshot
+   #+END_SRC
+
 * Fixing org-mode
   Errors i get (when i try to execute source-blocks) that got solved by loading org-mode at
   startup correctly:
@@ -83,13 +105,4 @@
   #+BEGIN_SRC emacs-lisp
 (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa/org-20170210") 0)
 (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa/org-plus-contrib-20170210") 0)
-  #+END_SRC
-
-* Update on linux
-  Used this approach on my laptop. Taken from askubuntu.com
-  This uses this ppa: https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
-  #+BEGIN_SRC sh
-sudo add-apt-repository ppa:ubuntu-elisp/ppa
-sudo apt-get update
-sudo apt-get install emacs-snapshot
   #+END_SRC
