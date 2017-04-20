@@ -1452,7 +1452,7 @@
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp :results silent
      (use-package zenburn-theme
-       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
        :config
        (load-theme 'zenburn t)
      )
@@ -1581,7 +1581,7 @@
 
 ** Spaceline config
    Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package spaceline
        :init
        (progn
