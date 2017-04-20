@@ -1487,7 +1487,7 @@
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp :results silent
      (use-package zenburn-theme
-       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       :if (or (equal "work" (getenv "SYSENV")))
        :config
        (load-theme 'zenburn t)
      )
@@ -1525,6 +1525,16 @@
         :config
         (load-theme 'avk-darkblue-white t)
         )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package solarized-theme
+       :if (equal "home" (getenv "SYSENV"))
+       :config
+       (load-theme 'solarized t)
+       (set-frame-parameter nil 'background-mode 'dark)
+       (enable-theme 'solarized)
+       )
    #+END_SRC
 
 ** Monokai +gnome madness
