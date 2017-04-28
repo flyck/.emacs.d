@@ -1,4 +1,4 @@
-e#+Title:   My use-package configuration in org-mode
+#+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 #+STARTUP: showall
 
@@ -1470,7 +1470,7 @@ e#+Title:   My use-package configuration in org-mode
 
    Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
    It isn't on melpa yet.
-   #+BEGIN_SRC emacs-lisp :results silent
+   #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (use-package eziam-theme
        :if (equal "laptop" (getenv "SYSENV"))
        :init
@@ -1494,6 +1494,15 @@ e#+Title:   My use-package configuration in org-mode
        :config
        (load-theme 'zenburn t)
      )
+   #+END_SRC
+
+** Challenger-Deep theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package challenger-deep-theme
+       :if (equal "laptop" (getenv "SYSENV"))
+       :init
+       (load-theme 'challenger-deep t)
+       )
    #+END_SRC
 
 ** Themes i never used for long
