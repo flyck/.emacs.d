@@ -498,11 +498,11 @@
        (if (equal "home" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
                        (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2015")
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2016")
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2017")
+                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2015")
+                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2016")
+                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2017")
               			    ))
               ;; org-capture setup
               (setq org-capture-templates
@@ -560,7 +560,7 @@
         (if (equal "work" (getenv "SYSENV"))
             (progn (setq org-agenda-files
                          (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
+                               ;(concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
                                (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
                    ;; org-capture setup
                    (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
@@ -1488,7 +1488,7 @@
 
 ** zenburn theme
    A really classy but kind of dirty / muddy theme.
-   #+BEGIN_SRC emacs-lisp :results silent
+   #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (use-package zenburn-theme
        :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
        :config
@@ -1499,7 +1499,7 @@
 ** Challenger-Deep theme
    #+BEGIN_SRC emacs-lisp
      (use-package challenger-deep-theme
-       :if (equal "laptop" (getenv "SYSENV"))
+       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
        :init
        (load-theme 'challenger-deep t)
        )
@@ -1539,13 +1539,12 @@
         )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package solarized-theme
        :if (equal "home" (getenv "SYSENV"))
        :config
-       (load-theme 'solarized t)
+       (load-theme 'solarized-dark t)
        (set-frame-parameter nil 'background-mode 'dark)
-       (enable-theme 'solarized)
        )
    #+END_SRC
 
