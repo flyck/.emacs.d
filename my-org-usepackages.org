@@ -1152,7 +1152,25 @@ e#+Title:   My use-package configuration in org-mode
       )
    #+END_SRC
 
-*** Orgmode calendar extension
+*** Org-mode ics export
+    Taken from here: http://ihrke.github.io/setup-for-sharing-org-mode-agenda-with-google-calendar-and-mobile-devices.html
+
+    The result of this can be imported into a google calendar.
+
+    #+BEGIN_SRC emacs-lisp
+(setq org-icalendar-combined-agenda-file "~/Dropbox/org/gtd/org.ics")
+(setq org-icalendar-include-todo '(all))
+(setq org-icalendar-use-scheduled '(event-if-todo event-if-not-todo))
+(setq org-icalendar-use-deadline '(event-if-todo event-if-not-todo))
+
+;; this hook saves an ics file once an org-buffer is saved
+(defun my-icalendar-agenda-export()
+    (if (string= (file-name-extension (buffer-file-name)) "org")
+                              (org-icalendar-combine-agenda-files))
+              )
+    #+END_SRC
+
+*** Org-mode calendar extension
    #+BEGIN_SRC emacs-lisp
 (use-package calfw
   :ensure t
@@ -1162,7 +1180,7 @@ e#+Title:   My use-package configuration in org-mode
   )
    #+END_SRC
 
-*** Orgmode alert extension
+*** Org-mode alert extension
    This is a package on top of the original =alert.el=
 
    Im pretty sure this makes my "fbr/tea-timer" possible which is defined somewhere else. This way
