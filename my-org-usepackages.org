@@ -1490,7 +1490,7 @@ e#+Title:   My use-package configuration in org-mode
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp :results silent
      (use-package zenburn-theme
-       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
+       :if (or (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
        :config
        (load-theme 'zenburn t)
      )
@@ -1530,7 +1530,7 @@ e#+Title:   My use-package configuration in org-mode
         )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package solarized-theme
        :if (equal "home" (getenv "SYSENV"))
        :config
@@ -1538,6 +1538,12 @@ e#+Title:   My use-package configuration in org-mode
        (set-frame-parameter nil 'background-mode 'dark)
        (enable-theme 'solarized)
        )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+   (use-package challenger-deep-theme
+   :ensure t
+   )
    #+END_SRC
 
 ** Monokai +gnome madness
@@ -1618,6 +1624,7 @@ e#+Title:   My use-package configuration in org-mode
      ;;   ;; (helm-themes--load-theme "purple-haze")
      ;;   )
    #+END_SRC
+
 * Modeline
   I never learned how to successfully edit the modeline yet, i just keep copying configs from nice
   screenshots which then only work in part so i have to delete them again lol. Some themes come
