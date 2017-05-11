@@ -1621,7 +1621,7 @@
 
 ** Org-mode Size settings
    Regardless of the theme i got used to having the org-headlines at certain sizes.
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 ;; Org-mode Size-Customizations
 (custom-set-faces
  `(org-level-1 ((t (:inherit outline-1 :height 1.4))))
