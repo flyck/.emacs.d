@@ -635,28 +635,53 @@
    #+END_SRC
 
 *** Org-mode agenda custom views
-    The todo-filter (+TODO=\"TODO\") makes it so that only the goals are visible, the headlines -
+    This agenda assumes that i have the following structure somewhere in my org-file:
+    - Projects
+      - Life-Goals
+        - 1-month-goals :month1:
+          - Professional :prof:
+          - Private      :priv:
+        - 1-year-goals :year1:
+          - Professional
+          - Private
+        - 5-year-goals :year5:
+          - Professional
+          - Private
+
+    This then gets inserted nicely into the agenda:
+    - monthy professional goals
+    - monthy private goals
+    - agenda
+    - 1-year goals
+    - 5-year goals
+
+    I do this to not lose track of the big picture while doing day-to-day tasks. This is an idea
+    from the book "Time Management for System Administrators" by Thomas A. Limoncelli. He advices
+    to include your long-term goal as a page in your personal planner so you can look at it from
+    time to time.
+
+    The todo-filter (+TODO<>\"\") makes it so that only the goals are visible, the headlines -
     which also match the tag-search this is based on - get excluded from the results which is
     convenient.
     #+BEGIN_SRC emacs-lisp
       (setq org-agenda-custom-commands
-            '(("c" "Agenda and monthly goals"
+            '(("c" "Agenda surrounded by long-term goals"
                (
-                (tags "month1+prof+TODO=\"TODO\"|month1+prof+TODO=\"DONE\"|month1+prof+TODO=\"CANCELED\""
+                (tags "month1+prof+TODO<>\"\""
                       ((org-agenda-overriding-header "Monatliche professionelle Ziele")
                        )
                       )
-                (tags "month1+priv+TODO=\"TODO\"|month1+priv+TODO=\"DONE\"|month1+priv+TODO=\"CANCELED\""
+                (tags "month1+priv+TODO<>\"\""
                       ((org-agenda-overriding-header "Monatliche persönliche Ziele")
                        )
                       )
                 (agenda "")
-                (tags "year1+TODO=\"TODO\"|year1+TODO=\"DONE\"|year1+TODO=\"CANCELED\""
+                (tags "year1+TODO<>\"\""
                       ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                        (org-agenda-overriding-header "1-Jahres-Ziele")
                        )
                       )
-                (tags "year5+TODO=\"TODO\"|year5+TODO=\"DONE\"|year5+TODO=\"CANCELED\""
+                (tags "year5+TODO<>\"\""
                       ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                        (org-agenda-overriding-header "5-Jahres-Ziele")))
                 ))
