@@ -81,5 +81,5 @@
   The client link on windows looks like this:
   "C:\Program Files (x86)\GNU Emacs 25.1\bin\emacsclientw.exe" -c -n
 
-  The daemon link on windows looks like this (should be in autostart)
+  The daemon link on windows looks like this (should be in autostart (run shell:startup))
   "C:\Program Files (x86)\GNU Emacs 25.1\bin\runemacs.exe" --daemon

@@ -1387,7 +1387,7 @@
    #+END_SRC
 
 * Programming
-  I rarely use emacs an IDE, so this is not a rich section.
+  I rarely use emacs as an IDE, so this is not a rich section.
 
 ** C Lang
   The main thing i use from the following is the "jump to definition" function, which is otherwise
