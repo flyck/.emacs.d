@@ -3,9 +3,9 @@
 #+STARTUP: showall
 
 * Initialization
-  I set some general CoLor variables with the CL and i try to stick to these throughout this
-  document whenever i redefine colors. I consider this my standard-library of "good colors" that i
-  should use as my kind of color-palette when i go around and change defaults.
+  I set some general CoLor variables with the prefix CL and i try to stick to these throughout
+  this document whenever i redefine colors. I consider this my standard-library of "good colors"
+  that i should use as my kind of color-palette when i go around and change defaults.
 
   #+BEGIN_SRC emacs-lisp
     (require 'use-package)
@@ -79,6 +79,9 @@
   )
   #+END_SRC
 
+  A package that helps searching for text within the current file. Each matching line gets listed
+  in an overview which is really good. A downfall to this is that it cant be used for
+  keyboard-macros, for these the standard isearch works way better.
   #+BEGIN_SRC emacs-lisp
     (use-package helm-swoop
       :ensure t
@@ -909,7 +912,7 @@
 
 *** Org-mode alerts
     This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
-    #+BEGIN_SRC emacs-lisp :tangle no
+    #+BEGIN_SRC emacs-lisp
        ;; Make appt aware of appointments from the agenda
        (defun fbr/org-agenda-to-appt ()
          "Activate appointments found in `org-agenda-files'."
@@ -1215,15 +1218,16 @@
    not as convenient as having an extra alert-window in my oppinion.
 
    The following code only works for my linux-laptop.
-   #+BEGIN_SRC emacs-lisp
-(use-package org-alert
-  :ensure t
-  :init
-  ;; set this option from alert.el to make alerts visual
-  (setq alert-default-style 'libnotify)
-  (setq org-alert-enable t)
-  (setq org-alert-interval 60)
-  )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package org-alert
+       :ensure t
+       :config
+       (if (equal "laptop" (getenv "SYSENV"))
+           (setq alert-default-style 'libnotify)
+         (setq alert-default-style 'message))
+       (setq org-alert-interval 60)
+       (org-alert-enable)
+       )
    #+END_SRC
 
 ** Tramp
