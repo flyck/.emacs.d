@@ -81,11 +81,13 @@
   *Windows*
 
   The client link on windows looks like this:
-  "C:\Program Files (x86)\GNU Emacs 25.1\bin\emacsclientw.exe" -c -n
+  "C:\Program Files (x86)\GNU Emacs 25.1\bin\emacsclientw.exe" -na "" -c
 
-  The daemon link on windows looks like this (should be in autostart (run shell:startup))
+  The daemon link on windows looks like this (should be in autostart (Windows+R shell:startup))
   "C:\Program Files (x86)\GNU Emacs 25.1\bin\runemacs.exe" --daemon
 
+  Great resource:
+  https://www.emacswiki.org/emacs/EmacsMsWindowsIntegration
 
   *Linux*
 
