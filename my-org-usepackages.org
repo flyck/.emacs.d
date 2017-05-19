@@ -213,7 +213,7 @@
 ** Which-key
    My guide for shortcuts i forget in part and for exploring options after already having pressed
    parts of a key-combination.
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package which-key
   :ensure t
   :config
@@ -438,6 +438,20 @@
    #+BEGIN_SRC emacs-lisp
      (use-package org
        :ensure org-plus-contrib
+       :init
+       ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
+       ;; This HAS to come before (require 'org) / the init section of use-package
+       (setq org-emphasis-regexp-components
+             '("     ('\"{“”"
+               "-   .,!?;''“”\")}/\\“”"
+               "    \t\r\n,"
+               "."
+               5))
+       ;; markup over up to 5 multiple lines
+       ;; (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n,\"")
+       ;; (setcar (nthcdr 4 org-emphasis-regexp-components) 5)
+       ;; (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+       ;; (custom-set-variables `(org-emphasis-alist ',org-emphasis-alist))
        :config
        (add-hook 'comint-output-filter-functions
                  'comint-strip-ctrl-m)
@@ -1230,6 +1244,23 @@
        )
    #+END_SRC
 
+*** cm-mode for advanced authoring markup
+    I like the idea of inserting comments like this package suggests, but I am still just trying
+    this mode out.
+
+    Demo: http://criticmarkup.com/
+
+    Notes:
+    - Breaks my indentation-shortcut M-q (fill-paragraph)
+    - Creates notes that I havent figured out how to delete yet, there seems to be no delete
+      command, just a command that inserts a "delete comment".
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (use-package cm-mode
+        :ensure t
+        :config
+        (setq cm-read-only-annotations nil)
+        )
+    #+END_SRC
 ** Tramp
    Tramp can be used to edit remote files.
 
@@ -1237,46 +1268,60 @@
    - M-x ~load-file~
    - /<remote username>@<remote host>:
 
+   Hint that my setup currently cannot work on windows:
+   - https://www.gnu.org/software/emacs/manual/html_node/tramp/Windows-setup-hints.html
+
    #+BEGIN_SRC emacs-lisp
      (use-package tramp
        :ensure t
-       :init
-       (setq tramp-verbose 5)
-       ;; sshx is the required for cygwin
-       (setq default-tramp-method "sshx")
+       :config
+       ;; (setq tramp-verbose 5)
+       (if (or (equal "work" (getenv "SYSENV"))
+               (equal "home" (getenv "SYSENV")))
+           (progn
+             (setq default-tramp-method "plink")
+             (setq ssh-program "TortoisePlink.exe")
+             (setenv "PATH" (concat ssh-program ";" (getenv "PATH")))
+             ;; Do autosaves locally
+             (set-default 'tramp-auto-save-directory (concat "C:\\Users\\" (getenv "USERNAME") "\\AppData\\Local\\Temp"))
+             )
+         )
        ;; When connecting to a remote server it usually does source the profile, but for some
        ;; reason doesn't do that for $PATH by default. You'll have to specifically tell tramp
        ;; to do that from your .emacs with
        (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-       :config
-       (set-default 'tramp-auto-save-directory (concat "C:\\Users\\" (getenv "USERNAME") "\\AppData\\Local\\Temp"))
-       (define-minor-mode sensitive-mode
-             "For sensitive files like password lists.
-                     It disables backup creation and auto saving.
-
-                     With no argument, this command toggles the mode.
-                     Non-null prefix argument turns on the mode.
-                     Null prefix argument turns off the mode."
-             ;; The initial value.
-             nil
-             ;; The indicator for the mode line.
-             " Sensitive"
-             ;; The minor mode bindings.
-             nil
-             (if (symbol-value sensitive-mode)
-                     (progn
-                       ;; disable backups
-                       (set (make-local-variable 'backup-inhibited) t)
-                       ;; disable auto-save
-                       (if auto-save-default
-                               (auto-save-mode -1)))
-             ;; resort to default value of backup-inhibited
-               (kill-local-variable 'backup-inhibited)
-             ;; resort to default auto save setting
-               (if auto-save-default
-                   (auto-save-mode 1))))
-       :defer 5
+       ;; With this you can do /sudo:ssh-host:/path-to-file-on-ssh-host
+       (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
        )
+   #+END_SRC
+
+   A mode which reduces file interactions to a minimum, which i rarely use.
+   #+BEGIN_SRC emacs-lisp
+     (define-minor-mode sensitive-mode
+       "For sensitive files like password lists.
+        It disables backup creation and auto saving.
+
+        With no argument, this command toggles the mode.
+        Non-null prefix argument turns on the mode.
+        Null prefix argument turns off the mode."
+       ;; The initial value.
+       nil
+       ;; The indicator for the mode line.
+       " Sensitive"
+       ;; The minor mode bindings.
+       nil
+       (if (symbol-value sensitive-mode)
+           (progn
+             ;; disable backups
+             (set (make-local-variable 'backup-inhibited) t)
+             ;; disable auto-save
+             (if auto-save-default
+                 (auto-save-mode -1)))
+         ;; resort to default value of backup-inhibited
+         (kill-local-variable 'backup-inhibited)
+         ;; resort to default auto save setting
+         (if auto-save-default
+             (auto-save-mode 1))))
    #+END_SRC
 
 *** Make bash files executable on save
@@ -1544,7 +1589,7 @@
    #+END_SRC
 
 ** Challenger-Deep theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package challenger-deep-theme
        :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
        :init
@@ -1553,6 +1598,14 @@
    #+END_SRC
 
 ** Themes i never used for long
+   #+BEGIN_SRC emacs-lisp
+     (use-package alect-themes
+       :ensure t
+       :config
+       (load-theme 'alect-dark t)
+       )
+   #+END_SRC
+
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package dark-mint-theme
        :ensure t
@@ -1595,7 +1648,7 @@
        )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
    (use-package challenger-deep-theme
    :ensure t
    )
