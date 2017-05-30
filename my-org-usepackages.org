@@ -702,6 +702,18 @@
                       ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                        (org-agenda-overriding-header "5-Jahres-Ziele")))
                 ))
+              ("k" "Agenda surrounded by milestones"
+               (
+                (tags "milestone+SCHEDULED<>\"\""
+                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                       )
+                      )
+                (agenda "")
+                (tags "milestone+SCHEDULED=\"\""
+                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                       )
+                      )
+                ))
               ("t" "TODOs sorted by priority"
                todo "TODO|PENDING"
                ((org-agenda-overriding-header "All open TODOs sorted by priority")
@@ -892,7 +904,7 @@
     #+END_SRC
     After having installed this the following works
     #+BEGIN_SRC emacs-lisp
-      (if (or (equal "laptop" (getenv "SYSENV")) (equal "home" (getenv "SYSENV")))
+      (if (equal "laptop" (getenv "SYSENV")) ;; removed "home" from valid options, maybe a mistake
           (progn
             ;; found out about the path with dpkg -L ess
             (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
