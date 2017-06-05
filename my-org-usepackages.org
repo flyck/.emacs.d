@@ -469,8 +469,6 @@
        ;; dont scroll automatically such that "point" is visible
        (setq auto-hscroll-mode nil)
        (setq org-hide-emphasis-markers t)
-       (setq org-tags-column -70)
-       ;; to aligh the tags that already exist simple execute "org-align-all-tags" on the file
        ;; change from ... to the arrow
        (setq org-ellipsis "⤵")
        (custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
@@ -608,6 +606,18 @@
                   )
                 )
      #+END_SRC
+
+*** Org-mode tags
+    The horizontal position of tags is set here.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-tags-column -70)
+    #+END_SRC
+
+    This setting should work together with your line-wrapping limit, such that tagged headings
+    match the line-wrapped text below.
+
+    To align the tags that already exist simple execute =org-align-all-tags= on the file. This is
+    useful when changing the above setting, since it doesnt affect existing org-files.
 
 *** Org-mode agenda settings
    #+BEGIN_SRC emacs-lisp
