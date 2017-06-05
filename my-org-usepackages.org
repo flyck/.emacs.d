@@ -977,6 +977,7 @@
        'org-babel-load-languages
        '(
          (R . t)
+         (latex . t)
          (lisp . t)
          (shell . t)
          (perl . t)
