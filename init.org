@@ -63,13 +63,10 @@
     Sometimes I load files outside the package system. As long as they're in a directory in my
     =load-path=, Emacs can find them.
 
-    I create the elpa directory if it doesnt exist since emacs will
-    otherwise complain while loading the packages
+    I create the elpa directory if it doesnt exist since emacs will otherwise complain while
+    loading the packages.
 
     #+BEGIN_SRC emacs-lisp
-      ;; Do I need the following?
-      ;; (let ((default-directory "~/.emacs.d/elpa/"))
-      ;;   (normal-top-level-add-subdirs-to-load-path))
       (unless (file-exists-p "~/.emacs.d/elpa")
         (make-directory "~/.emacs.d/elpa"))
       (unless (package-installed-p 'use-package)
@@ -87,22 +84,17 @@
    emacs.
 
 *** Libraries
+    Dash is "A modern list library for Emacs" and is required by everything. To avoid / fix errors
+    I load it explicitly and early.
     #+begin_src emacs-lisp
     (use-package dash)
     #+end_src
 
-**** TODO What is that for again?
 *** Coding style
     #+BEGIN_SRC emacs-lisp
-      (if (or (equal "home" (getenv "SYSENV"))
-              (equal "work" (getenv "SYSENV"))
-              (equal "laptop" (getenv "SYSENV"))
-              (equal "linux-vm" (getenv "SYSENV"))
-              )
-          (progn (prefer-coding-system 'utf-8-unix)
-             (setq coding-system-for-read 'utf-8-unix)
-             (setq coding-system-for-write 'utf-8-unix))
-        )
+      (setq prefer-coding-system 'utf-8-unix)
+      (setq coding-system-for-read 'utf-8-unix)
+      (setq coding-system-for-write 'utf-8-unix)
       ;; Disable tabs
       (setq-default indent-tabs-mode nil)
       (setq tab-width 4)
@@ -190,25 +182,25 @@
 
     Code to easily, incrementally adjust the transparency settings:
     #+BEGIN_SRC emacs-lisp
-(defun my--set-transparency (inc)
-  "Increase or decrease the selected frame transparency"
-  (let* ((alpha (frame-parameter (selected-frame) 'alpha))
-         (next-alpha (cond ((not alpha) 100)
-                           ((> (- alpha inc) 100) 100)
-                           ((< (- alpha inc) 0) 0)
-                           (t (- alpha inc)))))
-    (set-frame-parameter (selected-frame) 'alpha next-alpha)))
+      (defun my--set-transparency (inc)
+        "Increase or decrease the selected frame transparency"
+        (let* ((alpha (frame-parameter (selected-frame) 'alpha))
+               (next-alpha (cond ((not alpha) 100)
+                                 ((> (- alpha inc) 100) 100)
+                                 ((< (- alpha inc) 0) 0)
+                                 (t (- alpha inc)))))
+          (set-frame-parameter (selected-frame) 'alpha next-alpha)))
 
-(defhydra hydra-transparency (:columns 2)
-  "
-ALPHA : [ %(frame-parameter nil 'alpha) ]
-"
-  ("j" (lambda () (interactive) (my--set-transparency +1)) "+ more")
-  ("k" (lambda () (interactive) (my--set-transparency -1)) "- less")
-  ("J" (lambda () (interactive) (my--set-transparency +10)) "++ more")
-  ("K" (lambda () (interactive) (my--set-transparency -10)) "-- less")
-  ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 opaque:")
-         (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
+      (defhydra hydra-transparency (:columns 2)
+        "
+      ALPHA : [ %(frame-parameter nil 'alpha) ]
+      "
+        ("j" (lambda () (interactive) (my--set-transparency +1)) "+ more")
+        ("k" (lambda () (interactive) (my--set-transparency -1)) "- less")
+        ("J" (lambda () (interactive) (my--set-transparency +10)) "++ more")
+        ("K" (lambda () (interactive) (my--set-transparency -10)) "-- less")
+        ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 opaque:")
+               (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
     #+END_SRC
 
     Customize the interface to be more slim
@@ -221,17 +213,9 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
 
     Stop cursor from blinking
     #+BEGIN_SRC emacs-lisp
-(blink-cursor-mode 0)
-(if (fboundp 'blink-cursor-mode)
-    (blink-cursor-mode 0))
-    #+END_SRC
-
-    My attempt to control the startup position of emacs (currently deactivated). I'd like for
-    emacs to always start in full-screen position but thats not really an urgent issue.
-    #+BEGIN_SRC emacs-lisp :tangle no
-(if (window-system)
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-height (selected-frame) 120))
+      (blink-cursor-mode 0)
+      (if (fboundp 'blink-cursor-mode)
+          (blink-cursor-mode 0))
     #+END_SRC
 
     Remove alarm (bell) on scroll
@@ -247,10 +231,10 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     Problems:
     - Cant install this on my work pc
     - I cant scroll all the way up using C-v
-    #+BEGIN_SRC emacs-lisp
-;;(require 'sublimity)
-;;(require 'sublimity-scroll)
-;;(sublimity-mode 1)
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (require 'sublimity)
+      (require 'sublimity-scroll)
+      (sublimity-mode 1)
     #+END_SRC
 
     Highlight the current line (mostly useful for going through logs)
@@ -270,21 +254,20 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
 
     Keep the buffer history as one would expect
     #+BEGIN_SRC emacs-lisp
-;; Save minibuffer history
-(savehist-mode 1)
-;; Delete duplicates in minibuffer history
-(setq history-delete-duplicates t)
-(setq savehist-save-minibuffer-history 1)
-(setq history-length t)
+      ;; Save minibuffer history
+      (savehist-mode 1)
+      ;; Delete duplicates in minibuffer history
+      (setq history-delete-duplicates t)
+      (setq savehist-save-minibuffer-history 1)
+      (setq history-length t)
     #+END_SRC
 
     Clean up unnecessary spaces on save and show them while they are still there
     #+BEGIN_SRC emacs-lisp
-    (add-hook 'before-save-hook 'delete-trailing-whitespace)
-    (setq show-trailing-whitespace t)
+      (add-hook 'before-save-hook 'delete-trailing-whitespace)
+      (setq show-trailing-whitespace t)
     #+END_SRC
 
-**** TODO Fix the scrolling improvement
 *** Fonts
     Font hints for Linux (Ubuntu)
     #+BEGIN_SRC emacs-lisp
@@ -454,11 +437,11 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
     https://www.reddit.com/r/emacs/comments/3c61zl/abolish_the_secondary_selection_quick_and_easy/
 
     #+BEGIN_SRC emacs-lisp
-(global-set-key [remap mouse-drag-secondary] 'mouse-drag-region)
-(global-set-key [remap mouse-set-secondary] 'mouse-set-region)
-(global-set-key [remap mouse-start-secondary] 'mouse-set-point)
-(global-set-key [remap mouse-yank-secondary] 'mouse-yank-primary)
-(global-set-key [remap mouse-secondary-save-then-kill] 'mouse-save-then-kill)
+      (global-set-key [remap mouse-drag-secondary] 'mouse-drag-region)
+      (global-set-key [remap mouse-set-secondary] 'mouse-set-region)
+      (global-set-key [remap mouse-start-secondary] 'mouse-set-point)
+      (global-set-key [remap mouse-yank-secondary] 'mouse-yank-primary)
+      (global-set-key [remap mouse-secondary-save-then-kill] 'mouse-save-then-kill)
     #+END_SRC
 
 *** Open current directory in nautilus / explorer
@@ -476,7 +459,6 @@ ALPHA : [ %(frame-parameter nil 'alpha) ]
          )
     #+END_SRC
 
-*** TODO Fix the problem with the tramp remote path
 *** Keybindings
     Took this idea from baron42bba's config, together with "which-key" this gives me a
     launcher-like menu with an overview about all my custom key-bindings
