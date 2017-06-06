@@ -58,3 +58,23 @@
 ;; The idea of an external script:
 ;; http://emacs.stackexchange.com/questions/12148/how-to-pretty-format-code-auto-insert-newlines-indent-etc
 ;; das multiple-line flag aus perl nutzen, einfach ein perl script über die aktuelle datei laufen lassen
+
+
+;; Settings to make the org-article pdf work
+
+;; (setq org-export-with-broken-links t)
+;; (require 'ox-latex)
+;; (setq org-export-latex-listings t)
+;; (add-to-list 'org-latex-packages-alist
+;;              '("AUTO" "inputenc" t))
+;; (add-to-list 'org-latex-classes
+;;           '("org-article"
+;;              "\\documentclass{org-article}
+;;              [NO-DEFAULT-PACKAGES]
+;;              [PACKAGES]
+;;              [EXTRA]"
+;;              ("\\section{%s}" . "\\section*{%s}")
+;;              ("\\subsection{%s}" . "\\subsection*{%s}")
+;;              ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+;;              ("\\paragraph{%s}" . "\\paragraph*{%s}")
+;;              ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
