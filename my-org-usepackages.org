@@ -1243,6 +1243,8 @@
    expected time-consumption can be set and the timer gets red once we exceed this time, which is
    not as convenient as having an extra alert-window in my oppinion.
 
+   Go through this: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
+
    The following code only works for my linux-laptop.
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package org-alert
@@ -1255,6 +1257,63 @@
        (org-alert-enable)
        )
    #+END_SRC
+
+   Experimental part taken from here: http://emacs-fu.blogspot.de/2009/11/showing-pop-ups.html
+
+   Ideas / Programs I brought in:
+   - [X] Use notify.exe
+   - [X] Use =start-process= instead of =shell-command= for better testing
+   - [ ] use "Media Player Classic" for the sound
+     - it probably works like this: "/play /minimized / close"
+   #+BEGIN_SRC emacs-lisp
+     (defun djcb-popup (title msg &optional icon sound)
+       "Show a popup if we're on windows, or echo it otherwise; TITLE
+       is the title of the message, MSG is the context. Optionally,
+       you can provide an ICON and a sound to be played"
+
+       (interactive)
+       ;; (when sound (shell-command
+       ;;              (concat "mplayer -really-quiet " sound " 2> /dev/null")))
+       (if (equal "home" (getenv "SYSENV"))
+           (start-process "process-name" nil (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/notifu64.exe")
+                          "/p"  title
+                          "/m" msg
+                          "/i" (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/appointment-soon.ico"))
+         ;; text only version as fall-backn
+         (message (concat title " : "  msg)))
+       )
+     ;; test:
+     ;; (djcb-popup "org-mode Notification" "time is up")
+
+     ;; the appointment notification facility
+     (setq
+      appt-message-warning-time 15 ;; warn 15 min in advance
+
+      appt-display-mode-line t     ;; show in the modeline
+      appt-display-format 'window) ;; use our func
+     (appt-activate 1)              ;; active appt (appointment notification)
+     (display-time)                 ;; time display is required for this...
+
+     ;; update appt each time agenda opened
+     (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+
+     ;; our little façade-function for djcb-popup
+     (defun djcb-appt-display (min-to-app new-time msg)
+       (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
+                   ))
+     (setq appt-disp-window-function (function djcb-appt-display))
+   #+END_SRC
+
+*** Org-mode notifications
+    Disabled since it gives error "not compiled with dbus support".
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (require 'notifications)
+
+      (notifications-notify :title "Achtung!"
+                            :body (format "You have an appointment in %d minutes" 10)
+                            :app-name "Emacs: Org"
+                            :sound-name "alarm-clock-elapsed")
+    #+END_SRC
 
 *** cm-mode for advanced authoring markup
     I like the idea of inserting comments like this package suggests, but I am still just trying
