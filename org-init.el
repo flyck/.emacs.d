@@ -1,7 +1,7 @@
 ;; Add the path to the current version of org-mode
 ;; This is necessary if one doesn't want to use the prepackaged version of org-mode that comes with
 ;; emacs
-(add-to-list 'load-path "~/.emacs.d/elpa/org-20170210/")
+(add-to-list 'load-path "~/.emacs.d/elpa/org-20170606/")
 
 (setq dotfiles-dir (file-name-directory (or load-file-name (buffer-file-name))))
 (add-to-list 'load-path (expand-file-name "lisp"
