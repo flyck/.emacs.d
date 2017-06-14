@@ -1684,7 +1684,7 @@
      (use-package alect-themes
        :ensure t
        :config
-       (load-theme 'alect-light t)
+       (load-theme 'alect-black t)
        )
    #+END_SRC
 
@@ -1814,6 +1814,13 @@
      ;;   ;; (helm-themes--load-theme "purple-haze")
      ;;   )
    #+END_SRC
+
+* The cursor style
+  Set this after the themes since some themes reset this
+  #+BEGIN_SRC emacs-lisp
+    (set-default 'cursor-type 'bar)
+    (set-cursor-color "#000000")
+  #+END_SRC
 
 * Modeline
   I never learned how to successfully edit the modeline yet, i just keep copying configs from nice
