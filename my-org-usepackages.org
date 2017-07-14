@@ -565,7 +565,7 @@
                        "* %? :idea: \n%t" :clock-in t :clock-resume t)
                       )
                     )
-              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
                   )
          )
       #+END_SRC
@@ -1681,6 +1681,10 @@
 
 ** Themes i never used for long
    #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/elpa/kaolin-theme/kaolin-theme.el")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package alect-themes
        :ensure t
        :config
@@ -1816,8 +1820,11 @@
    #+END_SRC
 
 * The cursor style
-  Set this after the themes since some themes reset this
-  #+BEGIN_SRC emacs-lisp
+  Set this after the themes since some themes reset this.
+
+  Currently untangled since the cursor seems to adapt the text color which makes it hard to spot
+  at times.
+  #+BEGIN_SRC emacs-lisp :tangle no
     (set-default 'cursor-type 'bar)
     (set-cursor-color "#000000")
   #+END_SRC

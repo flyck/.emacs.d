@@ -413,8 +413,10 @@
         (eshell-git-prompt-use-theme 'powerline))
     #+END_SRC
 
-    Fancy eshell looks. (Taken from here: https://www.reddit.com/r/emacs/comments/6f0rkz/my_fancy_eshell_prompt/)
-    #+BEGIN_SRC emacs-lisp
+    Fancy eshell looks. (Taken from here:
+    https://www.reddit.com/r/emacs/comments/6f0rkz/my_fancy_eshell_prompt/) Curretly untangled
+    since the colors are too bright.
+    #+BEGIN_SRC emacs-lisp :tangle no
       (setq eshell-prompt-function
             (lambda ()
               (concat
@@ -469,6 +471,12 @@
     (define-key fbr/launcher "t" 'fbr/tea-timer)
     (define-key fbr/launcher "r" 'fbr/org-agenda-reduce-to-current-file)
     (define-key fbr/launcher "y" 'fbr/reload-yasnippet)
+    #+END_SRC
+
+    From the "Mastering Emacs" book comes this customization. It replaces the "set font" function
+    to introduce a quicker keystroke to access "other-window".
+    #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "M-o") 'other-window)
     #+END_SRC
 
 *** Set certain paths when on university pc
