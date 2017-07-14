@@ -50,6 +50,14 @@
     - http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html
     - http://emacs.stackexchange.com/questions/27202/how-do-i-install-gnutls-for-emacs-25-1-on-windows
 
+  Installation Steps:
+  1. Pick an emacs compilation from the list above, download and install it
+  2. Install a current version of git for magit
+  3. Set the environment variable "HOME" to "%USERPROFILE%" (otherwise "~" doesnt work correctly)
+  4. Set the environment variable "SYSENV" to work / home / etc. (specific to my config)
+  5. Install cygwin and add it to to the system environment variables (otherwise things like
+     "diff-buffers" doesn't work)
+
 * Installation tips on linux
   The [[file:compile_emacs.sh]] usually does fine until it calls ~./configure~. Here missing libraries
   are checked which should be installed.
