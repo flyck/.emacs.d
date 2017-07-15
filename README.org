@@ -59,15 +59,20 @@
    sudo apt-get install r-base #enables the creation of graphs from emacs
    #+END_SRC
 
+   For Windows these additional steps are required to make the pdf export work:
+   - Download "pdflatex" from here: https://miktex.org/download
+     - Latex Live is an alternative
+   - Update its packages using the miktex update manager
+   - Install the wrapfig package
+   - Install the url package
+   - Add the binary directory of miktex to the environment variables and restart emacs
+   - Try the export!
+
 ** The structure of these config files
-   1) ("org-init.el")
-     - bootstraps the initialization through org-mode
-   2) ("init.org")
-     - customizes the default emacs behaviour
-   3) ("my-org-usepackages.org")
-     - adds and customizes packages
-   4) ("elisp-goodies.el")
-     - some of my custom functions and things im working on
+   - org-init.el :: bootstraps the initialization through org-mode
+   - init.org :: customizes the default emacs behaviour
+   - my-org-usepackages.org :: adds and customizes packages
+   - elisp-goodies.el :: some of my custom functions and work-in-progress
 
 * Special key-bindings i use
   It is kind of a stretch to keep reaching for the Ctrl-Key on the bottom left of the
