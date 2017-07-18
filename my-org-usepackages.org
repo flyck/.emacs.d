@@ -747,12 +747,12 @@
               ("k" "Agenda surrounded by milestones"
                (
                 (tags "milestone+SCHEDULED<>\"\""
-                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                      ((org-agenda-overriding-header "Scheduled Milestones")
                        )
                       )
                 (agenda "")
                 (tags "milestone+SCHEDULED=\"\""
-                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                      ((org-agenda-overriding-header "Unscheduled Milestones")
                        )
                       )
                 ))
@@ -1069,7 +1069,10 @@
     which should use this behaviour. Can also be set per file with: ~#+PROPERTY: header-args :async~
 
     Source seems to be over here: https://github.com/astahlman/ob-async
-    #+BEGIN_SRC emacs-lisp
+
+    Currently untanged since it seems to be obsolete: /Warning (emacs):
+    ob-async-org-babel-execute-src-block is longer needed in org-ctrl-c-ctrl-c-hook/
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package ob-async
         :ensure t
         :config
