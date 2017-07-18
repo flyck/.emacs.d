@@ -161,7 +161,6 @@
   (setq deft-directory "~/Dropbox/org")
   (setq deft-recursive t)
   (setq deft-use-filename-as-title t)
-  (global-set-key [f10] 'deft)
   )
   #+END_SRC
 
@@ -493,12 +492,45 @@
       (define-key org-mode-map "\C-m" 'nil) ;; why do i do this?
       (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
       (global-set-key (kbd "<f9>") 'org-todo)
+      (define-key global-map (kbd "<f10>") 'org-clock-goto)
     #+END_SRC
 
     Jump to beginning / end of heading by default (should make navigation faster once i get used
     to this)
     #+BEGIN_SRC emacs-lisp
       (setq org-special-ctrl-a/e t)
+    #+END_SRC
+
+    Truely global org-mode keybindings (taken from here:
+    https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs)
+
+    Sadly i didnt get this to work with C-c C-x C-j, C-j always created a newline. However i think
+    this is a good start, therefor im keeping this!
+    #+BEGIN_SRC emacs-lisp :results silent :tangle no
+      (defvar my-keys-minor-mode-map
+        (let ((map (make-sparse-keymap)))
+          ;; make this one global so i can jump from everywhere
+          (define-key map (kbd "\C-c\C-x\C-j") 'org-clock-goto)
+          map)
+        "my-keys-minor-mode keymap.")
+
+      (define-minor-mode my-keys-minor-mode
+        "A minor mode so that my key settings override annoying major modes."
+        :init-value t
+        :lighter " my-keys")
+
+      (my-keys-minor-mode 1)
+
+      (add-hook 'after-load-functions 'my-keys-have-priority)
+
+      (defun my-keys-have-priority (_file)
+        "Try to ensure that my keybindings retain priority over other minor modes.
+
+      Called via the `after-load-functions' special hook."
+        (unless (eq (caar minor-mode-map-alist) 'my-keys-minor-mode)
+          (let ((mykeys (assq 'my-keys-minor-mode minor-mode-map-alist)))
+            (assq-delete-all 'my-keys-minor-mode minor-mode-map-alist)
+            (add-to-list 'minor-mode-map-alist mykeys))))
     #+END_SRC
 
 *** Org-mode agenda-files
