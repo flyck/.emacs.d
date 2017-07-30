@@ -248,6 +248,34 @@
      )
    #+END_SRC
 
+** Hydras
+   Code to easily, incrementally adjust the transparency settings:
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra
+       :ensure t
+       )
+
+     (defun my--set-transparency (inc)
+       "Increase or decrease the selected frame transparency"
+       (let* ((alpha (frame-parameter (selected-frame) 'alpha))
+              (next-alpha (cond ((not alpha) 100)
+                                ((> (- alpha inc) 100) 100)
+                                ((< (- alpha inc) 0) 0)
+                                (t (- alpha inc)))))
+         (set-frame-parameter (selected-frame) 'alpha next-alpha)))
+
+     (defhydra hydra-transparency (:columns 2)
+       "
+       ALPHA : [ %(frame-parameter nil 'alpha) ]
+       "
+       ("j" (lambda () (interactive) (my--set-transparency +1)) "+ more")
+       ("k" (lambda () (interactive) (my--set-transparency -1)) "- less")
+       ("J" (lambda () (interactive) (my--set-transparency +10)) "++ more")
+       ("K" (lambda () (interactive) (my--set-transparency -10)) "-- less")
+       ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 opaque:")
+              (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
+   #+END_SRC
+
 ** Smooth-scrolling
    This mode doesnt have a good interaction with C-l which centers the current line in the buffer
    to the middle, top and bottom. Using C-l to put the current line to the top of the buffer and
