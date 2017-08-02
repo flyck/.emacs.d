@@ -25,6 +25,16 @@
     (setq cl-meta-information-one "cornflower blue")
   #+END_SRC
 
+  Keep .emacs.d clean
+  #+BEGIN_SRC emacs-lisp
+    (use-package no-littering
+      :ensure t
+      :config
+      (require 'recentf)
+      (add-to-list 'recentf-exclude no-littering-var-directory)
+      (add-to-list 'recentf-exclude no-littering-etc-directory))
+  #+END_SRC
+
 * File-browsing and text-searching
 
 ** Recentf
