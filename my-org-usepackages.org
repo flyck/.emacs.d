@@ -224,6 +224,18 @@
      )
    #+END_SRC
 
+** Beginend
+   Beginend is a package that is supposed to improve on the navigation to the beginning and end of
+   buffer, depending on the mode of course.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package beginend
+       :ensure t
+       :config
+       (beginend-global-mode)
+       )
+   #+END_SRC
+
 ** Hydras
    Code to easily, incrementally adjust the transparency settings:
    #+BEGIN_SRC emacs-lisp
