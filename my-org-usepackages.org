@@ -1771,7 +1771,7 @@
    #+END_SRC
 
 ** Themes i never used for long
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (load-file "~/.emacs.d/elpa/kaolin-theme/kaolin-theme.el")
    #+END_SRC
 
@@ -1829,6 +1829,14 @@
    (use-package challenger-deep-theme
    :ensure t
    )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package moe-theme
+     :ensure t
+     :config
+     (load-theme 'moe-light t)
+     )
    #+END_SRC
 
 ** Monokai +gnome madness
