@@ -877,9 +877,25 @@
                          ))
                  )
         )
-      ;; Keyword-faces, these can be set independant from the system
+    #+END_SRC
+
+    Keyword-faces, these are independant of the system in use, even when org-todo-keywords differ
+    from system to system.
+    #+BEGIN_SRC emacs-lisp
       (setq org-todo-keyword-faces
-            '(("TODO" . org-warning) ("PENDING" . "#f0c674") ("DELEGATED" . "#81a2be")
+            '(("TODO" . org-warning)
+              ("PENDING" . "#f0c674")
+              ("DELEGATED" . "#81a2be")
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+    #+END_SRC
+
+    These keyword faces have an added background face. This looks good in some themes and i might
+    toggle it from theme to theme.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-todo-keyword-faces
+            '(("TODO" . org-warning)
+              ("PENDING" . (:foreground "#f0c674" :background "#d09216"))
+              ("DELEGATED" . (:foreground "#81a2be" :background "#456887" :box (:line-width 1 :style none)))
               ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
     #+END_SRC
 
