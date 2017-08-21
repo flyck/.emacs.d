@@ -896,7 +896,7 @@
             '(("TODO" . org-warning)
               ("PENDING" . (:foreground "#f0c674" :background "#d09216"))
               ("DELEGATED" . (:foreground "#81a2be" :background "#456887" :box (:line-width 1 :style none)))
-              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold :box (:line-width 1 :style none)))))
     #+END_SRC
 
 *** Latex-settings                                          :research:
