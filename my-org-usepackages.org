@@ -980,7 +980,8 @@
         (ox-extras-activate '(ignore-headlines))
         )
     #+END_SRC
-*** Orgmode bibliography                                    :research:
+
+*** Orgmode bibliography and latex compiler settings        :research:
     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
 
     #+BEGIN_SRC emacs-lisp
@@ -1001,15 +1002,35 @@
               org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
               org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
               )
+        ;; -shell-escape added for "minted" package
         (setq org-latex-pdf-process
-              '("pdflatex -interaction nonstopmode -output-directory %o %f"
+              '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
                 "bibtex %b"
-                "pdflatex -interaction nonstopmode -output-directory %o %f"
-                "pdflatex -interaction nonstopmode -output-directory %o %f")
+                "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
               )
         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
         )
     #+END_SRC
+
+*** Minted, coloured source-blocks in latex                 :research:
+    Enables the "minted" package with its required options for the source-block highlighting to
+    work. In addition to this I need the minted latex package, which relies on the external tool
+    pygmentize to be in path:
+    https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
+    #+BEGIN_SRC emacs-lisp :results silent
+      (require 'ox-latex)
+      (add-to-list 'org-latex-packages-alist '("" "minted"))
+
+      (setq org-latex-listings 'minted)
+
+      (setq org-latex-minted-options
+            '(("frame" "lines") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
+    #+END_SRC
+
+    In my case i had to delete the temporary folder in the same directory to make the coloring
+    work. Got this hint from here:
+    https://tex.stackexchange.com/questions/237075/minted-not-working
 
 *** Enable R codeblocks                                     :research:
     For this to work i had to install the ess-package:
