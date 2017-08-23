@@ -117,22 +117,24 @@
     - Try the helm function again with better customization so it is convenient
     - Customize this open more so it does enable me to edit remote-files
 
-** Searching for strings
+** Searching for strings                                      :sysenv:
   Deft searches for strings in my org-files, at work this takes forever to load though, so it is
   not a core part of my workflow. I might have to adapt to only search through text-files.
   #+BEGIN_SRC emacs-lisp
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
-  :ensure t ;;doesnt work on work pc (sometimes), unable to install from melpa
+  :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
+            ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
+            ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
+            )
   :config
   (setq deft-extensions '("txt" "tex" "org"))
   (if (equal "work" (getenv "SYSENV"))
       (progn (setq deft-directory (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte")))
       )
   (if (or (equal "home" (getenv "SYSENV"))
-          (equal "laptop" (getenv "SYSENV"))
-          (equal "linux-vm" (getenv "SYSENV")))
-      (progn )
+          (equal "laptop" (getenv "SYSENV")))
+      (progn (setq deft-directory "~/Dropbox/org"))
     )
   (setq deft-directory "~/Dropbox/org")
   (setq deft-recursive t)
@@ -314,7 +316,7 @@
   )
    #+END_SRC
 
-** Flyspell mode for spelling correction
+** Flyspell mode for spelling correction                      :sysenv:
    Prerequisite on ubuntu is the following
    #+BEGIN_SRC sh :tangle no :results silent
    sudo apt-get install aspell-de
@@ -329,10 +331,9 @@
      )
    #+END_SRC
 
-** Emoji-autocomplete (company-emoji)
+** Emoji-autocomplete (company-emoji)                         :sysenv:
+   Let's have fun emojis!
    #+BEGIN_SRC emacs-lisp
-;; If i dont uncomment this this attempts to get installed at work?!? TODO
-;; I bet its the new use-package config i took from sachac's config
 ;; Settings for company plus company-emoji
 (use-package company-emoji
   :if (equal "laptop" (getenv "SYSENV"))
@@ -379,12 +380,17 @@
 
 * The big guns
 
-** Magit
+** Magit                                                      :sysenv:
    On some systems the "GIT_ASKPASS" variable i set leads to a nice GUI for entering usename on
    passwords, on other systems i get an ugly error-message everytime i "git push". This is open
    for improvement but not a big issue.
+
+   I dont load this package on systems where i dont have the "SYSENV" environment variable
+   set. The reason being that magit requires a relatively new git version, and to avoid the magit
+   warning about the old version of git that is probably installed on fresh systems i rather dont
+   even use it.
    #+BEGIN_SRC emacs-lisp
-     ;; set the key-binding unconditionally for times when magit is not yet loaded yet thanks to the
+     ;; set the key-binding unconditionally for times when magit is not yet loaded yet due to the
      ;; usepackage-defer option
      (define-key global-map (kbd "C-c m") 'magit-status)
      ;; Warning: The Windows User-Home needs to be in some kind of path such that magit finds the
@@ -393,7 +399,6 @@
        :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
                  ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
                  ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
-                 ((equal nil (getenv "SYSENV")) (message "Loading magit"))
                  )
        :ensure t
        :config
@@ -427,12 +432,6 @@
         "Save buffers, Quit, and Shutdown (kill) server"
         (interactive)
         (save-some-buffers)
-        ;; not adapted yet:
-        ;; (if (equal "work" (getenv "SYSENV"))
-        ;;     (progn
-        ;;       (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git commit -a -m 'autocommit'")
-        ;;       (shell-command "git --work-tree ~/workorg/ --git-dir ~/workorg/.git push origin")
-        ;;       ))
         (if (equal "home" (getenv "SYSENV"))
             (progn
               (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\gtd\\"))
@@ -546,21 +545,22 @@
     #+END_SRC
 
 *** Org-mode visual improvements
-    #+BEGIN_SRC emacs-lisp
-      ;; Fontify done checkbox items in org-mode
+    Fontify done checkbox items in org-mode
+    #+BEGIN_SRC emacs-lisp :tangle no
       (font-lock-add-keywords
        'org-mode
        `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend))
        'append)
+    #+END_SRC
 
-      ;; Circulate Bullets instead of asteriks for list items
+    Circulate Bullets instead of asteriks for list items
+    #+BEGIN_SRC emacs-lisp
       (font-lock-add-keywords 'org-mode
                               '(("^ +\\([-*]\\) "
                                  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
     #+END_SRC
 
-*** Org-mode agenda-files
+*** Org-mode agenda-files                                     :sysenv:
     Depending on my system-environment which i deduce from the system environment variable
     "SYSENV" which i manually set on the systems i use i have different workflows.
 
@@ -654,17 +654,24 @@
 
 **** Shortcut to open my main agenda file
      #+BEGIN_SRC emacs-lisp
-              (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
-              (defun fbr/open_main_agenda_file()
-                (interactive)
-                (if (or (equal "laptop" (getenv "SYSENV"))
-                        (equal "home" (getenv "SYSENV")))
-                    (find-file "~//Dropbox//org//gtd//tasks.org")
-                  )
-                (if (equal "work" (getenv "SYSENV"))
-                    (find-file (concat "C://Users//" (getenv "USERNAME") "//Desktop//Projekte//org//projects.org"))
-                  )
-                )
+       ;; Only create this binding if we are on a known system
+       (if (or (equal "home" (getenv "SYSENV"))
+               (equal "laptop" (getenv "SYSENV"))
+               (equal "work" (getenv "SYSENV")))
+           (progn
+             (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
+             (defun fbr/open_main_agenda_file()
+               (interactive)
+               (if (or (equal "laptop" (getenv "SYSENV"))
+                       (equal "home" (getenv "SYSENV")))
+                   (find-file "~//Dropbox//org//gtd//tasks.org")
+                 )
+               (if (equal "work" (getenv "SYSENV"))
+                   (find-file (concat "C://Users//" (getenv "USERNAME") "//Desktop//Projekte//org//projects.org"))
+                 )
+               )
+             )
+         )
      #+END_SRC
 
 *** Org-mode tags
@@ -705,12 +712,11 @@
    Set the default priority to C. This reflects how i use priorities:
    - ~A~: urgent, do this right now or it will blow up in your face
    - ~B~: do this one of these days, a possible candidate for priority ~A~
+     (it might blow up in my face soon if i don't act on it)
    - ~C~: do this whenever you feel like it some day in the future
    #+BEGIN_SRC emacs-lisp
    (setq org-default-priority 67) ;; the ascii code for C
    #+END_SRC
-
-   Spice the agenda with my 1-month, 1-year and 5-year goals.
 
    Make it so that tags are put to the right-hand side of the window in org-agenda
    #+BEGIN_SRC emacs-lisp
@@ -721,7 +727,7 @@
        (org-agenda-align-tags))
    #+END_SRC
 
-*** Org-mode agenda custom views
+*** Org-mode agenda custom views                              :sysenv:
     This agenda assumes that i have the following structure somewhere in my org-file:
     - Projects
       - Life-Goals
@@ -751,75 +757,50 @@
     which also match the tag-search this is based on - get excluded from the results which is
     convenient.
     #+BEGIN_SRC emacs-lisp
-      (setq org-agenda-custom-commands
-            '(("c" "Agenda surrounded by long-term goals"
-               (
-                (tags "month1+prof+TODO<>\"\""
-                      ((org-agenda-overriding-header "Monatliche professionelle Ziele")
-                       )
-                      )
-                (tags "month1+priv+TODO<>\"\""
-                      ((org-agenda-overriding-header "Monatliche persönliche Ziele")
-                       )
-                      )
-                (agenda "")
-                (tags "year1+TODO<>\"\""
-                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                       (org-agenda-overriding-header "1-Jahres-Ziele")
-                       )
-                      )
-                (tags "year5+TODO<>\"\""
-                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                       (org-agenda-overriding-header "5-Jahres-Ziele")))
-                ))
-              ("k" "Agenda surrounded by milestones"
-               (
-                (tags "milestone+SCHEDULED<>\"\""
-                      ((org-agenda-overriding-header "Scheduled Milestones")
-                       )
-                      )
-                (agenda "")
-                (tags "milestone+SCHEDULED=\"\""
-                      ((org-agenda-overriding-header "Unscheduled Milestones")
-                       )
-                      )
-                ))
-              ("t" "TODOs sorted by priority"
-               todo "TODO|PENDING"
-               ((org-agenda-overriding-header "All open TODOs sorted by priority")
-                (org-agenda-sorting-strategy '(priority-down todo-state-down))))
-               )
-              )
+      (if (or (equal "home" (getenv "SYSENV"))
+              (equal "laptop" (getenv "SYSENV")))
+          (progn
+            (setq org-agenda-custom-commands
+                  '(("c" "Agenda surrounded by long-term goals"
+                     (
+                      (tags "month1+prof+TODO<>\"\""
+                            ((org-agenda-overriding-header "Monatliche professionelle Ziele")
+                             )
+                            )
+                      (tags "month1+priv+TODO<>\"\""
+                            ((org-agenda-overriding-header "Monatliche persönliche Ziele")
+                             )
+                            )
+                      (agenda "")
+                      (tags "year1+TODO<>\"\""
+                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             (org-agenda-overriding-header "1-Jahres-Ziele")
+                             )
+                            )
+                      (tags "year5+TODO<>\"\""
+                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             (org-agenda-overriding-header "5-Jahres-Ziele")))
+                      ))
+                    ("k" "Agenda surrounded by milestones"
+                     (
+                      (tags "milestone+SCHEDULED<>\"\""
+                            ((org-agenda-overriding-header "Scheduled Milestones")
+                             )
+                            )
+                      (agenda "")
+                      (tags "milestone+SCHEDULED=\"\""
+                            ((org-agenda-overriding-header "Unscheduled Milestones")
+                             )
+                            )
+                      ))
+                    ("t" "TODOs sorted by priority"
+                     todo "TODO|PENDING"
+                     ((org-agenda-overriding-header "All open TODOs sorted by priority")
+                      (org-agenda-sorting-strategy '(priority-down todo-state-down))))
+                    )
+                  )
+            )
     #+END_SRC
-
-**** Support for org-super-agenda
-     Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
-
-     In the following i cut down the example from the github source from the things that cant
-     possibly match to the stuff i use in my config
-     #+BEGIN_SRC emacs-lisp
-       (use-package org-super-agenda
-         :ensure t
-         :config
-         (org-super-agenda-mode)
-         (setq org-super-agenda-groups
-               '(;; Each group has an implicit boolean OR operator between its selectors.
-                 (:name "Today"  ; Optionally specify section name
-                        :time-grid t)  ; Items that appear on the time grid
-                 (:name "Important"
-                        ;; Single arguments given alone
-                        :tag "budget"
-                        :priority "A")
-                 (:priority<= "B"
-                              ;; Show this section after "Today" and "Important", because
-                              ;; their order is unspecified, defaulting to 0. Sections
-                              ;; are displayed lowest-number-first.
-                              :order 1)
-                 ;; After the last group, the agenda will display items that didn't
-                 ;; match any of these groups, with the default order position of 99
-                 ))
-         )
-     #+END_SRC
 
 **** Monthly budget view
      Taken from here:
@@ -828,40 +809,75 @@
      I use it to create my monthly financial report.
 
      #+BEGIN_SRC emacs-lisp
-       (require 'calendar)
+       (if (or (equal "home" (getenv "SYSENV"))
+               (equal "laptop" (getenv "SYSENV")))
+           (progn
 
-       (defun fbr/org-tasks-closed-in-month (&optional month year match-string)
-         "Produces an org agenda tags view list of the tasks completed
+             (require 'calendar)
+
+             (defun fbr/org-tasks-closed-in-month (&optional month year match-string)
+               "Produces an org agenda tags view list of the tasks completed
        in the specified month and year. Month parameter expects a number
        from 1 to 12. Year parameter expects a four digit number. Defaults
        to the current month when arguments are not provided. Additional search
        criteria can be provided via the optional match-string argument "
-         (interactive)
-         (let* ((today (calendar-current-date))
-                (for-month (or month (calendar-extract-month today)))
-                (for-year  (or year  (calendar-extract-year today))))
-           (org-tags-view nil
-                 (concat
-                  match-string
-                  (format "+CLOSED>=\"[%d-%02d-01]\""
-                          for-year for-month)
-                  (format "+CLOSED<=\"[%d-%02d-%02d]\""
-                          for-year for-month
-                          (calendar-last-day-of-month for-month for-year))))))
+               (interactive)
+               (let* ((today (calendar-current-date))
+                      (for-month (or month (calendar-extract-month today)))
+                      (for-year  (or year  (calendar-extract-year today))))
+                 (org-tags-view nil
+                                (concat
+                                 match-string
+                                 (format "+CLOSED>=\"[%d-%02d-01]\""
+                                         for-year for-month)
+                                 (format "+CLOSED<=\"[%d-%02d-%02d]\""
+                                         for-year for-month
+                                         (calendar-last-day-of-month for-month for-year))))))
 
-       (defun fbr/budget-tasks-last-month ()
-         "Produces an org agenda tags view list of all the tasks completed
+             (defun fbr/budget-tasks-last-month ()
+               "Produces an org agenda tags view list of all the tasks completed
        last month with the tag budget."
-         (interactive)
-         (let* ((today (calendar-current-date))
-                (for-month (calendar-extract-month today))
-                (for-year  (calendar-extract-year today)))
-              (calendar-increment-month for-month for-year -1)
-              (fbr/org-tasks-closed-in-month
-               for-month for-year "TODO=\"DONE\"+budget")))
+               (interactive)
+               (let* ((today (calendar-current-date))
+                      (for-month (calendar-extract-month today))
+                      (for-year  (calendar-extract-year today)))
+                 (calendar-increment-month for-month for-year -1)
+                 (fbr/org-tasks-closed-in-month
+                  for-month for-year "TODO=\"DONE\"+budget")))
+             )
+         )
      #+END_SRC
 
-*** Org-mode todo-keywords
+*** Super-agenda
+    Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
+
+    In the following i cut down the example from the github source from the things that cant
+    possibly match to the stuff i use in my config
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-super-agenda
+        :ensure t
+        :config
+        (org-super-agenda-mode)
+        (setq org-super-agenda-groups
+              '(;; Each group has an implicit boolean OR operator between its selectors.
+                (:name "Today"  ; Optionally specify section name
+                       :time-grid t)  ; Items that appear on the time grid
+                (:name "Important"
+                       ;; Single arguments given alone
+                       :tag "budget"
+                       :priority "A")
+                (:priority<= "B"
+                             ;; Show this section after "Today" and "Important", because
+                             ;; their order is unspecified, defaulting to 0. Sections
+                             ;; are displayed lowest-number-first.
+                             :order 1)
+                ;; After the last group, the agenda will display items that didn't
+                ;; match any of these groups, with the default order position of 99
+                ))
+        )
+    #+END_SRC
+
+*** Org-mode todo-keywords                                    :sysenv:
     #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
           (progn (setq org-todo-keywords
@@ -880,6 +896,7 @@
         )
     #+END_SRC
 
+*** Org-mode todo-keyword faces
     Keyword-faces, these are independant of the system in use, even when org-todo-keywords differ
     from system to system.
     #+BEGIN_SRC emacs-lisp
@@ -969,7 +986,7 @@
                     )
      #+END_SRC
 
-**** Enable specific latex-headers                          :research:
+**** Enable specific latex-headers
      Taken from here:
      http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
 
@@ -982,63 +999,73 @@
         )
     #+END_SRC
 
-*** Orgmode bibliography and latex compiler settings        :research:
-    Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
+**** Orgmode bibliography and latex compiler settings         :sysenv:
+     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-ref
-        :ensure t
-        :config
-        (setq org-ref-completion-library 'org-ref-helm-cite)
-        (require 'org-ref)
-        (require 'org-ref-pdf) ;; enable pdf drag n' drop
-        (require 'doi-utils)
-        (require 'org-ref-latex)
-        (require 'org-ref-bibtex)
-        (require 'org-ref-url-utils)
+     #+BEGIN_SRC emacs-lisp
+       (use-package org-ref
+         :ensure t
+         :config
+         (setq org-ref-completion-library 'org-ref-helm-cite)
+         (require 'org-ref)
+         (require 'org-ref-pdf) ;; enable pdf drag n' drop
+         (require 'doi-utils)
+         (require 'org-ref-latex)
+         (require 'org-ref-bibtex)
+         (require 'org-ref-url-utils)
 
-        ;; see org-ref for use of these variables
-        (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
-              org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
-              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
-              org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
-              )
-        ;; -shell-escape added for "minted" package
-        (setq org-latex-pdf-process
-              '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                "bibtex %b"
-                "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
-              )
-        (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
-        )
-    #+END_SRC
+         ;; -shell-escape added for "minted" package
+         (setq org-latex-pdf-process
+               '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "bibtex %b"
+                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+               )
+         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+         )
+     #+END_SRC
 
-*** Minted, coloured source-blocks in latex                 :research:
-    Enables the "minted" package with its required options for the source-block highlighting to
-    work. In addition to this I need the minted latex package, which relies on the external tool
-    pygmentize to be in path:
-    https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
-    #+BEGIN_SRC emacs-lisp :results silent
-      (require 'ox-latex)
-      (add-to-list 'org-latex-packages-alist '("" "minted"))
+     If we are at home or on the laptop i know where the paths should be
+     #+BEGIN_SRC emacs-lisp
+       (if (or (equal "home" (getenv "SYSENV"))
+               (equal "laptop" (getenv "SYSENV")))
+           (progn
+             ;; see org-ref for use of these variables
+             (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
+                   org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
+                   org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
+                   org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
+                   )
+             )
+         )
+     #+END_SRC
 
-      (setq org-latex-listings 'minted)
+**** Minted, coloured source-blocks in latex
+     Enables the "minted" package with its required options for the source-block highlighting to
+     work. In addition to this I need the minted latex package, which relies on the external tool
+     pygmentize to be in path:
+     https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
+     #+BEGIN_SRC emacs-lisp :results silent
+       (require 'ox-latex)
+       (add-to-list 'org-latex-packages-alist '("" "minted"))
 
-      (setq org-latex-minted-options
-            '(("frame" "lines") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
-    #+END_SRC
+       (setq org-latex-listings 'minted)
 
-    In my case i had to delete the temporary folder in the same directory to make the coloring
-    work. Got this hint from here:
-    https://tex.stackexchange.com/questions/237075/minted-not-working
+       (setq org-latex-minted-options
+             '(("frame" "lines") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
+     #+END_SRC
 
-*** Enable R codeblocks                                     :research:
+     In my case i had to delete the temporary folder in the same directory to make the coloring
+     work. Got this hint from here:
+     https://tex.stackexchange.com/questions/237075/minted-not-working
+
+*** Enable R codeblocks                              :research:sysenv:
     For this to work i had to install the ess-package:
     #+BEGIN_SRC sh :tangle no
     sudo apt-get install ess
     #+END_SRC
-    After having installed this the following works
+
+    After installation of ess the following works.
     #+BEGIN_SRC emacs-lisp
       (if (equal "laptop" (getenv "SYSENV")) ;; removed "home" from valid options, maybe a mistake
           (progn
@@ -1069,10 +1096,11 @@
       ;; (require 'auctex)
       ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
       ;; )
-
     #+END_SRC
 
-*** Org-mode alerts
+*** Org-mode alerts and notifications
+    This section is a work-in-progress. It works in some places, it throws no errors but thats it.
+
     This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
     #+BEGIN_SRC emacs-lisp
        ;; Make appt aware of appointments from the agenda
@@ -1103,6 +1131,87 @@
          (setq appt-time-msg-list nil))
        (org-agenda-to-appt)
     #+END_SRC
+
+**** Org-mode alert extension
+    This is a package on top of the original =alert.el=
+
+    Im pretty sure this makes my "fbr/tea-timer" possible which is defined somewhere else. This way
+    i can basically remind myself to not spend too much time on a task by setting a timer
+    before-hand. This can also be done similarly with "C-c C-x C-e" after clocking into a task. This way an
+    expected time-consumption can be set and the timer gets red once we exceed this time, which is
+    not as convenient as having an extra alert-window in my oppinion.
+
+    Go through this: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
+
+    The following code only works for my linux-laptop.
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (use-package org-alert
+        :ensure t
+        :config
+        (if (equal "laptop" (getenv "SYSENV"))
+            (setq alert-default-style 'libnotify)
+          (setq alert-default-style 'message))
+        (setq org-alert-interval 60)
+        (org-alert-enable)
+        )
+    #+END_SRC
+
+    Experimental part taken from here: http://emacs-fu.blogspot.de/2009/11/showing-pop-ups.html
+
+    Ideas / Programs I brought in:
+    - [X] Use notify.exe
+    - [X] Use =start-process= instead of =shell-command= for better testing
+    - [ ] use "Media Player Classic" for the sound
+      - it probably works like this: "/play /minimized / close"
+    #+BEGIN_SRC emacs-lisp
+      (defun djcb-popup (title msg &optional icon sound)
+        "Show a popup if we're on windows, or echo it otherwise; TITLE
+        is the title of the message, MSG is the context. Optionally,
+        you can provide an ICON and a sound to be played"
+
+        (interactive)
+        ;; (when sound (shell-command
+        ;;              (concat "mplayer -really-quiet " sound " 2> /dev/null")))
+        (if (equal "home" (getenv "SYSENV"))
+            (start-process "process-name" nil (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/notifu64.exe")
+                           "/p"  title
+                           "/m" msg
+                           "/i" (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/appointment-soon.ico"))
+          ;; text only version as fall-backn
+          (message (concat title " : "  msg)))
+        )
+      ;; test:
+      ;; (djcb-popup "org-mode Notification" "time is up")
+
+      ;; the appointment notification facility
+      (setq
+       appt-message-warning-time 15 ;; warn 15 min in advance
+
+       appt-display-mode-line t     ;; show in the modeline
+       appt-display-format 'window) ;; use our func
+      (appt-activate 1)              ;; active appt (appointment notification)
+      (display-time)                 ;; time display is required for this...
+
+      ;; update appt each time agenda opened
+      (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+
+      ;; our little façade-function for djcb-popup
+      (defun djcb-appt-display (min-to-app new-time msg)
+        (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
+                    ))
+      (setq appt-disp-window-function (function djcb-appt-display))
+    #+END_SRC
+
+**** Org-mode notifications
+     Disabled since it gives error "not compiled with dbus support".
+     #+BEGIN_SRC emacs-lisp :tangle no
+       (require 'notifications)
+
+       (notifications-notify :title "Achtung!"
+                             :body (format "You have an appointment in %d minutes" 10)
+                             :app-name "Emacs: Org"
+                             :sound-name "alarm-clock-elapsed")
+     #+END_SRC
 
 *** Org-mode sourceblocks / org-babel
     Languages to load
@@ -1136,9 +1245,9 @@
     #+END_SRC
 
     Make TAB act as if it were issued in a buffer of the language’s major mode (doesnt work
-    completely how i want it to yet)
-    #+BEGIN_SRC emacs-lisp
-      ;; (setq org-src-tab-acts-natively t)
+    completely how i want it to yet, therefor untangled)
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (setq org-src-tab-acts-natively t)
     #+END_SRC
 
     When editing a code snippet, use the current window rather than opening up a new one (which
@@ -1155,7 +1264,6 @@
     Dont try to evaluate source-blocks on export (this setting has fixed a weird bug for me, which
     showed this message: org-babel-exp-process-buffer: Wrong type argument: stringp, nil).
     #+BEGIN_SRC emacs-lisp
-    ;; for debugging enable this: (setq debug-on-error t)
     (setq org-export-babel-evaluate nil)
     #+END_SRC
 
@@ -1258,7 +1366,9 @@
 
 *** Org-mode html export
     I have a bunch of css files within the "styles"-folder which i use on and off. They can then
-    be used by adding the following line to the beginning of the file (path has to be adapted).
+    be used by adding the following line to the beginning of the file (path has to be
+    adapted). This is not optimal yet, since i have to copy over the "styles" folder to every
+    /org-mode directory/
     #+BEGIN_SRC emacs-lisp :tangle no
     #+HTML_HEAD:   <link rel="stylesheet" type="text/css" href="styles\\markdown.css" />
     #+END_SRC
@@ -1334,126 +1444,28 @@
   )
    #+END_SRC
 
-*** Org-mode openwith extension
+*** Org-mode openwith extension                               :sysenv:
     Open pdfs with an external pdf-viewer to get a good resolution (Only use this for my laptop,
-    needs to be fixed for my windows PC if i ever use it for them).
+    needs to be fixed for my windows PC if i ever use it for them. Seems to work well
+    out-of-the-box there).
     #+BEGIN_SRC emacs-lisp
       (use-package openwith
-        :ensure t
+        :if (equal "laptop" (getenv "SYSENV"))
         :config
         (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
         (openwith-mode t)
       )
    #+END_SRC
 
-*** Org-mode ics export
-    Taken from here: http://ihrke.github.io/setup-for-sharing-org-mode-agenda-with-google-calendar-and-mobile-devices.html
-
-    The result of this can be imported into a google calendar.
-
-    #+BEGIN_SRC emacs-lisp
-(setq org-icalendar-combined-agenda-file "~/Dropbox/org/gtd/org.ics")
-(setq org-icalendar-include-todo '(all))
-(setq org-icalendar-use-scheduled '(event-if-todo event-if-not-todo))
-(setq org-icalendar-use-deadline '(event-if-todo event-if-not-todo))
-
-;; this hook saves an ics file once an org-buffer is saved
-(defun my-icalendar-agenda-export()
-    (if (string= (file-name-extension (buffer-file-name)) "org")
-                              (org-icalendar-combine-agenda-files))
-              )
-    #+END_SRC
-
 *** Org-mode calendar extension
    #+BEGIN_SRC emacs-lisp
-(use-package calfw
+(use-package calfw-org
   :ensure t
   :config
   (require 'calfw-org)
   (setq cfw:org-overwrite-default-keybinding t)
   )
    #+END_SRC
-
-*** Org-mode alert extension
-   This is a package on top of the original =alert.el=
-
-   Im pretty sure this makes my "fbr/tea-timer" possible which is defined somewhere else. This way
-   i can basically remind myself to not spend too much time on a task by setting a timer
-   before-hand. This can also be done similarly with "C-c C-x C-e" after clocking into a task. This way an
-   expected time-consumption can be set and the timer gets red once we exceed this time, which is
-   not as convenient as having an extra alert-window in my oppinion.
-
-   Go through this: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
-
-   The following code only works for my linux-laptop.
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package org-alert
-       :ensure t
-       :config
-       (if (equal "laptop" (getenv "SYSENV"))
-           (setq alert-default-style 'libnotify)
-         (setq alert-default-style 'message))
-       (setq org-alert-interval 60)
-       (org-alert-enable)
-       )
-   #+END_SRC
-
-   Experimental part taken from here: http://emacs-fu.blogspot.de/2009/11/showing-pop-ups.html
-
-   Ideas / Programs I brought in:
-   - [X] Use notify.exe
-   - [X] Use =start-process= instead of =shell-command= for better testing
-   - [ ] use "Media Player Classic" for the sound
-     - it probably works like this: "/play /minimized / close"
-   #+BEGIN_SRC emacs-lisp
-     (defun djcb-popup (title msg &optional icon sound)
-       "Show a popup if we're on windows, or echo it otherwise; TITLE
-       is the title of the message, MSG is the context. Optionally,
-       you can provide an ICON and a sound to be played"
-
-       (interactive)
-       ;; (when sound (shell-command
-       ;;              (concat "mplayer -really-quiet " sound " 2> /dev/null")))
-       (if (equal "home" (getenv "SYSENV"))
-           (start-process "process-name" nil (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/notifu64.exe")
-                          "/p"  title
-                          "/m" msg
-                          "/i" (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/appointment-soon.ico"))
-         ;; text only version as fall-backn
-         (message (concat title " : "  msg)))
-       )
-     ;; test:
-     ;; (djcb-popup "org-mode Notification" "time is up")
-
-     ;; the appointment notification facility
-     (setq
-      appt-message-warning-time 15 ;; warn 15 min in advance
-
-      appt-display-mode-line t     ;; show in the modeline
-      appt-display-format 'window) ;; use our func
-     (appt-activate 1)              ;; active appt (appointment notification)
-     (display-time)                 ;; time display is required for this...
-
-     ;; update appt each time agenda opened
-     (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
-
-     ;; our little façade-function for djcb-popup
-     (defun djcb-appt-display (min-to-app new-time msg)
-       (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
-                   ))
-     (setq appt-disp-window-function (function djcb-appt-display))
-   #+END_SRC
-
-*** Org-mode notifications
-    Disabled since it gives error "not compiled with dbus support".
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (require 'notifications)
-
-      (notifications-notify :title "Achtung!"
-                            :body (format "You have an appointment in %d minutes" 10)
-                            :app-name "Emacs: Org"
-                            :sound-name "alarm-clock-elapsed")
-    #+END_SRC
 
 *** cm-mode for advanced authoring markup
     I like the idea of inserting comments like this package suggests, but I am still just trying
@@ -1472,6 +1484,7 @@
         (setq cm-read-only-annotations nil)
         )
     #+END_SRC
+
 ** Tramp
    Tramp can be used to edit remote files.
 
@@ -1602,7 +1615,7 @@
     (setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
     #+END_SRC
 
-** Elfeed
+** Elfeed                                                     :sysenv:
    #+BEGIN_SRC emacs-lisp
      (use-package elfeed
        :ensure t
@@ -1617,91 +1630,97 @@
        :ensure t
        :config
        (elfeed-org)
-       (setq rmh-elfeed-org-files (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\hobby\\elfeed.org")) )
+       (if (equal "home" (getenv "SYSENV"))
+       (setq rmh-elfeed-org-files (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\hobby\\elfeed.org")) ))
        )
    #+END_SRC
 
-** Blogging
+** Blogging                                                   :sysenv:
    Doesnt work out of the box, needs some setup! See "setup the blog" for more info (coming soon).
 
    Taken from: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
    #+BEGIN_SRC emacs-lisp
-     (defvar hugo-content-dir "~/Dropbox/org/blog/content/"
-       "Path to Hugo's content directory")
+     (if (or (equal "home" (getenv "SYSENV"))
+             (equal "laptop" (getenv "SYSENV")))
+         (progn
+           (defvar hugo-content-dir "~/Dropbox/org/blog/content/"
+             "Path to Hugo's content directory")
 
-     (defun hugo-ensure-property (property)
-       "Make sure that a property exists. If not, it will be created.
+           (defun hugo-ensure-property (property)
+             "Make sure that a property exists. If not, it will be created.
 
      Returns the property name if the property has been created,
      otherwise nil."
-       (if (org-entry-get nil property)
-           nil
-         (progn (org-entry-put nil property "")
-                property)))
+             (if (org-entry-get nil property)
+                 nil
+               (progn (org-entry-put nil property "")
+                      property)))
 
-     (defun hugo-ensure-properties ()
-       "This ensures that several properties exists. If not, these
+           (defun hugo-ensure-properties ()
+             "This ensures that several properties exists. If not, these
      properties will be created in an empty form. In this case, the
      drawer will also be opened and the cursor will be positioned
      at the first element that needs to be filled.
 
      Returns list of properties that still must be filled in"
-       (require 'dash)
-       (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
-             first)
-         (save-excursion
-           (unless (org-entry-get nil "TITLE")
-             (org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
-           (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
-           (unless (org-entry-get nil "HUGO_DATE")
-             (org-entry-put nil "HUGO_DATE" current-time)))
-         (when first
-           (goto-char (org-entry-beginning-position))
-           ;; The following opens the drawer
-           (forward-line 1)
-           (beginning-of-line 1)
-           (when (looking-at org-drawer-regexp)
-             (org-flag-drawer nil))
-           ;; And now move to the drawer property
-           (search-forward (concat ":" first ":"))
-           (end-of-line))
-         first))
+             (require 'dash)
+             (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
+                   first)
+               (save-excursion
+                 (unless (org-entry-get nil "TITLE")
+                   (org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
+                 (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
+                 (unless (org-entry-get nil "HUGO_DATE")
+                   (org-entry-put nil "HUGO_DATE" current-time)))
+               (when first
+                 (goto-char (org-entry-beginning-position))
+                 ;; The following opens the drawer
+                 (forward-line 1)
+                 (beginning-of-line 1)
+                 (when (looking-at org-drawer-regexp)
+                   (org-flag-drawer nil))
+                 ;; And now move to the drawer property
+                 (search-forward (concat ":" first ":"))
+                 (end-of-line))
+               first))
 
-     (defun hugo ()
-       (interactive)
-       (unless (hugo-ensure-properties)
-         (let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
-                (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-                (topics   (concat "topics = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TOPICS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-                (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-                (fm (concat "+++\n"
-                            title
-                            date
-                            tags
-                            topics
-                            "+++\n\n"))
-                (file     (org-entry-get nil "HUGO_FILE"))
-                (coding-system-for-write buffer-file-coding-system)
-                (backend  'md)
-                (blog))
-           ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
-           (if (require 'ox-gfm nil t)
-               (setq backend 'gfm)
-             (require 'ox-md))
-           (setq blog (org-export-as backend t))
-           ;; Normalize save file path
-           (unless (string-match "^[/~]" file)
-             (setq file (concat hugo-content-dir file))
-           (unless (string-match "\\.md$" file)
-             (setq file (concat file ".md")))
-           ;; save markdown
-           (with-temp-buffer
-             (insert fm)
-             (insert blog)
-             (untabify (point-min) (point-max))
-             (write-file file)
-             (message "Exported to %s" file))
-           ))))
+           (defun hugo ()
+             (interactive)
+             (unless (hugo-ensure-properties)
+               (let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
+                      (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
+                      (topics   (concat "topics = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TOPICS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+                      (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+                      (fm (concat "+++\n"
+                                  title
+                                  date
+                                  tags
+                                  topics
+                                  "+++\n\n"))
+                      (file     (org-entry-get nil "HUGO_FILE"))
+                      (coding-system-for-write buffer-file-coding-system)
+                      (backend  'md)
+                      (blog))
+                 ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
+                 (if (require 'ox-gfm nil t)
+                     (setq backend 'gfm)
+                   (require 'ox-md))
+                 (setq blog (org-export-as backend t))
+                 ;; Normalize save file path
+                 (unless (string-match "^[/~]" file)
+                   (setq file (concat hugo-content-dir file))
+                   (unless (string-match "\\.md$" file)
+                     (setq file (concat file ".md")))
+                   ;; save markdown
+                   (with-temp-buffer
+                     (insert fm)
+                     (insert blog)
+                     (untabify (point-min) (point-max))
+                     (write-file file)
+                     (message "Exported to %s" file))
+                   ))))
+           )
+       )
    #+END_SRC
 
 ** SQL
@@ -1757,9 +1776,12 @@
 * Programming
   I rarely use emacs as an IDE, so this is not a rich section.
 
-** C Lang
+** C Lang                                                     :sysenv:
   The main thing i use from the following is the "jump to definition" function, which is otherwise
   a tedious manual task.
+
+  I only have this activated on my laptop since it uses the external tool ggtags.
+
   #+BEGIN_SRC emacs-lisp
 (use-package helm-gtags
   :if (equal "laptop" (getenv "SYSENV"))
@@ -1854,8 +1876,6 @@
    source-blocks look much nicer. However headlines in org-mode are really chunky and I'm not used
    to that yet.
 
-   Downloaded from: https://github.com/thblt/eziam-theme-emacs.git
-   It isn't on melpa yet.
    #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (use-package eziam-theme
        :if (equal "laptop" (getenv "SYSENV"))
@@ -1876,7 +1896,7 @@
    A really classy but kind of dirty / muddy theme.
    #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (use-package zenburn-theme
-       :if (or (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
+       :ensure t
        :config
        (load-theme 'zenburn t)
      )
@@ -1885,8 +1905,8 @@
 ** Challenger-Deep theme
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package challenger-deep-theme
-       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")) (equal nil (getenv "SYSENV")))
-       :init
+       :ensure t
+       :config
        (load-theme 'challenger-deep t)
        )
    #+END_SRC
@@ -1939,7 +1959,7 @@
 
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package solarized-theme
-       :if (equal "home" (getenv "SYSENV"))
+       :ensure t
        :config
        (load-theme 'solarized-dark t)
        (set-frame-parameter nil 'background-mode 'dark)
@@ -1947,9 +1967,9 @@
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle no
-   (use-package challenger-deep-theme
-   :ensure t
-   )
+     (use-package challenger-deep-theme
+       :ensure t
+       )
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -2025,18 +2045,18 @@
    black. Playing with the monitor-settings sadly doesnt resolve this, this might not be my final
    theme. "Final theme".. *smirk*
 
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package purple-haze-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (load-theme 'purple-haze t)
-     ;;   )
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package purple-haze-theme
+       :ensure t
+       :config
+       (load-theme 'purple-haze t)
+       )
 
-     ;; (use-package helm-themes
-     ;;   :ensure t
-     ;;   :config
-     ;;   ;; (helm-themes--load-theme "purple-haze")
-     ;;   )
+     (use-package helm-themes
+       :ensure t
+       :config
+       ;; (helm-themes--load-theme "purple-haze")
+       )
    #+END_SRC
 
 * The cursor style
