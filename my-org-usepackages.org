@@ -1631,7 +1631,7 @@
        :ensure t
        :config
        (elfeed-org)
-       (if (equal "home" (getenv "SYSENV"))
+       (if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
        (setq rmh-elfeed-org-files (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\hobby\\elfeed.org")) ))
        )
    #+END_SRC
