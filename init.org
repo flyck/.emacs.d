@@ -49,9 +49,8 @@
     - usepackage is only available on melpa
     - smartparens crashes when not installed from melpa
 
-*** Proxy settings (system-specific)
+*** Proxy settings                                            :sysenv:
     #+BEGIN_SRC emacs-lisp
-      ;; proxy settings (system-specific)
       (if (equal "work" (getenv "SYSENV"))
           (setq url-proxy-services '(("no_proxy" . "work\\.com")
                                  ("http" . "172.16.8.250:3128")
@@ -246,32 +245,9 @@
     #+END_SRC
 
 *** Fonts
-    Font hints for Linux (Ubuntu)
-    #+BEGIN_SRC emacs-lisp
-      ;; Fonts
-      ;; (set-frame-font "Source Code Pro-11" nil t)
-      ;; How to install on ubuntu:
-      ;; #!/bin/bash
-      ;; mkdir /tmp/adodefont
-      ;; cd /tmp/adodefont
-      ;; wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
-      ;; unzip 1.030R-it.zip
-      ;; mkdir -p ~/.fonts
-      ;; cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf ~/.fonts/
-      ;; fc-cache -f -v
-    #+END_SRC
 
-    Switch to a thin font on my laptop. This feels so good after having used the ubuntu font for
-    so long, which is wonderful but very thick.
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "laptop" (getenv "SYSENV"))
-          (set-frame-font "-ADBO-Source Code Pro-light-normal-normal-*-15-*-*-*-m-0-iso10646-1" nil t)
-        )
-      ;; not sure what this does, but it can be used for some kind of resizing
-      ;; (set-face-attribute 'default nil :height 100)
-    #+END_SRC
-
-**** Font settings for Windows
+**** Font Menu for Windows
+     Adds a convenient UI to select the font (only available on windows).
      #+BEGIN_SRC emacs-lisp
        ;; "Select an Emacs font from a list of known good fonts and fontsets.
        (defun mouse-set-font (&rest fonts)
@@ -304,20 +280,38 @@
                    (error (setq fonts (cdr fonts)))))
                (if (null font)
                    (error "Font not found")))))
+     #+END_SRC
 
-       ;; Windows-specific settings
-       (if (eq system-type 'windows-nt)
-           (progn
-             ;; Set the font
-             (set-default-font "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1") ;; doesnt seem to work when using the daemon
-             (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
-             )
+**** Font settings for my laptop                              :sysenv:
+     Font installation hints for Linux (Ubuntu)
+     #+BEGIN_SRC emacs-lisp
+       ;; Fonts
+       ;; (set-frame-font "Source Code Pro-11" nil t)
+       ;; How to install on ubuntu:
+       ;; #!/bin/bash
+       ;; mkdir /tmp/adodefont
+       ;; cd /tmp/adodefont
+       ;; wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
+       ;; unzip 1.030R-it.zip
+       ;; mkdir -p ~/.fonts
+       ;; cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf ~/.fonts/
+       ;; fc-cache -f -v
+     #+END_SRC
+
+     Switch to a thin font on my laptop. This feels so good after having used the ubuntu font for
+     so long, which is wonderful but very thick.
+     #+BEGIN_SRC emacs-lisp
+       (if (equal "laptop" (getenv "SYSENV"))
+           (set-frame-font "-ADBO-Source Code Pro-light-normal-normal-*-15-*-*-*-m-0-iso10646-1" nil t)
          )
-       ;; Try to work around the daemon
+       ;; not sure what this does, but it can be used for some kind of resizing
+       ;; (set-face-attribute 'default nil :height 100)
+     #+END_SRC
+**** Font settings for home                                   :sysenv:
+     #+BEGIN_SRC emacs-lisp
        (if (equal (getenv "SYSENV") "home")
            (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
          )
-
      #+END_SRC
 
 **** Increase font setting globally
@@ -457,11 +451,8 @@
     #+END_SRC
 
 *** Set certain paths when on university pc
-    Manually installed packages / unsorted stuff (system-specific)
-    Some packages dont install for some systems. It is stupid but here is the workaround.
-    #+BEGIN_SRC emacs-lisp
- (if (equal "" (getenv "SYSENV")) ;; assuming we are on a university pc since we cannot set the SYSENV variable there
-     (progn
+    These settings are for the university PC
+    #+BEGIN_SRC emacs-lisp :tangle no
       ;; test tls connection on windows for successfull download of packages
       ;; makes sure this returns t in the echo area
       (gnutls-available-p)
@@ -470,6 +461,5 @@
       (add-to-list 'exec-path "H:/Win7PoolData/Desktop/PortableGit/mingw64/bin")
       ;; For Graphviz
       (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
-      (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin"))))
-   )
+      (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
  #+END_SRC
