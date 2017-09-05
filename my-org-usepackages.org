@@ -674,6 +674,33 @@
          )
      #+END_SRC
 
+*** Org-capture
+    Makes it so org-capture takes up the whole screen.
+
+    Taken from here: https://fuco1.github.io/2017-09-02-Maximize-the-org-capture-buffer.html
+    #+BEGIN_SRC emacs-lisp
+      (defvar my-org-capture-before-config nil
+        "Window configuration before `org-capture'.")
+
+      (defadvice org-capture (before save-config activate)
+        "Save the window configuration before `org-capture'."
+        (setq my-org-capture-before-config (current-window-configuration)))
+
+      (add-hook 'org-capture-mode-hook 'delete-other-windows)
+
+      (defun my-org-capture-cleanup ()
+        "Clean up the frame created while capturing via org-protocol."
+        ;; In case we run capture from emacs itself and not an external app,
+        ;; we want to restore the old window config
+        (when my-org-capture-before-config
+          (set-window-configuration my-org-capture-before-config))
+        (-when-let ((&alist 'name name) (frame-parameters))
+          (when (equal name "org-protocol-capture")
+            (delete-frame))))
+
+      (add-hook 'org-capture-after-finalize-hook 'my-org-capture-cleanup)
+    #+END_SRC
+
 *** Org-mode tags
     The horizontal position of tags is set here.
     #+BEGIN_SRC emacs-lisp
