@@ -586,7 +586,7 @@
               (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
               (setq org-capture-templates
                     '(("t" "todo" entry (file org-default-notes-file)
-                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                       "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
                       ("m" "Meeting" entry (file org-default-notes-file)
                        "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
                       ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
@@ -617,7 +617,7 @@
               (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
               (setq org-capture-templates
                     '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                       "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                       "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
                       ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
                        "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
                       ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
@@ -640,7 +640,7 @@
                    (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
                    (setq org-capture-templates
                          '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
-                            "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+                            "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
                            ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
                             "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
                            ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
