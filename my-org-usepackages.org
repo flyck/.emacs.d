@@ -331,6 +331,19 @@
      )
    #+END_SRC
 
+   The flyspell settings for work, requires a manual "aspell" installation.
+   - https://www.emacswiki.org/emacs/FlySpell
+   #+BEGIN_SRC emacs-lisp
+     (use-package flyspell
+       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       :config
+       (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
+       (setq ispell-program-name "aspell")
+       (global-set-key (kbd "<f8>") 'ispell-word)
+       (global-set-key (kbd "C-<f8>") 'flyspell-mode)
+       )
+   #+END_SRC
+
 ** Emoji-autocomplete (company-emoji)                         :sysenv:
    Let's have fun emojis!
    #+BEGIN_SRC emacs-lisp
