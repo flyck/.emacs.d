@@ -309,7 +309,9 @@
      #+END_SRC
 **** Font settings for home                                   :sysenv:
      #+BEGIN_SRC emacs-lisp
-       (if (equal (getenv "SYSENV") "home")
+       (if (or
+            (equal (getenv "SYSENV") "work")
+            (equal (getenv "SYSENV") "home"))
            (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
          )
      #+END_SRC
