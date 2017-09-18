@@ -2063,11 +2063,19 @@
        )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package moe-theme
      :ensure t
      :config
-     (load-theme 'moe-light t)
+     (load-theme 'moe-dark t)
+     )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package cyberpunk-theme
+     :ensure t
+     :config
+     (load-theme 'cyberpunk t)
      )
    #+END_SRC
 
