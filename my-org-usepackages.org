@@ -63,6 +63,15 @@
       )
   #+END_SRC
 
+** Dired
+   #+BEGIN_SRC emacs-lisp
+   (use-package dired-details
+    :ensure t
+    :config
+    (setq-default dired-details-hidden-string "--- ")
+    (dired-details-install)
+    )
+   #+END_SRC
 ** Helm
   A convenient interface to select about anything from a list: Browse files, select themes, show
   and select search-results and much more.
