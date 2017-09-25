@@ -2071,7 +2071,10 @@
      )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+** Cyperpunk theme
+   Awesome theme with flashy colors. Something nice to come back to after having tried all sorts
+   of themes that try to be well-nuanced, but ultimately aren't.
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package cyberpunk-theme
      :ensure t
      :config
@@ -2100,6 +2103,30 @@
        (load-theme 'monokai t)
        (set-background-color "#2f343f")
        )
+   #+END_SRC
+
+** Spacemacs theme
+   Taken from: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
+   #+BEGIN_SRC emacs-lisp
+(use-package spacemacs-theme
+  :ensure t
+  :init
+  (load-theme 'spacemacs-dark t)
+  (setq spacemacs-theme-org-agenda-height nil)
+  (setq spacemacs-theme-org-height nil))
+   #+END_SRC
+
+   This contains a couple of options to stop the theme using variable heights for org-mode agenda
+   items and headings. However, they didn’t have the desired effect for me to I also needed to add
+   the following lines to my org-mode configuration:
+   #+BEGIN_SRC emacs-lisp
+;; set sizes here to stop spacemacs theme resizing these
+(set-face-attribute 'org-level-1 nil :height 1.0)
+(set-face-attribute 'org-level-2 nil :height 1.0)
+(set-face-attribute 'org-level-3 nil :height 1.0)
+(set-face-attribute 'org-scheduled-today nil :height 1.0)
+(set-face-attribute 'org-agenda-date-today nil :height 1.1)
+(set-face-attribute 'org-table nil :foreground "#008787")
    #+END_SRC
 
 ** Prassee theme
