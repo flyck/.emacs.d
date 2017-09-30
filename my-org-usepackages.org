@@ -1171,7 +1171,7 @@ Inside a code-block, just call `self-insert-command'."
        (setq org-latex-listings 'minted)
 
        (setq org-latex-minted-options
-             '(("frame" "lines") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
+             '(("frame=single") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
      #+END_SRC
 
      In my case i had to delete the temporary folder in the same directory to make the coloring
