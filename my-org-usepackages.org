@@ -33,6 +33,8 @@
       (require 'recentf)
       (add-to-list 'recentf-exclude no-littering-var-directory)
       (add-to-list 'recentf-exclude no-littering-etc-directory))
+      ;; have elfeeds database in the cloud instead of ~/.emacs.d/var/
+      (setq elfeed-db-directory "~/Dropbox/org/elfeed/db/")
   #+END_SRC
 
 * File-browsing and text-searching
