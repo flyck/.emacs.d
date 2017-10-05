@@ -1161,6 +1161,27 @@ Inside a code-block, just call `self-insert-command'."
          )
      #+END_SRC
 
+**** Customize the markdown export
+     I use =verbatim= markup to surround file-paths, in order to have them highlighted. The
+     following exports this markup to a more capable format.
+     #+BEGIN_SRC emacs-lisp
+(setq org-latex-text-markup-alist '((bold . "\\textbf{%s}")
+                                  (code . protectedtexttt)
+                                  (italic . "\\emph{%s}")
+                                  (strike-through . "\\sout{%s}")
+                                  (underline . "\\uline{%s}")
+                                  (verbatim . "\\path{%s}"))) ;; default: protectedtexttt
+     #+END_SRC
+
+     It however requires the following additional settings to actually work. This setting makes it
+     so paths are preferably broken near slashes. When there is no slash nearby the path simply
+     gets broken at a letter.
+     #+BEGIN_SRC latex :tangle no
+#+LaTeX_HEADER: \usepackage[colorlinks]{hyperref}
+#+LATEX_HEADER: \usepackage{etoolbox}
+#+LATEX_HEADER: \renewcommand{\UrlBreaks}{\do\/\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z}
+     #+END_SRC
+
 **** Minted, coloured source-blocks in latex
      Enables the "minted" package with its required options for the source-block highlighting to
      work. In addition to this I need the minted latex package, which relies on the external tool
