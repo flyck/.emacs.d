@@ -1073,30 +1073,8 @@ Inside a code-block, just call `self-insert-command'."
        (require 'ox-latex)
        (add-to-list 'org-latex-classes
                     '("stsreprt"
-                      "\\documentclass[
-                                     %%%%% Styles and Sizes
-                                           %10pt,
-                                           %11pt,
-                                           %12pt,
-                                           fancyheadings, % headings with seplines and logo
-                                           %
-                                           %%%%% Printing, Color and Binding
-                                           %a4paper,
-                                           %a5paper,
-                                           %twoside, % single sided printout
-                                           %oneside, % duplex printout (default)
-                                           %% binding correction is used to compensate for the paper lost during binding
-                                           %% of the document
-                                           %BCOR=0.7cm, % binding correction
-                                           %nobcorignoretitle, % do not ignore BCOR for title page
-                                           %% the following two options only concern the graphics included by the document
-                                           %% class
-                                           %grayscaletitle, % keep the title in grayscale
-                                           %grayscalebody, % keep the rest of the document in grayscale
-                                           %
-                                           %%%%% expert options: your mileage may vary
-                                           %baseclass=..., % special option to use a different document baseclass
-                                           ]{stsreprt}"
+                      "\\documentclass[fancyheadings]{stsreprt}
+                      [NO-DEFAULT-PACKAGES]"
                       ("\\chapter{%s}" . "\\chapter*{%s}")
                       ("\\section{%s}" . "\\section*{%s}")
                       ("\\subsection{%s}" . "\\subsection*{%s}")
