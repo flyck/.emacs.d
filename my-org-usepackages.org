@@ -2140,7 +2140,7 @@ Inside a code-block, just call `self-insert-command'."
 (use-package spacemacs-theme
   :ensure t
   :init
-  (load-theme 'spacemacs-dark t)
+  (load-theme 'spacemacs-light t)
   (setq spacemacs-theme-org-agenda-height nil)
   (setq spacemacs-theme-org-height nil))
    #+END_SRC
