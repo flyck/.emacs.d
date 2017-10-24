@@ -30,12 +30,17 @@
 
 ** Emacs bootstrap
 *** Add package sources
-    So far I only add melpa, is that enough? Experience will show
+    This block adds the melpa and org repository if they aren't added already. This way this
+    command is stateless which helps for debugging.
     #+BEGIN_SRC emacs-lisp
       (unless (assoc-default "melpa" package-archives)
         (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-        (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; added for org-plus-contrib package
 	; (package-refresh-contents)
+      )
+      (unless (assoc-default "org" package-archives)
+        ; added for org-plus-contrib package
+        (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+      	; (package-refresh-contents)
       )
     #+END_SRC
 
