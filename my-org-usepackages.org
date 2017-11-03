@@ -53,7 +53,7 @@
       ;;
       (setq recentf-auto-cleanup 'never)
       (recentf-mode 1)
-      (setq recentf-max-saved-items 50)
+      (setq recentf-max-saved-items 0)
       ;; get rid of `find-file-read-only' and replace it with something more useful.
       (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
       (defun ido-recentf-open ()
@@ -516,6 +516,7 @@
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
      (use-package org
+       :pin manual ;; manually update
        :ensure org-plus-contrib
        :init
        ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
@@ -559,7 +560,7 @@
 
 *** Pretty quotations for nice latex exports                :research:
     Taken from here: http://endlessparentheses.com/prettify-your-quotation-marks.html
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle no
 (define-key org-mode-map "\"" #'endless/round-quotes)
 (eval-after-load 'markdown-mode
   '(define-key markdown-mode-map "\""
@@ -1761,7 +1762,9 @@ Inside a code-block, just call `self-insert-command'."
    Taken from: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
    #+BEGIN_SRC emacs-lisp
      (if (or (equal "home" (getenv "SYSENV"))
-             (equal "laptop" (getenv "SYSENV")))
+             (equal "laptop" (getenv "SYSENV"))
+             (equal "work" (getenv "SYSENV"))
+             )
          (progn
            (defvar hugo-content-dir "~/Dropbox/org/blog/content/"
              "Path to Hugo's content directory")
