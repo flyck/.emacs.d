@@ -7,7 +7,7 @@
 ;; Created: 17 Jun 2012
 ;; Modified: 17 Oct 2016
 ;; Version: 2.3
-;; Package-Version: 20170710.1234
+;; Package-Version: 20171030.1428
 ;; Package-Requires: ((bind-key "1.0") (diminish "0.44"))
 ;; Keywords: dotemacs startup speed config package
 ;; URL: https://github.com/jwiegley/use-package
@@ -124,7 +124,7 @@ become available:
   `use-package--foo--pre-config-hook'
   `use-package--foo--post-config-hook'
 
-This way, you can add to these hooks before evalaution of a
+This way, you can add to these hooks before evaluation of a
 `use-package` declaration, and exercise some control over what
 happens.
 
@@ -291,7 +291,7 @@ found."
   "Attempt to find and jump to the `use-package' form that loaded
 PACKAGE. This will only find the form if that form actually
 required PACKAGE. If PACKAGE was previously required then this
-function will jump to the file that orginally required PACKAGE
+function will jump to the file that originally required PACKAGE
 instead."
   (interactive (list (completing-read "Package: " features)))
   (let* ((package (if (stringp package) (intern package) package))
@@ -678,11 +678,12 @@ If the package is installed, its entry is removed from
               use-package--deferred-packages)
      (if packages
          (list
-          (completing-read
-           "Select package: "
-           packages
-           nil
-           'require-match)
+          (intern
+           (completing-read
+            "Select package: "
+            packages
+            nil
+            'require-match))
           :interactive)
        (user-error "No packages with deferred installation"))))
   (let ((spec (gethash name use-package--deferred-packages)))
@@ -737,17 +738,21 @@ If the package is installed, its entry is removed from
                 ;; bypassed.
                 (member context '(:byte-compile :ensure :config))
                 (y-or-n-p (format "Install package %S?" package))))
-          (with-demoted-errors (format "Cannot load %s: %%S" name)
-            (when (assoc package (bound-and-true-p package-pinned-packages))
-              (package-read-all-archive-contents))
-            (if (assoc package package-archive-contents)
-                (progn (package-install package) t)
+          (condition-case-unless-debug err
               (progn
-                (package-refresh-contents)
-                (when (assoc package (bound-and-true-p
-                                      package-pinned-packages))
+                (when (assoc package (bound-and-true-p package-pinned-packages))
                   (package-read-all-archive-contents))
-                (package-install package))))))))
+                (cond ((assoc package package-archive-contents)
+                       (package-install package)
+                       t)
+                      (t
+                       (package-refresh-contents)
+                       (when (assoc package
+                                    (bound-and-true-p package-pinned-packages))
+                         (package-read-all-archive-contents))
+                       (package-install package))))
+            (error (message "Error: Cannot load %s: %S" name err)
+                   nil))))))
 
 (defun use-package-handler/:ensure (name keyword ensure rest state)
   (let* ((body (use-package-process-keywords name rest
