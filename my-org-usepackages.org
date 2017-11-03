@@ -1846,6 +1846,107 @@ Inside a code-block, just call `self-insert-command'."
        )
    #+END_SRC
 
+*** Blogging Setup: How to blog from org-mode to github-pages   :blog:
+    :PROPERTIES:
+    :TITLE:    Setting up the blog
+    :HUGO_TAGS: emacs blogging
+    :HUGO_TOPICS: emacs
+    :HUGO_FILE: setting_up_the_blog.md
+    :HUGO_DATE: [2017-08-15 Di 22:14]
+    :END:
+    :LOGBOOK:
+    CLOCK: [2017-08-29 Di 22:41]--[2017-08-29 Di 23:13] =>  0:32
+    :END:
+    Github pages ~cn~ are really an optimal way for org-mode nerds to blog. We usually have a github
+    account anyway to manage our 1000+ commits big emacs config accross multiple devices, and we
+    have learned enough about emacs to dish out some knowledge through our own blog.
+
+    How can you blog comfortably in this setup? Let's get started...
+
+    #+BEGIN_EXPORT html
+    <!--more-->
+    #+END_EXPORT
+
+    Steps:
+    - Create a directory where I want the blog to be, in my case =~/Dropbox/org/blog=
+    - Follow the steps from here: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
+    - Install hugo (on Windows 10)
+      1. Install chocolatey https://chocolatey.org/install#install-with-cmdexe
+         #+BEGIN_SRC sh :tangle no
+         # for the powershell, close it after execution
+         Set-ExecutionPolicy Bypass; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+         #+END_SRC
+      2. Install hugo using chocolatey:
+         #+BEGIN_SRC sh :tangle no
+         # on the normal shell
+         choco install hugo -confirm
+         #+END_SRC
+    - Follow the startup steps for hugo to setup a site and get the server running
+      #+BEGIN_SRC sh :tangle no
+      # some command to create a default site from the tutorial
+      # then download a theme
+      # copy the exampleSite structure from the theme directoy into the main blog directory to have some dummy content
+      # - usually this dummy content also explains the theme capabilities
+      cp -R theme/$theme_name/exampleSite .
+      hugo server
+      # look at the site
+      #+END_SRC
+    - Create a github.io repository and connect it to the directory
+      - Create the github repository
+        - Navigate to your github account and create this repo: username.github.io
+      - Create the local repository
+        #+BEGIN_SRC sh :tangle no
+        cd ~/Dropbox/org/blog
+        git init
+        git remote add origin https://github.com/username/username.github.io.git
+        #+END_SRC
+    - Further steps:
+      - [ ] https://gohugo.io/themes/customizing/ Check out the customizing tutorial
+      - [ ] Settle on a theme
+        - I tried out ananke, a default theme
+        - I tried out "bluestnight". Now i have to customize it.
+          - Disabled the patreon widget
+        - I tried out beautifulhugo
+      - [ ] Check out this link: https://vurt.co.uk/post/blogging-with-emacs-and-hugo/
+
+*** Blogging Setup: Workflow for writing a new blogpost         :blog:
+    Creating a new blog post using the previously describe setup should be easy and
+    comfortable. These are the generic steps for adding a blog-post.
+
+    #+BEGIN_EXPORT html
+    <!--more-->
+    #+END_EXPORT
+
+    1) *Create the content in org-mode*: Open any org-file on the computer and write a blogpost.
+       - Any existing org-mode heading could be turned into a blogpost, but most generic notes
+         dont make for a good blog post. Some of them can be a good basis though.
+    2) *Tag it so i can find it again later*: Tag it with “blog” so I can find it through the
+       agenda. Enables me to list how much time i spend blogging in a week / month / year.
+    3) *Create hugo variable placeholders*: Navigate to the headline and press =M-x hugo=
+    4) *Fill in the hugo variables*. An example is below:
+       #+BEGIN_SRC org
+         :PROPERTIES:
+         :TITLE:    Setting up the blog
+         :HUGO_TAGS: emacs blogging
+         :HUGO_TOPICS: emacs
+         :HUGO_FILE: setting_up_the_blog.md
+         :HUGO_DATE: [2017-08-15 Di 22:14]
+         :END:
+       #+END_SRC
+       - It is hidden in an org-mode drawer which makes it easy to hide
+    5) *Convert the headline into a markdown file according to the hugo variables*: Navigate to the
+       headline and press =M-x hugo=
+    6) *Regenerate the website including the new markdown file*: Open a shell (I use git bash on
+       Windows), navigate to the blog directory and execute =hugo=
+       - Optional: Debugging, check the blog post formatting before uploading it
+       - For this execute “hugo server” and navigate to the local blog
+       - Downside: pictures dont get resolved correctly
+    7) *Publish the website*
+       #+BEGIN_SRC sh
+       cd public
+       git add * && git commit -m "site update" && git push origin master
+       #+END_SRC
+
 ** SQL
    Thanks to baron42bba and https://truongtx.me/2014/08/23/setup-emacs-as-an-sql-database-client
    I yet have to actually test this config.
