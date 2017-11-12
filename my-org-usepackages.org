@@ -1851,7 +1851,7 @@ Inside a code-block, just call `self-insert-command'."
     :TITLE:    Setting up the blog
     :HUGO_TAGS: emacs blogging
     :HUGO_TOPICS: emacs
-    :HUGO_FILE: setting_up_the_blog.md
+    :HUGO_FILE: post/setting_up_the_blog.md
     :HUGO_DATE: [2017-08-15 Di 22:14]
     :END:
     :LOGBOOK:
@@ -1910,6 +1910,13 @@ Inside a code-block, just call `self-insert-command'."
       - [ ] Check out this link: https://vurt.co.uk/post/blogging-with-emacs-and-hugo/
 
 *** Blogging Setup: Workflow for writing a new blogpost         :blog:
+    :PROPERTIES:
+    :TITLE:    Blogging Setup: Workflow for writing a new blogpost
+    :HUGO_TAGS: emacs blogging
+    :HUGO_TOPICS: emacs
+    :HUGO_FILE: post/workflow_for_new_blogpost.md
+    :HUGO_DATE: [2017-08-15 Di 22:14]
+    :END:
     Creating a new blog post using the previously describe setup should be easy and
     comfortable. These are the generic steps for adding a blog-post.
 
