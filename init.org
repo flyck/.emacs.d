@@ -81,7 +81,7 @@
       (setq load-prefer-newer t)
     #+END_SRC
 
-** Emacs vanilla settings corrections
+** Emacs vanilla setting corrections
    Config in here is independant of specific packages, so it basically is for improving vanilla
    emacs.
 
@@ -468,3 +468,4 @@
       (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
       (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
  #+END_SRC
+.
