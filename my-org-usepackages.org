@@ -1,4 +1,4 @@
-e#+Title:   My use-package configuration in org-mode
+#+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 #+STARTUP: showall
 
@@ -728,7 +728,7 @@ Inside a code-block, just call `self-insert-command'."
         (if (equal "work" (getenv "SYSENV"))
             (progn (setq org-agenda-files
                          (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\hrv21156\\hrv21156.org")
+                               ;(concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\hrv21156\\hrv21156.org")
                                ;(concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
                                (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
                    ;; org-capture setup
