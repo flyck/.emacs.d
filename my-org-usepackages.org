@@ -1,4 +1,4 @@
-#+Title:   My use-package configuration in org-mode
+e#+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 #+STARTUP: showall
 
@@ -728,6 +728,7 @@ Inside a code-block, just call `self-insert-command'."
         (if (equal "work" (getenv "SYSENV"))
             (progn (setq org-agenda-files
                          (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
+                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\hrv21156\\hrv21156.org")
                                ;(concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
                                (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
                    ;; org-capture setup
@@ -1757,7 +1758,7 @@ Inside a code-block, just call `self-insert-command'."
    #+END_SRC
 
 ** Blogging                                                   :sysenv:
-   Doesnt work out of the box, needs some setup! See "setup the blog" for more info (coming soon).
+   Doesnt work out of the box, needs some setup! See "setup the blog" for more info.
 
    Taken from: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
    #+BEGIN_SRC emacs-lisp
@@ -1849,13 +1850,10 @@ Inside a code-block, just call `self-insert-command'."
 *** Blogging Setup: How to blog from org-mode to github-pages   :blog:
     :PROPERTIES:
     :TITLE:    Setting up the blog
-    :HUGO_TAGS: emacs blogging
+    :HUGO_TAGS: emacs, blogging
     :HUGO_TOPICS: emacs
     :HUGO_FILE: post/setting_up_the_blog.md
     :HUGO_DATE: [2017-08-15 Di 22:14]
-    :END:
-    :LOGBOOK:
-    CLOCK: [2017-08-29 Di 22:41]--[2017-08-29 Di 23:13] =>  0:32
     :END:
     Github pages ~cn~ are really an optimal way for org-mode nerds to blog. We usually have a github
     account anyway to manage our 1000+ commits big emacs config accross multiple devices, and we
@@ -1912,7 +1910,7 @@ Inside a code-block, just call `self-insert-command'."
 *** Blogging Setup: Workflow for writing a new blogpost         :blog:
     :PROPERTIES:
     :TITLE:    Blogging Setup: Workflow for writing a new blogpost
-    :HUGO_TAGS: emacs blogging
+    :HUGO_TAGS: emacs, blogging
     :HUGO_TOPICS: emacs
     :HUGO_FILE: post/workflow_for_new_blogpost.md
     :HUGO_DATE: [2017-08-15 Di 22:14]
@@ -2253,7 +2251,8 @@ Inside a code-block, just call `self-insert-command'."
   :init
   (load-theme 'spacemacs-light t)
   (setq spacemacs-theme-org-agenda-height nil)
-  (setq spacemacs-theme-org-height nil))
+  (setq spacemacs-theme-org-height nil)
+)
    #+END_SRC
 
    This contains a couple of options to stop the theme using variable heights for org-mode agenda
