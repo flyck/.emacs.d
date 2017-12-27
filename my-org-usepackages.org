@@ -2292,6 +2292,15 @@ Inside a code-block, just call `self-insert-command'."
       )
    #+END_SRC
 
+** Flatband theme
+   #+BEGIN_SRC emacs-lisp
+   (use-package flatland-theme
+   :ensure t
+   :load
+   (load-theme 'flatland t)
+   )
+
+   #+END_SRC
 ** Org-mode Size settings
    Regardless of the theme i got used to having the org-headlines at certain sizes.
    #+BEGIN_SRC emacs-lisp :tangle no
