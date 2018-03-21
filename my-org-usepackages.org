@@ -1343,6 +1343,7 @@ Inside a code-block, just call `self-insert-command'."
       (org-babel-do-load-languages
        'org-babel-load-languages
        '(
+         (python . t)
          (R . t)
          (latex . t)
          (lisp . t)
@@ -1381,6 +1382,12 @@ Inside a code-block, just call `self-insert-command'."
     Load syntax-highlighting for source-blocks
     #+BEGIN_SRC emacs-lisp
     (setq org-src-fontify-natively t)
+    #+END_SRC
+
+    Dont format (indent) the source-code when exiting the special environment (for more info on
+    this look into the function "org-edit-src-code").
+    #+BEGIN_SRC emacs-lisp
+    (setq org-src-preserve-indentation t)
     #+END_SRC
 
     Dont try to evaluate source-blocks on export (this setting has fixed a weird bug for me, which
@@ -1743,6 +1750,7 @@ Inside a code-block, just call `self-insert-command'."
        :ensure t
        :bind (:map elfeed-search-mode-map
                    ("m" . elfeed-toggle-star)
+                   ("U" . elfeed-update)
                    )
        )
    #+END_SRC
@@ -2170,7 +2178,7 @@ Inside a code-block, just call `self-insert-command'."
        )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp :tangle
      (use-package oceanic-theme
        :ensure t
        :config
@@ -2245,7 +2253,7 @@ Inside a code-block, just call `self-insert-command'."
 
 ** Spacemacs theme
    Taken from: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package spacemacs-theme
   :ensure t
   :init
@@ -2258,7 +2266,7 @@ Inside a code-block, just call `self-insert-command'."
    This contains a couple of options to stop the theme using variable heights for org-mode agenda
    items and headings. However, they didn’t have the desired effect for me to I also needed to add
    the following lines to my org-mode configuration:
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 ;; set sizes here to stop spacemacs theme resizing these
 (set-face-attribute 'org-level-1 nil :height 1.0)
 (set-face-attribute 'org-level-2 nil :height 1.0)
@@ -2266,6 +2274,15 @@ Inside a code-block, just call `self-insert-command'."
 (set-face-attribute 'org-scheduled-today nil :height 1.0)
 (set-face-attribute 'org-agenda-date-today nil :height 1.1)
 (set-face-attribute 'org-table nil :foreground "#008787")
+   #+END_SRC
+
+** Monokai alt theme
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package monokai-alt-theme
+       :ensure t
+       :config
+       (load-theme 'monokai-alt t)
+       )
    #+END_SRC
 
 ** Prassee theme
@@ -2293,10 +2310,10 @@ Inside a code-block, just call `self-insert-command'."
    #+END_SRC
 
 ** Flatband theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
    (use-package flatland-theme
    :ensure t
-   :load
+   :config
    (load-theme 'flatland t)
    )
 
@@ -2409,5 +2426,26 @@ Inside a code-block, just call `self-insert-command'."
        (nyan-mode 1)
        (nyan-start-animation)
        )
+   #+END_SRC
+
+** Modeline helpers
+   Idea taken from: http://manuel-uberti.github.io/emacs/2018/03/10/moody-and-minions/
+
+   #+BEGIN_SRC emacs-lisp
+(use-package minions
+  :ensure t
+  :init (minions-mode)
+  :config
+  (setq minions-mode-line-lighter "#")
+  (setq minions-direct '(flycheck-mode))
+  )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+(use-package moody
+  :ensure t
+  :config
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
    #+END_SRC
 .
