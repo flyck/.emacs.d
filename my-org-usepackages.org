@@ -2253,7 +2253,7 @@ Inside a code-block, just call `self-insert-command'."
 
 ** Spacemacs theme
    Taken from: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
 (use-package spacemacs-theme
   :ensure t
   :init

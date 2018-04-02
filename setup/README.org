@@ -58,6 +58,20 @@
   5. Install cygwin and add it to to the system environment variables (otherwise things like
      "diff-buffers" doesn't work)
 
+* The Server-Client Setup
+** Windows
+   The client link on windows looks like this:
+   "C:\Program Files (x86)\GNU Emacs 25.1\bin\emacsclientw.exe" -na "" -c
+
+   The daemon link on windows looks like this (should be in autostart (Windows+R shell:startup))
+   "C:\Program Files (x86)\GNU Emacs 25.1\bin\runemacs.exe" --daemon
+
+   Great resource:
+   https://www.emacswiki.org/emacs/EmacsMsWindowsIntegration
+
+** Linux
+   https://taingram.org/2017/05/09/using-emacsclient-to-speed-up-editing/
+
 * Installation tips on linux
   The [[file:compile_emacs.sh]] usually does fine until it calls ~./configure~. Here missing libraries
   are checked which should be installed.
