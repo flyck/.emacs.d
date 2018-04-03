@@ -125,14 +125,14 @@
   #+BEGIN_SRC emacs-lisp
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
-  :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
-            ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
-            ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
-            )
+  :if (or (equal "home" (getenv "SYSENV"))
+          (equal "laptop" (getenv "SYSENV"))
+          (equal "work" (getenv "SYSENV"))
+       )
   :config
   (setq deft-extensions '("txt" "tex" "org"))
   (if (equal "work" (getenv "SYSENV"))
-      (progn (setq deft-directory (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte")))
+      (progn (setq deft-directory (concat "~/Documents")))
       )
   (if (or (equal "home" (getenv "SYSENV"))
           (equal "laptop" (getenv "SYSENV")))
@@ -496,9 +496,9 @@
               ))
         (if (equal "work" (getenv "SYSENV"))
             (progn
-              (setq fbr/my-git-dir (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\"))
+              (setq fbr/my-git-dir (concat "~/Documents/org/"))
               (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
-              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
+              ;; (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master")) ;; we dont need a backup here
               ))
         (kill-emacs)
         )
@@ -718,10 +718,7 @@ Inside a code-block, just call `self-insert-command'."
       #+BEGIN_SRC emacs-lisp
         (if (equal "work" (getenv "SYSENV"))
             (progn (setq org-agenda-files
-                         (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org")
-                               ;(concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\hrv21156\\hrv21156.org")
-                               ;(concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org_archive")
-                               (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\request-tracker\\ticketsystem.org")))
+                         (list (concat "~/Documents/org/projects.org")))
                    ;; org-capture setup
                    (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
                    (setq org-capture-templates
@@ -753,11 +750,9 @@ Inside a code-block, just call `self-insert-command'."
                    (find-file "~//Dropbox//org//gtd//tasks.org")
                  )
                (if (equal "work" (getenv "SYSENV"))
-                   (find-file (concat "C://Users//" (getenv "USERNAME") "//Desktop//Projekte//org//projects.org"))
+                   (find-file "~/Documents/org/projects.org"))
                  )
-               )
-             )
-         )
+               ))
      #+END_SRC
 
 *** Org-capture
@@ -1620,8 +1615,7 @@ Inside a code-block, just call `self-insert-command'."
        :ensure t
        :config
        ;; (setq tramp-verbose 5)
-       (if (or (equal "work" (getenv "SYSENV"))
-               (equal "home" (getenv "SYSENV")))
+       (if (equal "home" (getenv "SYSENV"))
            (progn
              (setq default-tramp-method "plink")
              (setq ssh-program "TortoisePlink.exe")
@@ -1751,8 +1745,11 @@ Inside a code-block, just call `self-insert-command'."
        :ensure t
        :config
        (elfeed-org)
-       (if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       (if (equal "home" (getenv "SYSENV"))
        (setq rmh-elfeed-org-files (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\hobby\\elfeed.org")) ))
+       )
+       (if (equal "work" (getenv "SYSENV"))
+       (setq rmh-elfeed-org-files (list "~/Dropbox/org/hobby/elfeed.org"))
        )
    #+END_SRC
 
