@@ -339,7 +339,7 @@
      (use-package flyspell
        :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
        :config
-       (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
+       (if (equal "home" (getenv "SYSENV")) (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/"))
        (setq ispell-program-name "aspell")
        (global-set-key (kbd "<f8>") 'ispell-word)
        (global-set-key (kbd "C-<f8>") 'flyspell-mode)
@@ -460,8 +460,6 @@
        :config
        (add-to-list 'exec-path "C:/Program Files/Git/bin")
        (setenv "GIT_ASKPASS" "git-gui--askpass")
-       ;; set git home for university setup
-       (if (equal nil (getenv "SYSENV")) (setq magit-git-executable "/fibus/fs0/10/sefb1704/bin/git"))
        :defer 5
        )
    #+END_SRC
@@ -1573,7 +1571,7 @@ Inside a code-block, just call `self-insert-command'."
    #+END_SRC
 
 *** Org-mode calendar extension
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package calfw-org
   :ensure t
   :config
@@ -2042,7 +2040,7 @@ Inside a code-block, just call `self-insert-command'."
    Care for the workaround though!
    #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (use-package seti-theme
-       :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+       :ensure t
        :config
        (custom-set-faces
         '(font-lock-function-name-face ((t (:foreground "royal blue"))))
@@ -2242,9 +2240,9 @@ Inside a code-block, just call `self-insert-command'."
 ** Spacemacs theme
    Taken from: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
    #+BEGIN_SRC emacs-lisp
-(use-package spacemacs-theme
-  :ensure t
-  :init
+(use-package spacemacs-common
+  :ensure spacemacs-theme
+  :config
   (load-theme 'spacemacs-light t)
   (setq spacemacs-theme-org-agenda-height nil)
   (setq spacemacs-theme-org-height nil)
