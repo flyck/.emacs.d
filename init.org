@@ -52,15 +52,6 @@
     - usepackage is only available on melpa
     - smartparens crashes when not installed from melpa
 
-*** Proxy settings                                            :sysenv:
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "work" (getenv "SYSENV"))
-          (setq url-proxy-services '(("no_proxy" . "work\\.com")
-                                 ("http" . "172.16.8.250:3128")
-    			     ("https" . "172.16.8.250:3128")))
-          )
-    #+END_SRC
-
 *** Add my elisp directory and use-package
     Sometimes I load files outside the package system. As long as they're in a directory in my
     =load-path=, Emacs can find them.
