@@ -1343,8 +1343,7 @@ Inside a code-block, just call `self-insert-command'."
                    '("bash" . (undecided-unix)))
     #+END_SRC
 
-    Send stderror into the result drawer instead of an extra window (does this result in the rare
-    deletion of text-chunks? I think that startet occuring when i introducted this setting)
+    Send stderror into the result drawer instead of an extra window
     #+BEGIN_SRC emacs-lisp
       (setq org-babel-default-header-args:sh
             '((:prologue . "exec 2>&1") (:epilogue . ":"))
@@ -1385,7 +1384,7 @@ Inside a code-block, just call `self-insert-command'."
 
     Source seems to be over here: https://github.com/astahlman/ob-async
 
-    Currently untanged since it seems to be obsolete: /Warning (emacs):
+    Currently untangled since it seems to be obsolete: /Warning (emacs):
     ob-async-org-babel-execute-src-block is longer needed in org-ctrl-c-ctrl-c-hook/
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package ob-async
@@ -2342,8 +2341,8 @@ Inside a code-block, just call `self-insert-command'."
   Currently untangled since the cursor seems to adapt the text color which makes it hard to spot
   at times.
   #+BEGIN_SRC emacs-lisp :tangle no
-    (set-default 'cursor-type 'bar)
-    (set-cursor-color "#000000")
+    (set-default 'cursor-type 'box)
+    (set-cursor-color "#6aaf6a")
   #+END_SRC
 
 * Modeline

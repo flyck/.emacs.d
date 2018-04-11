@@ -177,7 +177,7 @@
     #+BEGIN_SRC emacs-lisp
       (tooltip-mode 0)
       (tool-bar-mode 0)
-      (menu-bar-mode 0)
+      (menu-bar-mode 1)
       (scroll-bar-mode 0)
     #+END_SRC
 
@@ -230,6 +230,7 @@
       (setq history-delete-duplicates t)
       (setq savehist-save-minibuffer-history 1)
       (setq history-length t)
+      (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring last-kbd-macro kmacro-ring shell-command-history))
     #+END_SRC
 
     Clean up unnecessary spaces on save and show them while they are still there
