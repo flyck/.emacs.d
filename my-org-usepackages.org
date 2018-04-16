@@ -1735,6 +1735,8 @@ Inside a code-block, just call `self-insert-command'."
                    ("U" . elfeed-update)
                    )
        )
+       :config
+       (setq elfeed-search-filter "@6-months-ago")
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
