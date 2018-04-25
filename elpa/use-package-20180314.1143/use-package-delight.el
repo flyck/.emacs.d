@@ -1,4 +1,4 @@
-;;; up-delight.el --- Support for the :delight keyword
+;;; use-package-delight.el --- Support for the :delight keyword
 
 ;; Copyright (C) 2012-2017 John Wiegley
 
@@ -7,7 +7,7 @@
 ;; Created: 17 Jun 2012
 ;; Modified: 3 Dec 2017
 ;; Version: 1.0
-;; Package-Requires: ((emacs "24.3") (use-package "2.4") (delight "1.5"))
+;; Package-Requires: ((emacs "24.3") (use-package "2.4"))
 ;; Keywords: dotemacs startup speed config package
 ;; URL: https://github.com/jwiegley/use-package
 
@@ -33,7 +33,7 @@
 
 ;;; Code:
 
-(require 'up-core)
+(require 'use-package-core)
 
 (defun use-package-normalize-delight (name args)
   "Normalize ARGS for a single call to `delight'."
@@ -51,6 +51,7 @@
          (use-package-error
           ":delight expects `delight' arguments or a list of them"))))
 
+;;;###autoload
 (defun use-package-normalize/:delight (name keyword args)
   "Normalize arguments to delight."
   (cond ((null args)
@@ -75,6 +76,7 @@
                 (list args)
               args)))))
 
+;;;###autoload
 (defun use-package-handler/:delight (name keyword args rest state)
   (let ((body (use-package-process-keywords name rest state)))
     (use-package-concat
@@ -84,4 +86,6 @@
 
 (add-to-list 'use-package-keywords :delight t)
 
-(provide 'up-delight)
+(provide 'use-package-delight)
+
+;;; use-package-delight.el ends here

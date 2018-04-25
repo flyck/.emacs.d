@@ -1,4 +1,4 @@
-;;; up-ensure.el --- Support for the :ensure and :pin keywords
+;;; use-package-ensure.el --- Support for the :ensure and :pin keywords
 
 ;; Copyright (C) 2012-2017 John Wiegley
 
@@ -33,7 +33,8 @@
 
 ;;; Code:
 
-(require 'up-core)
+(require 'cl-lib)
+(require 'use-package-core)
 
 (defgroup use-package-ensure nil
   "Support for :ensure and :pin keywords in use-package declarations."
@@ -58,9 +59,9 @@ See also `use-package-defaults', which uses this value."
 (defcustom use-package-ensure-function 'use-package-ensure-elpa
   "Function that ensures a package is installed.
 This function is called with three arguments: the name of the
-package declared in the `use-package' form; the argument passed
-to `:ensure'; and the current `state' plist created by previous
-handlers.
+package declared in the `use-package' form; the arguments passed
+to all `:ensure' keywords (always a list, even if only one); and
+the current `state' plist created by previous handlers.
 
 Note that this function is called whenever `:ensure' is provided,
 even if it is nil. It is up to the function to decide on the
@@ -131,44 +132,57 @@ manually updated package."
 
 (defvar package-archive-contents)
 
+;;;###autoload
 (defun use-package-normalize/:ensure (name keyword args)
   (if (null args)
-      t
+      (list t)
     (use-package-only-one (symbol-name keyword) args
       #'(lambda (label arg)
-          (if (symbolp arg)
-              arg
+          (cond
+           ((symbolp arg)
+            (list arg))
+           ((and (listp arg) (= 3 (length arg))
+                 (symbolp (nth 0 arg))
+                 (eq :pin (nth 1 arg))
+                 (or (stringp (nth 2 arg))
+                     (symbolp (nth 2 arg))))
+            (list (cons (nth 0 arg) (nth 2 arg))))
+           (t
             (use-package-error
              (concat ":ensure wants an optional package name "
-                     "(an unquoted symbol name)")))))))
+                     "(an unquoted symbol name), or (<symbol> :pin <string>)"))))))))
 
-(defun use-package-ensure-elpa (name ensure state &optional no-refresh)
-  (let ((package
-         (or (and (eq ensure t) (use-package-as-symbol name))
-             ensure)))
-    (when package
-      (require 'package)
-      (unless (package-installed-p package)
-        (condition-case-unless-debug err
-            (progn
-              (when (assoc package (bound-and-true-p
-                                    package-pinned-packages))
-                (package-read-all-archive-contents))
-              (if (assoc package package-archive-contents)
-                  (package-install package)
-                (package-refresh-contents)
+(defun use-package-ensure-elpa (name args state &optional no-refresh)
+  (dolist (ensure args)
+    (let ((package
+           (or (and (eq ensure t) (use-package-as-symbol name))
+               ensure)))
+      (when package
+        (require 'package)
+        (when (consp package)
+          (use-package-pin-package (car package) (cdr package))
+          (setq package (car package)))
+        (unless (package-installed-p package)
+          (condition-case-unless-debug err
+              (progn
                 (when (assoc package (bound-and-true-p
                                       package-pinned-packages))
                   (package-read-all-archive-contents))
-                (package-install package))
-              t)
-          (error
-           (ignore
-            (display-warning 'use-package
-                             (format "Failed to install %s: %s"
-                                     name (error-message-string err))
-                             :error))))))))
+                (if (assoc package package-archive-contents)
+                    (package-install package)
+                  (package-refresh-contents)
+                  (when (assoc package (bound-and-true-p
+                                        package-pinned-packages))
+                    (package-read-all-archive-contents))
+                  (package-install package))
+                t)
+            (error
+             (display-warning 'use-package
+                              (format "Failed to install %s: %s"
+                                      name (error-message-string err))
+                              :error))))))))
 
+;;;###autoload
 (defun use-package-handler/:ensure (name keyword ensure rest state)
   (let* ((body (use-package-process-keywords name rest state)))
     ;; We want to avoid installing packages when the `use-package' macro is
@@ -184,8 +198,8 @@ manually updated package."
     body))
 
 (add-to-list 'use-package-defaults
-             '(:ensure use-package-always-ensure
-                       (lambda (args)
+             '(:ensure (list use-package-always-ensure)
+                       (lambda (name args)
                          (and use-package-always-ensure
                               (not (plist-member args :load-path))))) t)
 
@@ -195,4 +209,6 @@ manually updated package."
 (add-to-list 'use-package-keywords :ensure)
 (add-to-list 'use-package-keywords :pin)
 
-(provide 'up-ensure)
+(provide 'use-package-ensure)
+
+;;; use-package-ensure.el ends here

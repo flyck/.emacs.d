@@ -1,4 +1,4 @@
-;;; up-diminish.el --- Support for the :diminish keyword
+;;; use-package-diminish.el --- Support for the :diminish keyword
 
 ;; Copyright (C) 2012-2017 John Wiegley
 
@@ -7,7 +7,7 @@
 ;; Created: 17 Jun 2012
 ;; Modified: 3 Dec 2017
 ;; Version: 1.0
-;; Package-Requires: ((emacs "24.3") (use-package "2.4") (diminish "0.45"))
+;; Package-Requires: ((emacs "24.3") (use-package "2.4"))
 ;; Keywords: dotemacs startup speed config package
 ;; URL: https://github.com/jwiegley/use-package
 
@@ -33,7 +33,7 @@
 
 ;;; Code:
 
-(require 'up-core)
+(require 'use-package-core)
 
 (defun use-package-normalize-diminish (name label arg &optional recursed)
   "Normalize the arguments to diminish down to a list of one of two forms:
@@ -56,10 +56,12 @@
      (concat label " wants a string, symbol, "
              "(symbol . string) or list of these")))))
 
+;;;###autoload
 (defun use-package-normalize/:diminish (name keyword args)
   (use-package-as-one (symbol-name keyword) args
     (apply-partially #'use-package-normalize-diminish name) t))
 
+;;;###autoload
 (defun use-package-handler/:diminish (name keyword arg rest state)
   (let ((body (use-package-process-keywords name rest state)))
     (use-package-concat
@@ -73,4 +75,6 @@
 
 (add-to-list 'use-package-keywords :diminish t)
 
-(provide 'up-diminish)
+(provide 'use-package-diminish)
+
+;;; use-package-diminish.el ends here
