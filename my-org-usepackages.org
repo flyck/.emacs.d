@@ -224,9 +224,20 @@
        ;;"~/.emacs.d/elpa/yasnippet-20150912.1330/snippets/"))
        :config
        (yas-global-mode 1)
+       (yas-reload-all)
+       (setq yas-indent-line nil)
+       (setq yas-triggers-in-field t)
        :defer 5
      )
    #+END_SRC
+
+*** AWS snippets
+    #+BEGIN_SRC emacs-lisp
+(use-package aws-snippets
+  :ensure t
+  )
+    #+END_SRC
+
 
 ** Beginend
    Beginend is a package that is supposed to improve on the navigation to the beginning and end of
@@ -955,6 +966,73 @@ Inside a code-block, just call `self-insert-command'."
          )
      #+END_SRC
 
+*** Ox-Jira
+    Manually copied from baron42bba's config
+    #+BEGIN_SRC emacs-lisp
+    (use-package ox-jira
+    :config
+
+    )
+    #+END_SRC
+
+    We are lazy and want to speed up things:
+
+    #+BEGIN_SRC emacs-lisp
+      (defun bba-org-export-jira-clipboard()
+        "narrow to org subtree and store content in jira format in clipboard."
+        (interactive)
+        (org-narrow-to-subtree)
+        (bba-export-jira-org)
+        (let ((org-export-use-babel nil))
+          (ox-jira-export-as-jira))
+        (delete-region (point) (progn (forward-line 1)(point)))
+        (push-mark (point))
+        (push-mark (point-max) nil t)
+        (goto-char (point-min))
+        (kill-ring-save 1 1 1)
+        (other-window -1)
+        (widen)
+        (other-window 1)
+        )
+
+      (define-key org-mode-map "\C-c\S-j" 'bba-org-export-jira-clipboard)
+    #+END_SRC
+
+    Besides the clipboard we want also an org file in =/tmp/= to attach to
+    the jira ticket. Of course some boiler plate for the poor souls who
+    never heard of orgmode.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun bba-export-jira-org()
+        "export current narrowed view to file in tmp and open a finder window on OS-X."
+        (interactive)
+        (goto-char (point-min))
+        (insert "# This file is just plain text called orgmode")
+        (newline)
+        (insert "# https://en.wikipedia.org/wiki/Org-mode")
+        (newline)
+        (insert "# You can open it in any text editor or file reader.")
+        (newline)
+        (insert "# You might want to use Emacs for best experience.")
+        (newline)
+        (if (re-search-forward "jira:" nil t 1)
+            (if (org-in-regexp org-bracket-link-regexp 1)
+                (let ((remove (list (match-beginning 0) (match-end 0)))
+                      (description (last (split-string (if (match-end 3)
+                                                           (match-string-no-properties 3)
+                                                         (match-string-no-properties 1)) ":"))))
+                  (push-mark (point))
+                  (push-mark (point-max) nil t)
+                  (goto-char (point-min))
+                  (write-region (mark) (point) (concat "/tmp/" (car description) ".org") nil nil )
+                  (deactivate-mark)
+                  (if (string-equal system-type "darwin")(shell-command "open /tmp/"))
+                  )))
+        (goto-char (point-min))
+        (kill-line 4)
+        )
+    #+END_SRC
+
 *** Super-agenda
     Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
 
@@ -1392,6 +1470,32 @@ Inside a code-block, just call `self-insert-command'."
         :config
         (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)
         )
+    #+END_SRC
+
+    Enables me to toggle source-block results and hides result blocks which is great. Inspired
+    from here:
+    https://emacs.stackexchange.com/questions/7211/collapse-src-blocks-in-org-mode-by-default
+    #+BEGIN_SRC emacs-lisp
+(defvar org-blocks-hidden nil)
+
+(defun org-toggle-blocks ()
+  (interactive)
+  (if org-blocks-hidden
+      (org-show-block-all)
+    (org-hide-block-all))
+  (setq-local org-blocks-hidden (not org-blocks-hidden)))
+
+;(add-hook 'org-mode-hook 'org-toggle-blocks)
+
+(defun org-hide-results-blocks ()
+  (interactive)
+  (org-hide-block-all)
+  (org-show-block-all)
+  )
+
+(add-hook 'org-mode-hook 'org-hide-results-blocks)
+
+(define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
     #+END_SRC
 
 **** Copy previous source-block
@@ -2000,6 +2104,66 @@ Inside a code-block, just call `self-insert-command'."
 * Programming
   I rarely use emacs as an IDE, so this is not a rich section.
 
+** Flycheck for Puppet
+   Taken from baron42bba's config: https://github.com/baron42bba/.emacs.d/blob/master/bba.org#flycheck
+
+   Install the prerequisites
+   #+BEGIN_SRC sh
+sudo apt install ruby
+sudo gem install puppet-lint
+   #+END_SRC
+
+   Setup flycheck. Modified puppet-lint definition to include no-80chars-check and fixed
+   log-format.
+   #+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :if (equal "work" (getenv "SYSENV"))
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (flycheck-define-checker puppet-lint
+   "A Puppet DSL style checker using puppet-lint.
+    See URL `http://puppet-lint.com/'."
+   ;; We must check the original file, because Puppetlint is quite picky on the
+   ;; names of files and there place in the directory structure, to comply with
+   ;; Puppet's autoload directory layout.  For instance, a class foo::bar is
+   ;; required to be in a file foo/bar.pp.  Any other place, such as a Flycheck
+   ;; temporary file will cause an error.
+   :command ("puppet-lint"
+             "--no-80chars-check" "--log-format" "%{path}:%{line}:%{kind}: %{message} (%{check})"
+             source-original)
+         :error-patterns
+         ((warning line-start (file-name) ":" line ":warning: " (message) line-end)
+          (error line-start (file-name) ":" line ":error: " (message) line-end))
+         :modes puppet-mode
+         ;; Since we check the original file, we can only use this syntax checker if
+         ;; the buffer is actually linked to a file, and if it is not modified.
+         :predicate flycheck-buffer-saved-p)
+  (setq puppet-lint-command
+	(concat
+	 "puppet-lint --with-context "
+	 "--no-80chars-check "
+	 "--no-puppet_url_without_modules-check "
+	 "--fail-on-warnings "
+	 "--log-format \"%{path}:%{line}: %{kind}: %{message} (%{check})\""
+	 )
+        )
+  (setq flycheck-json-python-json-executable "python2.7")
+  )
+   #+END_SRC
+
+** Editorconfig                                               :sysenv:
+   There is a project which provides a coding style configuration accross editors called
+   "Editorconfig": http://editorconfig.org/
+
+   This is used only at work.
+   #+BEGIN_SRC emacs-lisp
+(use-package editorconfig
+  :if (equal "work" (getenv "SYSENV"))
+  :config
+  (editorconfig-mode '1)
+)
+   #+END_SRC
+
 ** C Lang                                                     :sysenv:
   The main thing i use from the following is the "jump to definition" function, which is otherwise
   a tedious manual task.
@@ -2126,6 +2290,15 @@ Inside a code-block, just call `self-insert-command'."
      )
    #+END_SRC
 
+** Gruvbox theme
+   #+BEGIN_SRC emacs-lisp
+   (use-package gruvbox-theme
+   :ensure t
+   :config
+   (load-theme 'gruvbox-dark-soft t)
+   )
+   #+END_SRC
+
 ** Challenger-Deep theme
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package challenger-deep-theme
@@ -2240,7 +2413,7 @@ Inside a code-block, just call `self-insert-command'."
 
 ** Spacemacs theme
    Taken from: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package spacemacs-common
   :ensure spacemacs-theme
   :config
