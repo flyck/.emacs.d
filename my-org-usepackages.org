@@ -1049,7 +1049,7 @@ Inside a code-block, just call `self-insert-command'."
                        :time-grid t)  ; Items that appear on the time grid
                 (:name "Important"
                        ;; Single arguments given alone
-                       :tag "budget"
+                       :tag ("budget" "sprint")
                        :priority "A")
                 (:priority<= "B"
                              ;; Show this section after "Today" and "Important", because
