@@ -12,5 +12,6 @@
 (require 'org-install)
 
 ;; Now the emacs config can be processed using the Org-Babel-style
-(mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
+(org-babel-load-file (expand-file-name "my-stock-changes.org" dotfiles-dir))
+(org-babel-load-file (expand-file-name "my-usepackages.org" dotfiles-dir))
 (load "~/.emacs.d/elisp-goodies.el")
