@@ -2305,7 +2305,7 @@ sudo gem install puppet-lint
    #+END_SRC
 
 ** Gruvbox theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
    (use-package gruvbox-theme
    :ensure t
    :config
@@ -2391,6 +2391,15 @@ sudo gem install puppet-lint
      :config
      (load-theme 'moe-dark t)
      )
+   #+END_SRC
+
+** Ample-zen theme
+   #+BEGIN_SRC emacs-lisp
+(use-package ample-zen-theme
+  :ensure t
+  :config
+  (load-theme 'ample-zen t)
+)
    #+END_SRC
 
 ** Cyperpunk theme
