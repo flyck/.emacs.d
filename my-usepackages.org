@@ -2143,7 +2143,7 @@ sudo gem install puppet-lint
    ;; required to be in a file foo/bar.pp.  Any other place, such as a Flycheck
    ;; temporary file will cause an error.
    :command ("puppet-lint"
-             "--no-80chars-check" "--log-format" "%{path}:%{line}:%{kind}: %{message} (%{check})"
+             "--no-80chars-check" "--no-140chars-check" "--log-format" "%{path}:%{line}:%{kind}: %{message} (%{check})"
              source-original)
          :error-patterns
          ((warning line-start (file-name) ":" line ":warning: " (message) line-end)
