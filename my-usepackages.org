@@ -2178,6 +2178,11 @@ sudo gem install puppet-lint
 )
    #+END_SRC
 
+** Python programming
+   #+BEGIN_SRC emacs-lisp
+(use-package python-mode
+:ensure t)
+   #+END_SRC
 ** C Lang                                                     :sysenv:
   The main thing i use from the following is the "jump to definition" function, which is otherwise
   a tedious manual task.
@@ -2311,7 +2316,8 @@ sudo gem install puppet-lint
    :config
    (load-theme 'gruvbox-dark-soft t)
    ;; increase the fontsize
-   (set-frame-font "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+   (if (equal "work" (getenv "SYSENV"))
+     (set-frame-font "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
    )
    #+END_SRC
 
