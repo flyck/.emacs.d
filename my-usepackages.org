@@ -39,6 +39,17 @@
 
 * File-browsing and text-searching
 
+** Nerdtree
+   #+BEGIN_SRC emacs-lisp
+(use-package neotree
+:ensure t
+:config
+(global-set-key [f12] 'neotree-toggle)
+)
+;(add-to-list 'load-path "/some/path/neotree")
+;(require 'neotree)
+   #+END_SRC
+
 ** Recentf
   I hate browsing for files (I frequently use), this package is supposed to help me out with that
   #+BEGIN_SRC emacs-lisp
@@ -94,12 +105,19 @@
   A package that helps searching for text within the current file. Each matching line gets listed
   in an overview which is really good. A downfall to this is that it cant be used for
   keyboard-macros, for these the standard isearch works way better.
-  #+BEGIN_SRC emacs-lisp
+
+  Keeps breaking, hotfix is to reinstall the package regularly
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package helm-swoop
       :ensure t
       :config
       (global-set-key (kbd "C-s") 'helm-swoop-without-pre-input)
       )
+  #+END_SRC
+
+  Replace it with swiper for now, atleast that works
+  #+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-s") 'swiper)
   #+END_SRC
 
 ** Finding files
@@ -773,7 +791,8 @@ Inside a code-block, just call `self-insert-command'."
                    (find-file "~//Dropbox//org//gtd//tasks.org")
                  )
                (if (equal "work" (getenv "SYSENV"))
-                   (find-file "~/Documents/org/projects.org"))
+                   (find-file "~/Documents/org/projects.org")
+                   (find-file "~/Documents/org/projects.org_archive"))
                  )
                ))
      #+END_SRC
@@ -2309,6 +2328,15 @@ sudo gem install puppet-lint
      )
    #+END_SRC
 
+** Sanityinc tomorrow
+   #+BEGIN_SRC emacs-lisp
+   (use-package color-theme-sanityinc-tomorrow
+   :ensure t
+   :config
+   (load-theme 'sanityinc-tomorrow-day t)
+   )
+   #+END_SRC
+
 ** Gruvbox theme
    #+BEGIN_SRC emacs-lisp :tangle no
    (use-package gruvbox-theme
@@ -2400,7 +2428,7 @@ sudo gem install puppet-lint
    #+END_SRC
 
 ** Ample-zen theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package ample-zen-theme
   :ensure t
   :config
