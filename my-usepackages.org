@@ -2137,6 +2137,28 @@ Inside a code-block, just call `self-insert-command'."
 * Programming
   I rarely use emacs as an IDE, so this is not a rich section.
 
+** Jenkins Groovy
+   #+BEGIN_SRC emacs-lisp
+   (setq groovy-indent-offset 2)
+   #+END_SRC
+
+** Paranthesis highlighting
+   Taken from https://github.com/baron42bba/.emacs.d/blob/master/bba.org#set-theme-bba1
+   #+BEGIN_SRC emacs-lisp :tangle no
+(show-paren-mode 1)
+(setq show-paren-style 'expression)
+
+       '(show-paren-match ((t (:underline (:color "#07e30d" :style line)))))
+       '(show-paren-mismatch ((t (:underline (:color "red" :style wave)))))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+   ;(use-package highlight-sexp)
+  (require 'highlight-sexp)
+  (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
+  (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)
+   #+END_SRC
+
 ** Flycheck for Puppet
    Taken from baron42bba's config: https://github.com/baron42bba/.emacs.d/blob/master/bba.org#flycheck
 
@@ -2152,7 +2174,7 @@ sudo gem install puppet-lint
 (use-package flycheck
   :if (equal "work" (getenv "SYSENV"))
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+  ;(add-hook 'after-init-hook #'global-flycheck-mode)
   (flycheck-define-checker puppet-lint
    "A Puppet DSL style checker using puppet-lint.
     See URL `http://puppet-lint.com/'."
@@ -2182,6 +2204,12 @@ sudo gem install puppet-lint
         )
   (setq flycheck-json-python-json-executable "python2.7")
   )
+   #+END_SRC
+
+** Json
+   #+BEGIN_SRC emacs-lisp
+   (setq json-reformat:indent-width 2)
+   (setq js-indent-level 2)
    #+END_SRC
 
 ** Editorconfig                                               :sysenv:
