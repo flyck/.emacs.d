@@ -1082,7 +1082,7 @@ Inside a code-block, just call `self-insert-command'."
                        :time-grid t)  ; Items that appear on the time grid
                 (:name "Important"
                        ;; Single arguments given alone
-                       :tag ("budget" "sprint" "kanban")
+                       :tag ("budget" "sprint" "kanban" "promise")
                        :priority "A")
                 (:priority<= "B"
                              ;; Show this section after "Today" and "Important", because
@@ -1099,7 +1099,7 @@ Inside a code-block, just call `self-insert-command'."
     #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
           (progn (setq org-todo-keywords
-                       '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "|" "CANCELED(c)" "DONE(d)"))))
+                       '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "REVIEW(r)" "|" "CANCELED(c)" "DONE(d)"))))
         )
       (if (or (equal "home" (getenv "SYSENV"))
               (equal "laptop" (getenv "SYSENV"))
@@ -1797,7 +1797,8 @@ Inside a code-block, just call `self-insert-command'."
    #+END_SRC
 
 *** Make bash files executable on save
-    #+BEGIN_SRC emacs-lisp
+    This also makes groovy files executable which is undesired
+    #+BEGIN_SRC emacs-lisp :tangle no
  (add-hook `after-save-hook
            #'(lambda ()
                (if (not
@@ -2137,6 +2138,13 @@ Inside a code-block, just call `self-insert-command'."
 * Programming
   I rarely use emacs as an IDE, so this is not a rich section.
 
+** Line numbers (linum)
+   #+BEGIN_SRC emacs-lisp
+   (add-hook 'groovy-mode-hook (lambda () (linum-mode)))
+   (add-hook 'python-mode-hook (lambda () (linum-mode)))
+   (add-hook 'bash-mode-hook (lambda () (linum-mode)))
+   #+END_SRC
+
 ** Jenkins Groovy
    #+BEGIN_SRC emacs-lisp
    (setq groovy-indent-offset 2)
@@ -2366,7 +2374,7 @@ sudo gem install puppet-lint
    #+END_SRC
 
 ** Gruvbox theme
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
    (use-package gruvbox-theme
    :ensure t
    :config
@@ -2389,6 +2397,22 @@ sudo gem install puppet-lint
 ** Themes i never used for long
    #+BEGIN_SRC emacs-lisp :tangle no
      (load-file "~/.emacs.d/elpa/kaolin-theme/kaolin-theme.el")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dracula-theme
+       :ensure t
+       :config
+       (load-theme 'dracula t)
+       )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package occidental-theme
+       :ensure t
+       :config
+       (load-theme 'adwaita t)
+       )
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle no
@@ -2678,7 +2702,7 @@ sudo gem install puppet-lint
 ** Modeline helpers
    Idea taken from: http://manuel-uberti.github.io/emacs/2018/03/10/moody-and-minions/
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package minions
   :ensure t
   :init (minions-mode)
@@ -2688,7 +2712,7 @@ sudo gem install puppet-lint
   )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package moody
   :ensure t
   :config
