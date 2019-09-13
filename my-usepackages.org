@@ -1,6 +1,5 @@
 #+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
-#+STARTUP: showall
 
 * Initialization
   I set some general CoLor variables with the prefix CL and i try to stick to these throughout
@@ -97,6 +96,7 @@
                     :foreground cl-selection-foreground)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
+  ;;(define-key global-map "\C-s" 'isearch-forward)
   ;; automatically resize the search window based on results (feels convenient)
   ;; (helm-autoresize-mode 1) ;; currently disabled since i keep using track of it due to the resizing
   )
@@ -493,6 +493,14 @@
    #+BEGIN_SRC emacs-lisp
      (use-package git-timemachine
        :ensure t
+       )
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit-todos
+       :ensure t
+       :config
+       (require 'magit-todos)
        )
    #+END_SRC
 
@@ -1091,6 +1099,17 @@ Inside a code-block, just call `self-insert-command'."
         )
     #+END_SRC
 
+*** Idle org agenda
+    #+BEGIN_SRC emacs-lisp :tangle no
+(use-package idle-org-agenda
+     :after org-agenda
+     :ensure t
+     :config
+     (idle-org-agenda-mode)
+     (setq idle-org-agenda-interval 900)
+)
+    #+END_SRC
+
 *** Org-mode todo-keywords                                    :sysenv:
     #+BEGIN_SRC emacs-lisp
       (if (equal "work" (getenv "SYSENV"))
@@ -1659,8 +1678,8 @@ Inside a code-block, just call `self-insert-command'."
        (use-package ox-reveal
          :ensure t
          :config
-         (if (equal "laptop" (getenv "SYSENV"))
-             (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/reveal.js")))
+         (if (equal "work" (getenv "SYSENV"))
+             (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/node_modules/reveal.js")))
          )
      #+END_SRC
 
@@ -2270,6 +2289,24 @@ sudo gem install puppet-lint
   Themes usually dont touch the helm-interface, for that there is a package called "helm-themes"
   and it usually makes sense to load the helm-theme along with the "main" theme.
 
+** Afternoon theme
+   #+BEGIN_SRC emacs-lisp
+   (use-package afternoon-theme
+   :ensure t
+   :config
+   (load-theme 'afternoon t)
+   )
+   #+END_SRC
+
+** Cherryblossom
+   #+BEGIN_SRC emacs-lisp :tangle no
+   (use-package cherry-blossom-theme
+   :ensure t
+   :config
+   (load-theme 'cherry-blossom t)
+   )
+   #+END_SRC
+
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
    Care for the workaround though!
@@ -2365,7 +2402,7 @@ sudo gem install puppet-lint
    (use-package color-theme-sanityinc-tomorrow
    :ensure t
    :config
-   (load-theme 'sanityinc-tomorrow-day t)
+   (load-theme 'sanityinc-tomorrow-bright t)
    )
    #+END_SRC
 
@@ -2395,7 +2432,7 @@ sudo gem install puppet-lint
      (load-file "~/.emacs.d/elpa/kaolin-theme/kaolin-theme.el")
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package dracula-theme
        :ensure t
        :config
