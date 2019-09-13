@@ -782,24 +782,23 @@ Inside a code-block, just call `self-insert-command'."
 
 **** Shortcut to open my main agenda file
      #+BEGIN_SRC emacs-lisp
-       ;; Only create this binding if we are on a known system
-       (if (or (equal "home" (getenv "SYSENV"))
-               (equal "laptop" (getenv "SYSENV"))
-               (equal "work" (getenv "SYSENV")))
-           (progn
-             (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
-             (defun fbr/open_main_agenda_file()
-               (interactive)
-               (if (or (equal "laptop" (getenv "SYSENV"))
-                       (equal "home" (getenv "SYSENV")))
-                   (find-file "~//Dropbox//org//gtd//tasks.org")
-                 )
-               (if (equal "work" (getenv "SYSENV"))
-                   (progn (find-file "~/Documents/org/projects.org")
-                          (find-file "~/Documents/org/projects.org_archive"))
-                          )
-                 )
-               ))
+;; Only create this binding if we are on a known system
+(if (or (equal "home" (getenv "SYSENV"))
+        (equal "laptop" (getenv "SYSENV"))
+        (equal "work" (getenv "SYSENV")))
+    (progn
+      (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
+      (defun fbr/open_main_agenda_file()
+        (interactive)
+        (if (or (equal "laptop" (getenv "SYSENV"))
+                (equal "home" (getenv "SYSENV")))
+            (find-file "~//Dropbox//org//gtd//tasks.org")
+          )
+        (if (equal "work" (getenv "SYSENV"))
+            (find-file "~/Documents/org/projects.org")
+          )
+        )
+      ))
      #+END_SRC
 
 *** Org-capture
