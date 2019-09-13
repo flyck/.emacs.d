@@ -795,8 +795,9 @@ Inside a code-block, just call `self-insert-command'."
                    (find-file "~//Dropbox//org//gtd//tasks.org")
                  )
                (if (equal "work" (getenv "SYSENV"))
-                   (find-file "~/Documents/org/projects.org")
-                   (find-file "~/Documents/org/projects.org_archive"))
+                   (progn (find-file "~/Documents/org/projects.org")
+                          (find-file "~/Documents/org/projects.org_archive"))
+                          )
                  )
                ))
      #+END_SRC
