@@ -1,27 +1,21 @@
-/auto-save-list/
+# the installed packages
 /elpa/
-!elpa/use-package-*
-/server/
-/recentf*
-/projectile*
-/url
-/org-html-themes
-*~
-/tramp
-/.org-id-locations
+
+# all the temporary stuff which I'm okay with losing
+/var/
+/etc/
 history
-/ido.last
-/snippets/
-/bookmarks
-/plugins/
-/#recentf#
 /eshell/lastdir
-/init.el
 /custom-settings.el
-/network-security.data
-/my-org-usepackages.el
-/session.10186527a7fa91a1b8148535307944261700000015320057
-/session.1089d750c3b0ac71ef148533437570535400000015500060
-/abbrev_defs
-/var/savehist.el
+*~
+.python-environments/
+
+# the org-mode compilations
+/my-usepackages.el
+/my-stock-changes.el
+
+# my snippets repository
+/snippets/
+
+# the windows tool
 /notifu/
