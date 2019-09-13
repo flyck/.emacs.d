@@ -481,10 +481,6 @@
      ;; Warning: The Windows User-Home needs to be in some kind of path such that magit finds the
      ;; .gitconfig
      (use-package magit
-       :if (cond ((equal "home" (getenv "SYSENV")) (message "Loading magit"))
-                 ((equal "laptop" (getenv "SYSENV")) (message "Loading magit"))
-                 ((equal "work" (getenv "SYSENV")) (message "Loading magit"))
-                 )
        :ensure t
        :config
        (add-to-list 'exec-path "C:/Program Files/Git/bin")
