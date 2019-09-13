@@ -2160,6 +2160,46 @@ Inside a code-block, just call `self-insert-command'."
    (add-hook 'bash-mode-hook (lambda () (linum-mode)))
    #+END_SRC
 
+** CloudFormation
+   #+BEGIN_SRC emacs-lisp
+(defun bba-aws-cfn-lint()
+  "Check buffer with cfn_lint."
+  (interactive)
+  (shell-command (concat "cfn-lint -i W E3008 E3012 -t" buffer-file-name)))
+(require 'yaml-mode)
+(define-key yaml-mode-map (kbd "C-c C-l") 'bba-aws-cfn-lint)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+(require 'flycheck)
+(flycheck-define-checker yaml-cfnlint
+  "A YAML syntax checker using cfn-lint."
+  :command ("cfn-lint" "-f" "parseable" source)
+  :error-patterns
+  ((error line-start (file-name) ":" line ":" column ":" num ":" num ":" word ":" (message) line-end)
+   (warning line-start (file-name) ":" line ":" column ":" num ":" num ":" word ":" (message) line-end))
+  :modes yaml-mode)
+
+;;;###autoload
+(defun flycheck-yamllint-setup ()
+  "Setup Flycheck YAMLLint integration."
+  (interactive)
+  (add-to-list 'flycheck-checkers 'yaml-cfnlint))
+
+(provide 'flycheck-cfnlint)
+   #+END_SRC
+
+   Add a horizontal line while editing yaml.
+   #+BEGIN_SRC emacs-lisp :tangle no
+(use-package highlight-indent-guides
+  :ensure t
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (require 'yaml-mode)
+  (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
+  )
+   #+END_SRC
+
 ** Jenkins Groovy
    #+BEGIN_SRC emacs-lisp
    (setq groovy-indent-offset 2)
