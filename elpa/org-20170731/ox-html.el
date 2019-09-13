@@ -3195,7 +3195,8 @@ contextual information."
       (setq output
 	    (replace-regexp-in-string
 	     "\\(\\\\\\\\\\)?[ \t]*\n"
-	     (concat (org-html-close-tag "br" nil info) "\n") output)))
+	     ;; (concat (org-html-close-tag "br" nil info) "\n") output))) ;; change this line so i can copy-paste lists from html to google-doc without having empty list items
+             "\n" output)))
     ;; Return value.
     output))
 
