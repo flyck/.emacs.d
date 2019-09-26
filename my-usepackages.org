@@ -2158,6 +2158,7 @@ Inside a code-block, just call `self-insert-command'."
    (add-hook 'groovy-mode-hook (lambda () (linum-mode)))
    (add-hook 'python-mode-hook (lambda () (linum-mode)))
    (add-hook 'bash-mode-hook (lambda () (linum-mode)))
+   (add-hook 'yaml-mode-hook (lambda () (linum-mode)))
    #+END_SRC
 
 ** CloudFormation
