@@ -429,6 +429,19 @@
          )
     #+END_SRC
 
+*** Nerfing the kill command
+    #+BEGIN_SRC emacs-lisp
+    (defun nerfed-kill ()
+      (interactive)
+      (if (use-region-p)
+          (kill-region (region-beginning) (region-end))))
+
+    (global-set-key (kbd "C-w") 'nerfed-kill)
+    #+END_SRC
+
+    #+RESULTS:
+    : nerfed-kill
+
 *** Keybindings
     Took this idea from baron42bba's config, together with "which-key" this gives me a
     launcher-like menu with an overview about all my custom key-bindings
