@@ -2347,8 +2347,18 @@ sudo gem install puppet-lint
   Themes usually dont touch the helm-interface, for that there is a package called "helm-themes"
   and it usually makes sense to load the helm-theme along with the "main" theme.
 
-** Afternoon theme
+** Night-owl theme
    #+BEGIN_SRC emacs-lisp
+   (use-package night-owl-theme ;; current theme
+   :ensure t
+   :config
+   (load-theme 'night-owl t)
+   )
+   #+END_SRC
+
+
+** Afternoon theme
+   #+BEGIN_SRC emacs-lisp :tangle no
    (use-package afternoon-theme
    :ensure t
    :config
