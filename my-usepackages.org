@@ -593,7 +593,7 @@
        (add-hook 'org-mode-hook 'turn-on-auto-fill)
        ;; dont scroll automatically such that "point" is visible
        (setq auto-hscroll-mode nil)
-       (setq org-hide-emphasis-markers t)
+       (setq org-hide-emphasis-markers nil)
        ;; change from ... to the arrow
        (setq org-ellipsis "⤵")
        (custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
