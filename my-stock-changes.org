@@ -414,6 +414,29 @@
       (global-set-key [remap mouse-secondary-save-then-kill] 'mouse-save-then-kill)
     #+END_SRC
 
+*** Exclude async command from buffer popup
+    I currently need this for my function "fbr/open-file-dir", so it smoothly opens a file browser
+    in the background without disturbing my emacs session so much.
+    #+BEGIN_SRC emacs-lisp
+    ;; Buffers that I don't want popping up by default
+    (add-to-list 'display-buffer-alist
+      '("\\*Async Shell Command\\*.*" display-buffer-no-window))
+    #+END_SRC
+
+*** Open terminal in current directory
+    #+BEGIN_SRC emacs-lisp
+      (defun fbr/open-terminal-in-working-dir ()
+         "Open the directory of the current file in OS file browser."
+         (interactive)
+         (if (string-equal system-type "windows-nt")
+    	  (shell-command (concat "explorer " (replace-regexp-in-string "/" "\\\\" (file-name-directory (buffer-file-name)))))
+
+           )
+         (if (string-equal system-type "gnu/linux")
+    	  (async-shell-command (concat "gnome-terminal " (file-name-directory (buffer-file-name))))
+           )
+         )
+    #+END_SRC
 *** Open current directory in nautilus / explorer
     #+BEGIN_SRC emacs-lisp
       (defun fbr/open-file-dir ()
@@ -424,7 +447,7 @@
 
            )
          (if (string-equal system-type "gnu/linux")
-    	  (shell-command (concat "nautilus " (file-name-directory (buffer-file-name))))
+    	  (async-shell-command (concat "nautilus " (file-name-directory (buffer-file-name))))
            )
          )
     #+END_SRC
@@ -449,7 +472,8 @@
     (define-prefix-command 'fbr/launcher)
     (define-key global-map "\C-xl" 'fbr/launcher)
     (define-key fbr/launcher "o" 'fbr/open-file-dir)
-    (define-key fbr/launcher "t" 'fbr/tea-timer)
+    (define-key fbr/launcher "t" 'fbr/open-terminal-in-working-dir)
+    (define-key fbr/launcher "T" 'fbr/tea-timer)
     (define-key fbr/launcher "r" 'fbr/org-agenda-reduce-to-current-file)
     (define-key fbr/launcher "y" 'fbr/reload-yasnippet)
     #+END_SRC
