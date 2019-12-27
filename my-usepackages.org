@@ -2356,15 +2356,37 @@ sudo gem install puppet-lint
   Themes usually dont touch the helm-interface, for that there is a package called "helm-themes"
   and it usually makes sense to load the helm-theme along with the "main" theme.
 
-** Night-owl theme
+** Rebecca theme
    #+BEGIN_SRC emacs-lisp
-   (use-package night-owl-theme ;; current theme
+   (use-package rebecca-theme ;; current theme
+   :ensure t
+   :config
+   (load-theme 'rebecca t)
+   )
+   #+END_SRC
+
+    These keyword faces have an added background face. This looks good in some themes and i might
+    toggle it from theme to theme.
+    #+BEGIN_SRC emacs-lisp :tangle no
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning)
+        ("PENDING" :foreground "#87ffd7" :background nil :weight bold)
+        ("DELEGATED" :foreground "#5fafff" :background "#456887" :box (:line-width 1 :style none))
+        ("REVIEW" :foreground "#87ffd7" :background nil)
+        ("CANCELED" :foreground "#b5bd68" :weight bold :box
+         (:line-width 1 :style none))
+         )
+         )
+    #+END_SRC
+
+** Night-owl theme
+   #+BEGIN_SRC emacs-lisp :tangle no
+   (use-package night-owl-theme
    :ensure t
    :config
    (load-theme 'night-owl t)
    )
    #+END_SRC
-
 
 ** Afternoon theme
    #+BEGIN_SRC emacs-lisp :tangle no
