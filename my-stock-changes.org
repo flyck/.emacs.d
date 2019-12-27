@@ -278,36 +278,18 @@
                    (error "Font not found")))))
      #+END_SRC
 
-**** Font settings for my laptop                              :sysenv:
-     Font installation hints for Linux (Ubuntu)
-     #+BEGIN_SRC emacs-lisp
-       ;; Fonts
-       ;; (set-frame-font "Source Code Pro-11" nil t)
-       ;; How to install on ubuntu:
-       ;; #!/bin/bash
-       ;; mkdir /tmp/adodefont
-       ;; cd /tmp/adodefont
-       ;; wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
-       ;; unzip 1.030R-it.zip
-       ;; mkdir -p ~/.fonts
-       ;; cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf ~/.fonts/
-       ;; fc-cache -f -v
-     #+END_SRC
+**** Font settings for Linux
+     Installation instructions:
+     https://www.rogerpence.com/posts/install-source-code-pro-font-on-ubuntu
 
-     Switch to a thin font on my laptop. This feels so good after having used the ubuntu font for
-     so long, which is wonderful but very thick.
      #+BEGIN_SRC emacs-lisp
-       (if (equal "laptop" (getenv "SYSENV"))
-           (set-frame-font "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" nil t)
-         )
-       ;; not sure what this does, but it can be used for some kind of resizing
-       ;; (set-face-attribute 'default nil :height 100)
-     #+END_SRC
-**** Font settings for home                                   :sysenv:
-     #+BEGIN_SRC emacs-lisp
-       (if (equal (getenv "SYSENV") "home")
-           (setq default-frame-alist '((font . "-outline-Consolas-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")))
-         )
+(setq myfont "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1")
+(if (string-equal system-type "gnu/linux")
+    (progn (set-frame-font "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" nil t) ;; current frame and future frames
+           (add-to-list 'default-frame-alist '(font . "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" )) ;; default font for new frames
+           (set-face-attribute 'default t :font "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" ) ;; default font for new frames
+           )
+  )
      #+END_SRC
 
 **** Increase font setting globally
