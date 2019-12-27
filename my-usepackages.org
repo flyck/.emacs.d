@@ -160,7 +160,6 @@
 ;; documentation over here: http://jblevins.org/projects/deft/
 (use-package deft
   :if (or (equal "home" (getenv "SYSENV"))
-          (equal "laptop" (getenv "SYSENV"))
           (equal "work" (getenv "SYSENV"))
        )
   :config
@@ -168,8 +167,7 @@
   (if (equal "work" (getenv "SYSENV"))
       (progn (setq deft-directory (concat "~/Documents")))
       )
-  (if (or (equal "home" (getenv "SYSENV"))
-          (equal "laptop" (getenv "SYSENV")))
+  (if (or (equal "home" (getenv "SYSENV")))
       (progn (setq deft-directory "~/Dropbox/org"))
     )
   (setq deft-directory "~/Dropbox/org")
@@ -373,7 +371,7 @@
    actually not that crucial. Also writing german and english in the same document seems confusing
    for flyspell (as for every / most grammar correction programms).
    #+BEGIN_SRC emacs-lisp :tangle no
-     (if (equal "laptop" (getenv "SYSENV"))
+     (if (equal "home" (getenv "SYSENV"))
          (add-hook 'org-mode-hook 'turn-on-flyspell)
      )
    #+END_SRC
@@ -437,7 +435,7 @@
    #+BEGIN_SRC emacs-lisp
 ;; Settings for company plus company-emoji
 (use-package company-emoji
-  :if (equal "laptop" (getenv "SYSENV"))
+  :if (string-equal system-type "gnu/linux")
   :init
   (require 'color)
   (let ((bg (face-attribute 'default :background)))
@@ -714,42 +712,8 @@ Inside a code-block, just call `self-insert-command'."
     reflected by the following settings.
 
 **** Home
-     #+BEGIN_SRC emacs-lisp
-       (if (equal "home" (getenv "SYSENV"))
-           (progn (setq org-agenda-files (list
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org")
-                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                       (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2015")
-                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2016")
-                       ; (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks_2017")
-              			    ))
-              ;; org-capture setup
-              (setq org-capture-templates
-              	  '(("a" "Add a task to tasks.org." entry
-              	     (file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-              	     "* TODO %? SCHEDULED: %t")))
-              (setq org-default-notes-file (concat "C:/Users/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
-              (setq org-capture-templates
-                    '(("t" "todo" entry (file org-default-notes-file)
-                       "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
-                      ("m" "Meeting" entry (file org-default-notes-file)
-                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben");;(file org-default-notes-file)
-                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                      ;; I dont have NEXT implemented yet into my workflow / config
-                      ;; ("n" "Next Task" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                      ;;  "** NEXT %? \nDEADLINE: %t")
-                      )
-                    )
-              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-              )
-         )
-     #+END_SRC
-
-**** Laptop
       #+BEGIN_SRC emacs-lisp
-       (if (equal "laptop" (getenv "SYSENV"))
+       (if (equal "home" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
                                           (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
@@ -798,23 +762,16 @@ Inside a code-block, just call `self-insert-command'."
 
 **** Shortcut to open my main agenda file
      #+BEGIN_SRC emacs-lisp
-;; Only create this binding if we are on a known system
-(if (or (equal "home" (getenv "SYSENV"))
-        (equal "laptop" (getenv "SYSENV"))
-        (equal "work" (getenv "SYSENV")))
-    (progn
-      (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
-      (defun fbr/open_main_agenda_file()
-        (interactive)
-        (if (or (equal "laptop" (getenv "SYSENV"))
-                (equal "home" (getenv "SYSENV")))
-            (find-file "~//Dropbox//org//gtd//tasks.org")
-          )
-        (if (equal "work" (getenv "SYSENV"))
-            (find-file "~/Documents/org/projects.org")
-          )
-        )
-      ))
+       (defun fbr/open_main_agenda_file()
+         (interactive)
+         (case (intern (getenv "SYSENV"))
+           (home (find-file "~/Dropbox/org/gtd/tasks.org"))
+           (work (find-file "~/Documents/org/projects.org"))
+           (otherwise (message "Skipping the creation of the agenda function"))
+           )
+         )
+
+       (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
      #+END_SRC
 
 *** Org-capture
@@ -927,8 +884,7 @@ Inside a code-block, just call `self-insert-command'."
     which also match the tag-search this is based on - get excluded from the results which is
     convenient.
     #+BEGIN_SRC emacs-lisp
-      (if (or (equal "home" (getenv "SYSENV"))
-              (equal "laptop" (getenv "SYSENV")))
+      (if (equal "home" (getenv "SYSENV"))
           (progn
             (setq org-agenda-custom-commands
                   '(("c" "Agenda surrounded by long-term goals"
@@ -980,8 +936,7 @@ Inside a code-block, just call `self-insert-command'."
      I use it to create my monthly financial report.
 
      #+BEGIN_SRC emacs-lisp
-       (if (or (equal "home" (getenv "SYSENV"))
-               (equal "laptop" (getenv "SYSENV")))
+       (if (equal "home" (getenv "SYSENV"))
            (progn
 
              (require 'calendar)
@@ -1133,7 +1088,6 @@ Inside a code-block, just call `self-insert-command'."
                        '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "REVIEW(r)" "|" "CANCELED(c)" "DONE(d)"))))
         )
       (if (or (equal "home" (getenv "SYSENV"))
-              (equal "laptop" (getenv "SYSENV"))
               (equal "linux-vm" (getenv "SYSENV")))
           (progn (setq org-todo-keywords
                        '((sequence "TODO(t)" "|" "DONE(d)")
@@ -1252,10 +1206,9 @@ Inside a code-block, just call `self-insert-command'."
          )
      #+END_SRC
 
-     If we are at home or on the laptop i know where the paths should be
+     If we are at home I know where the paths should be
      #+BEGIN_SRC emacs-lisp
-       (if (or (equal "home" (getenv "SYSENV"))
-               (equal "laptop" (getenv "SYSENV")))
+       (if (equal "home" (getenv "SYSENV"))
            (progn
              ;; see org-ref for use of these variables
              (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
@@ -1315,7 +1268,7 @@ Inside a code-block, just call `self-insert-command'."
 
     After installation of ess the following works.
     #+BEGIN_SRC emacs-lisp
-      (if (equal "laptop" (getenv "SYSENV")) ;; removed "home" from valid options, maybe a mistake
+      (if (equal "home" (getenv "SYSENV"))
           (progn
             ;; found out about the path with dpkg -L ess
             (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
@@ -1391,15 +1344,12 @@ Inside a code-block, just call `self-insert-command'."
 
     Go through this: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
 
-    The following code only works for my linux-laptop.
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package org-alert
-        :ensure t
+        :if (string-equal system-type "gnu/linux")
         :config
-        (if (equal "laptop" (getenv "SYSENV"))
-            (setq alert-default-style 'libnotify)
-          (setq alert-default-style 'message))
-        (setq org-alert-interval 60)
+        (setq alert-default-style 'libnotify)
+        (setq org-alert-interval 300)
         (org-alert-enable)
         )
     #+END_SRC
@@ -1725,12 +1675,10 @@ Inside a code-block, just call `self-insert-command'."
    #+END_SRC
 
 *** Org-mode openwith extension                               :sysenv:
-    Open pdfs with an external pdf-viewer to get a good resolution (Only use this for my laptop,
-    needs to be fixed for my windows PC if i ever use it for them. Seems to work well
-    out-of-the-box there).
+    Open pdfs with an external pdf-viewer to get a good resolution.
     #+BEGIN_SRC emacs-lisp
       (use-package openwith
-        :if (equal "laptop" (getenv "SYSENV"))
+        :if (string-equal system-type "gnu/linux")
         :config
         (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
         (openwith-mode t)
@@ -1927,7 +1875,6 @@ Inside a code-block, just call `self-insert-command'."
    Taken from: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
    #+BEGIN_SRC emacs-lisp
      (if (or (equal "home" (getenv "SYSENV"))
-             (equal "laptop" (getenv "SYSENV"))
              (equal "work" (getenv "SYSENV"))
              )
          (progn
@@ -2331,11 +2278,10 @@ sudo gem install puppet-lint
   The main thing i use from the following is the "jump to definition" function, which is otherwise
   a tedious manual task.
 
-  I only have this activated on my laptop since it uses the external tool ggtags.
+  Needs the external tool ggtags!
 
   #+BEGIN_SRC emacs-lisp
-(use-package helm-gtags
-  :if (equal "laptop" (getenv "SYSENV"))
+(use-package helm-gtags :tangle no
   :config
   ;; Enable helm-gtags-mode
   (add-hook 'dired-mode-hook 'helm-gtags-mode)
@@ -2479,7 +2425,7 @@ sudo gem install puppet-lint
 
    #+BEGIN_SRC emacs-lisp :results silent :tangle no
      (use-package eziam-theme
-       :if (equal "laptop" (getenv "SYSENV"))
+       :ensure t
        :init
        ;; alternative for loading the manually downloaded package
        ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/eziam-emacs-theme")

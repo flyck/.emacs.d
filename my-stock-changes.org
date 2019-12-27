@@ -298,7 +298,7 @@
      so long, which is wonderful but very thick.
      #+BEGIN_SRC emacs-lisp
        (if (equal "laptop" (getenv "SYSENV"))
-           (set-frame-font "-ADBO-Source Code Pro-light-normal-normal-*-15-*-*-*-m-0-iso10646-1" nil t)
+           (set-frame-font "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" nil t)
          )
        ;; not sure what this does, but it can be used for some kind of resizing
        ;; (set-face-attribute 'default nil :height 100)
