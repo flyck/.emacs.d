@@ -2280,8 +2280,8 @@ sudo gem install puppet-lint
 
   Needs the external tool ggtags!
 
-  #+BEGIN_SRC emacs-lisp
-(use-package helm-gtags :tangle no
+  #+BEGIN_SRC emacs-lisp :tangle no
+(use-package helm-gtags
   :config
   ;; Enable helm-gtags-mode
   (add-hook 'dired-mode-hook 'helm-gtags-mode)
