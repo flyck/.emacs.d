@@ -7,33 +7,42 @@
   that i should use as my kind of color-palette when i go around and change defaults.
 
   #+BEGIN_SRC emacs-lisp
-    (require 'use-package)
-    ;; (setq debug-on-error t) (turn on if needed)
-    (setq package-check-signature nil) ;; disables public key errors that i dont feel like investigating
+(require 'use-package)
+;; (setq debug-on-error t) (turn on if needed)
+(setq package-check-signature nil) ;; disables public key errors that i dont feel like investigating
 
-    (setq cl-selection-background "ivory1")
-    (setq cl-selection-foreground "gray5")
+(setq cl-selection-background "ivory1")
+(setq cl-selection-foreground "gray5")
 
-    (setq cl-headline "ghost white")
-    (setq cl-first-level "royal blue")
-    ;; (setq cl-second-level "IndianRed3")
-    (setq cl-second-level "cornflower blue")
-    (setq cl-third-level "SlateBlue3")
-    ;; alternative for sunny days
-    ;; (setq cl-third-level "SkyBlue1")
-    (setq cl-meta-information-one "cornflower blue")
+(setq cl-headline "ghost white")
+(setq cl-first-level "royal blue")
+;; (setq cl-second-level "IndianRed3")
+(setq cl-second-level "cornflower blue")
+(setq cl-third-level "SlateBlue3")
+;; alternative for sunny days
+;; (setq cl-third-level "SkyBlue1")
+(setq cl-meta-information-one "cornflower blue")
   #+END_SRC
 
   Keep .emacs.d clean
   #+BEGIN_SRC emacs-lisp
-    (use-package no-littering
-      :ensure t
-      :config
-      (require 'recentf)
-      (add-to-list 'recentf-exclude no-littering-var-directory)
-      (add-to-list 'recentf-exclude no-littering-etc-directory))
-      ;; have elfeeds database in the cloud instead of ~/.emacs.d/var/
-      (setq elfeed-db-directory "~/Dropbox/org/elfeed/db/")
+(use-package no-littering
+  :ensure t
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
+;; have elfeeds database in the cloud instead of ~/.emacs.d/var/
+(setq elfeed-db-directory "~/Dropbox/org/elfeed/db/")
+  #+END_SRC
+
+
+  Detect the ~SYSENV~ based on the wifi.
+  #+BEGIN_SRC emacs-lisp
+(message "Updating the SYSENV based on the connectd wifi...")
+(setq home-wifi "FRITZ!Box 7530 RG\n")
+(if (string-equal home-wifi (shell-command-to-string "nmcli -g NAME connection show --active"))
+    (setenv "SYSENV" "home"))
   #+END_SRC
 
 * File-browsing and text-searching
