@@ -39,7 +39,7 @@
 
   Detect the ~SYSENV~ based on the wifi.
   #+BEGIN_SRC emacs-lisp
-(message "Updating the SYSENV based on the connectd wifi...")
+(message "Updating the SYSENV based on the connected wifi...")
 (setq home-wifi "FRITZ!Box 7530 RG\n")
 (if (string-equal home-wifi (shell-command-to-string "nmcli -g NAME connection show --active"))
     (setenv "SYSENV" "home"))
