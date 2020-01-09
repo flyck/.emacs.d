@@ -2253,17 +2253,7 @@ sudo gem install puppet-lint
    #+END_SRC
 
 ** Python programming
-#    #+BEGIN_SRC emacs-lisp
-# (use-package elpy
-# :ensure t
-# :config (elpy-enable))
-#    #+END_SRC
 
-#    try and fix the flymake errors
-#    #+BEGIN_SRC emacs-lisp
-#   (require 'flymake-python-pyflakes)
-#   (add-hook 'elpy-mode-hook 'flymake-python-pyflakes-load)
-#    #+END_SRC
    #+BEGIN_SRC emacs-lisp
 (use-package jedi
   :ensure t
@@ -2272,6 +2262,12 @@ sudo gem install puppet-lint
   (setq jedi:setup-keys t)
   (setq jedi:complete-on-dot t)
   )
+   #+END_SRC
+
+
+   Disable the eldoc-mode which brings up that python-help buffer everytime:
+   #+BEGIN_SRC emacs-lisp
+(global-eldoc-mode -1)
    #+END_SRC
 
 ** C Lang                                                     :sysenv:
