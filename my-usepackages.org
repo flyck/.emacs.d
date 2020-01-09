@@ -767,7 +767,7 @@ Inside a code-block, just call `self-insert-command'."
          (case (intern (getenv "SYSENV"))
            (home (find-file "~/Dropbox/org/gtd/tasks.org"))
            (work (find-file "~/Documents/org/projects.org"))
-           (otherwise (message "Skipping the creation of the agenda function"))
+           (otherwise (message "No SYSENV found. Don't know what to open."))
            )
          )
 
