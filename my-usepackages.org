@@ -54,6 +54,11 @@
 
 * File-browsing and text-searching
 
+** CamelCase
+   #+BEGIN_SRC emacs-lisp
+(global-subword-mode 1)
+(diminish  'subword-mode)
+   #+END_SRC
 ** Nerdtree
    #+BEGIN_SRC emacs-lisp
 (use-package neotree
