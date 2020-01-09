@@ -283,11 +283,11 @@
      https://www.rogerpence.com/posts/install-source-code-pro-font-on-ubuntu
 
      #+BEGIN_SRC emacs-lisp
-(setq myfont "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1")
+(setq myfont "-ADBO-Source Code Pro-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
 (if (string-equal system-type "gnu/linux")
-    (progn (set-frame-font "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" nil t) ;; current frame and future frames
-           (add-to-list 'default-frame-alist '(font . "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" )) ;; default font for new frames
-           (set-face-attribute 'default t :font "-ADBO-Source Code Pro-semibold-normal-normal-*-20-*-*-*-m-0-iso10646-1" ) ;; default font for new frames
+    (progn (set-frame-font "-ADBO-Source Code Pro-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1" nil t) ;; current frame and future frames
+           (add-to-list 'default-frame-alist '(font . "-ADBO-Source Code Pro-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1" )) ;; default font for new frames
+           (set-face-attribute 'default t :font "-ADBO-Source Code Pro-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1" ) ;; default font for new frames
            )
   )
      #+END_SRC
