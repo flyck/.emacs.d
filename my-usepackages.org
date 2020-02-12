@@ -1894,7 +1894,7 @@ Inside a code-block, just call `self-insert-command'."
                (save-excursion
                  (unless (org-entry-get nil "TITLE")
                    (org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
-                 (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_TOPICS" "HUGO_FILE"))))
+                 (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_FILE"))))
                  (unless (org-entry-get nil "HUGO_DATE")
                    (org-entry-put nil "HUGO_DATE" current-time)))
                (when first
@@ -1914,13 +1914,11 @@ Inside a code-block, just call `self-insert-command'."
              (unless (hugo-ensure-properties)
                (let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
                       (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-                      (topics   (concat "topics = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TOPICS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
                       (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
                       (fm (concat "+++\n"
                                   title
                                   date
                                   tags
-                                  topics
                                   "+++\n\n"))
                       (file     (org-entry-get nil "HUGO_FILE"))
                       (coding-system-for-write buffer-file-coding-system)
