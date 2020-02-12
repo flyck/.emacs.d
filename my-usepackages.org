@@ -702,16 +702,16 @@ Inside a code-block, just call `self-insert-command'."
       #+BEGIN_SRC emacs-lisp
        (if (equal "home" (getenv "SYSENV"))
            (progn (setq org-agenda-files (list
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks.org_archive")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2015")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2016")
-                                          (concat "/home/" (getenv "USER") "/Dropbox/org/gtd/tasks_2017")
+                                          (concat "/root/Dropbox/org/gtd/tasks.org")
+                                          (concat "/root/Dropbox/org/gtd/tasks.org_archive")
+                                          (concat "/root/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                                          (concat "/root/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+                                          (concat "/root/Dropbox/org/gtd/tasks_2015")
+                                          (concat "/root/Dropbox/org/gtd/tasks_2016")
+                                          (concat "/root/Dropbox/org/gtd/tasks_2017")
                                           ))
               ;; org-capture setup
-              (setq org-default-notes-file (concat "/home/" (getenv "USERNAME") "/Dropbox/org/gtd/tasks.org"))
+              (setq org-default-notes-file (concat "/root/Dropbox/org/gtd/tasks.org"))
               (setq org-capture-templates
                     '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
                        "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
