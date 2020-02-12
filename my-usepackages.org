@@ -1070,20 +1070,15 @@ Inside a code-block, just call `self-insert-command'."
 
 *** Org-mode todo-keywords                                    :sysenv:
     #+BEGIN_SRC emacs-lisp
-      (if (equal "work" (getenv "SYSENV"))
-          (progn (setq org-todo-keywords
-                       '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "REVIEW(r)" "|" "CANCELED(c)" "DONE(d)"))))
-        )
-      (if (or (equal "home" (getenv "SYSENV"))
-              (equal "linux-vm" (getenv "SYSENV")))
-          (progn (setq org-todo-keywords
-                       '((sequence "TODO(t)" "|" "DONE(d)")
-                         (sequence "PENDING(p)" "|" "CANCELED(c)")
-                         ;;'((sequence "TODO(t)" "PENDING(p)" "|" "CANCELED(c)" "DONE(d)") ;; wouldnt this
-                         ;;be correct? Whatever, it works..
-                         ))
-                 )
-        )
+   (if (equal "work" (getenv "SYSENV"))
+       (progn (setq org-todo-keywords
+                    '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "REVIEW(r)" "|" "CANCELED(c)" "DONE(d)"))))
+     )
+   (if (or (equal "home" (getenv "SYSENV"))
+           (equal "linux-vm" (getenv "SYSENV")))
+       (progn (setq org-todo-keywords
+                    '((sequence "TODO(t)" "PENDING(p)" "|" "CANCELED(c)" "DONE(d)"))))
+     )
     #+END_SRC
 
 *** Org-mode todo-keyword faces
