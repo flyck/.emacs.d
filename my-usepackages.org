@@ -553,7 +553,7 @@
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
      (use-package org
-       :pin manual ;; manually update
+       :pin manual ;; update manually
        :ensure t
        :init
        ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
@@ -564,68 +564,30 @@
                "    \t\r\n,"
                "."
                5))
-       ;; markup over up to 5 multiple lines
-       ;; (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n,\"")
-       ;; (setcar (nthcdr 4 org-emphasis-regexp-components) 5)
-       ;; (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
-       ;; (custom-set-variables `(org-emphasis-alist ',org-emphasis-alist))
        :config
-       (add-hook 'comint-output-filter-functions
-                 'comint-strip-ctrl-m)
-       ;; Custom Keybindings
-       (fset 'fbr/convert-listitem-into-checklistitem
-             "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
-       (global-set-key (kbd "C-c b") 'fbr/convert-listitem-into-checklistitem)
+       ;; Add org-mode as the default major-mode for .org files
        (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-       ;; Visual modifications
-       ;; Strike through DONE headlines
-       (setq org-fontify-done-headline t)
+       ;; Remove windows CTRL characters
+       (add-hook 'comint-output-filter-functions
+                        'comint-strip-ctrl-m)
        ;; autofill hooks for automatic indentation
        (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
        (add-hook 'org-mode-hook 'turn-on-auto-fill)
        ;; dont scroll automatically such that "point" is visible
        (setq auto-hscroll-mode nil)
-       (setq org-hide-emphasis-markers nil)
-       ;; change from ... to the arrow
-       (setq org-ellipsis "⤵")
-       (custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
        ;; when i narrow down to the current subsection using `org-tree-to-indirect-buffer' i dont want
        ;; to create a new window, but rather open the new buffer at the current position
        (setq org-indirect-buffer-display 'current-window)
        )
    #+END_SRC
 
-*** Pretty quotations for nice latex exports                :research:
-    Taken from here: http://endlessparentheses.com/prettify-your-quotation-marks.html
-    #+BEGIN_SRC emacs-lisp :tangle no
-(define-key org-mode-map "\"" #'endless/round-quotes)
-(eval-after-load 'markdown-mode
-  '(define-key markdown-mode-map "\""
-     #'endless/round-quotes))
-
-(defun endless/round-quotes (italicize)
-  "Insert “” and leave point in the middle.
-With prefix argument ITALICIZE, insert /“”/ instead
-\(meant for org-mode).
-Inside a code-block, just call `self-insert-command'."
-  (interactive "P")
-  (if (and (derived-mode-p 'org-mode)
-           (org-in-block-p '("src" "latex" "html")))
-      (call-interactively #'self-insert-command)
-    (if (looking-at "”[/=_\\*]?")
-        (goto-char (match-end 0))
-      (when italicize
-        (if (derived-mode-p 'markdown-mode)
-            (insert "__")
-          (insert "//"))
-        (forward-char -1))
-      (insert "“”")
-      (forward-char -1))))
-    #+END_SRC
 
 *** Org-mode operation speed improvments
     Keyboard shortcuts are probably the first place to start
     #+BEGIN_SRC emacs-lisp
+      (fset 'fbr/convert-listitem-into-checklistitem
+            "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
+      (define-key global-map "\C-cb" 'fbr/convert-listitem-into-checklistitem)
       (define-key global-map "\C-cl" 'org-store-link)
       (define-key global-map "\C-ca" 'org-agenda)
       (define-key global-map "\C-cc" 'org-capture)
@@ -676,6 +638,24 @@ Inside a code-block, just call `self-insert-command'."
     #+END_SRC
 
 *** Org-mode visual improvements
+    Strike through DONE headlines
+    #+BEGIN_SRC emacs-lisp
+(setq org-fontify-done-headline t)
+    #+END_SRC
+
+
+    Done hide the markdown markesr:
+    #+BEGIN_SRC emacs-lisp
+(setq org-hide-emphasis-markers nil)
+    #+END_SRC
+
+
+    Change from ... to the arrow
+    #+BEGIN_SRC emacs-lisp
+(setq org-ellipsis "⤵")
+(custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
+    #+END_SRC
+
     Fontify done checkbox items in org-mode
     #+BEGIN_SRC emacs-lisp :tangle no
       (font-lock-add-keywords
@@ -691,77 +671,7 @@ Inside a code-block, just call `self-insert-command'."
                                  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
     #+END_SRC
 
-*** Org-mode agenda-files                                     :sysenv:
-    Depending on my system-environment which i deduce from the system environment variable
-    "SYSENV" which i manually set on the systems i use i have different workflows.
-
-    At work i have more todo states, and different agenda files than for example at home. This is
-    reflected by the following settings.
-
-**** Home
-      #+BEGIN_SRC emacs-lisp
-       (if (equal "home" (getenv "SYSENV"))
-           (progn (setq org-agenda-files (list
-                                          (concat "/root/Dropbox/org/gtd/tasks.org")
-                                          (concat "/root/Dropbox/org/gtd/tasks.org_archive")
-                                          (concat "/root/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-                                          (concat "/root/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-                                          (concat "/root/Dropbox/org/gtd/tasks_2015")
-                                          (concat "/root/Dropbox/org/gtd/tasks_2016")
-                                          (concat "/root/Dropbox/org/gtd/tasks_2017")
-                                          ))
-              ;; org-capture setup
-              (setq org-default-notes-file (concat "/root/Dropbox/org/gtd/tasks.org"))
-              (setq org-capture-templates
-                    '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                       "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
-                      ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
-                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                      )
-                    )
-              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-                  )
-         )
-      #+END_SRC
-
-**** Work
-      #+BEGIN_SRC emacs-lisp
-        (if (equal "work" (getenv "SYSENV"))
-            (progn (setq org-agenda-files
-                         (list (concat "~/Documents/org/projects.org")))
-                   ;; org-capture setup
-                   (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
-                   (setq org-capture-templates
-                         '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
-                            "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
-                           ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
-                            "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-                           ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
-                            "* %? :idea: \n%t" :clock-in t :clock-resume t)
-                           )
-                         )
-                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-                   )
-          )
-       #+END_SRC
-
-**** Shortcut to open my main agenda file
-     #+BEGIN_SRC emacs-lisp
-       (defun fbr/open_main_agenda_file()
-         (interactive)
-         (case (intern (getenv "SYSENV"))
-           (home (find-file "~/Dropbox/org/gtd/tasks.org"))
-           (work (find-file "~/Documents/org/projects.org"))
-           (otherwise (message "No SYSENV found. Don't know what to open."))
-           )
-         )
-
-       (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
-     #+END_SRC
-
-*** Org-capture
+*** Org-mode capture
     Makes it so org-capture takes up the whole screen.
 
     Taken from here: https://fuco1.github.io/2017-09-02-Maximize-the-org-capture-buffer.html
@@ -800,8 +710,120 @@ Inside a code-block, just call `self-insert-command'."
     To align the tags that already exist simple execute =org-align-all-tags= on the file. This is
     useful when changing the above setting, since it doesnt affect existing org-files.
 
-*** Org-mode agenda settings
-   #+BEGIN_SRC emacs-lisp
+*** Org-mode agenda
+
+**** Org-mode agenda-files                                    :sysenv:
+     Depending on my system-environment which i deduce from the system environment variable
+     "SYSENV" which i manually set on the systems i use i have different workflows.
+
+     At work i have more todo states, and different agenda files than for example at home. This is
+     reflected by the following settings.
+
+***** Home
+       #+BEGIN_SRC emacs-lisp
+       (if (equal "home" (getenv "SYSENV"))
+           (progn (setq org-agenda-files (list
+                                          (concat "/root/Dropbox/org/gtd/tasks.org")
+                                          (concat "/root/Dropbox/org/gtd/tasks.org_archive")
+                                          (concat "/root/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+                                          (concat "/root/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+                                          (concat "/root/Dropbox/org/gtd/tasks_2015")
+                                          (concat "/root/Dropbox/org/gtd/tasks_2016")
+                                          (concat "/root/Dropbox/org/gtd/tasks_2017")
+                                          ))
+              ;; org-capture setup
+              (setq org-default-notes-file (concat "/root/Dropbox/org/gtd/tasks.org"))
+              (setq org-capture-templates
+                    '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
+                      ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                      ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
+                       "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                      )
+                    )
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+                  )
+         )
+       #+END_SRC
+
+***** Work
+       #+BEGIN_SRC emacs-lisp
+        (if (equal "work" (getenv "SYSENV"))
+            (progn (setq org-agenda-files
+                         (list (concat "~/Documents/org/projects.org")))
+                   ;; org-capture setup
+                   (setq org-default-notes-file (concat "C:\\Users\\" (getenv "USERNAME") "\\Desktop\\Projekte\\org\\projects.org"))
+                   (setq org-capture-templates
+                         '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
+                           ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+                           ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
+                            "* %? :idea: \n%t" :clock-in t :clock-resume t)
+                           )
+                         )
+                   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+                   )
+          )
+        #+END_SRC
+
+***** Shortcut to open my main agenda file
+      #+BEGIN_SRC emacs-lisp
+       (defun fbr/open_main_agenda_file()
+         (interactive)
+         (case (intern (getenv "SYSENV"))
+           (home (find-file "~/Dropbox/org/gtd/tasks.org"))
+           (work (find-file "~/Documents/org/projects.org"))
+           (otherwise (message "No SYSENV found. Don't know what to open."))
+           )
+         )
+
+       (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
+      #+END_SRC
+
+**** Super-agenda
+     Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
+
+     In the following i cut down the example from the github source from the things that cant
+     possibly match to the stuff i use in my config
+     #+BEGIN_SRC emacs-lisp
+      (use-package org-super-agenda
+        :ensure t
+        :config
+        (org-super-agenda-mode)
+        (setq org-super-agenda-groups
+              '(;; Each group has an implicit boolean OR operator between its selectors.
+                (:name "Today"  ; Optionally specify section name
+                       :time-grid t)  ; Items that appear on the time grid
+                (:name "Important"
+                       ;; Single arguments given alone
+                       :tag ("budget" "sprint" "kanban" "promise")
+                       :priority "A")
+                (:priority<= "B"
+                             ;; Show this section after "Today" and "Important", because
+                             ;; their order is unspecified, defaulting to 0. Sections
+                             ;; are displayed lowest-number-first.
+                             :order 1)
+                ;; After the last group, the agenda will display items that didn't
+                ;; match any of these groups, with the default order position of 99
+                ))
+        )
+     #+END_SRC
+
+**** Idle org agenda
+     #+BEGIN_SRC emacs-lisp :tangle no
+(use-package idle-org-agenda
+     :after org-agenda
+     :ensure t
+     :config
+     (idle-org-agenda-mode)
+     (setq idle-org-agenda-interval 900)
+)
+     #+END_SRC
+
+**** Org-mode agenda settings
+    #+BEGIN_SRC emacs-lisp
      ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
      ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
      (setq org-agenda-start-with-clockreport-mode nil)
@@ -821,34 +843,34 @@ Inside a code-block, just call `self-insert-command'."
      (setq org-agenda-window-setup 'current-window)
      ;; indicate the markdown-level when displaying tasks in agenda
      (setq org-tags-match-list-sublevels 'indented)
-   #+END_SRC
+    #+END_SRC
 
-   Set the default priority to C. This reflects how i use priorities:
-   - ~A~: urgent, do this right now or it will blow up in your face
-   - ~B~: do this one of these days, a possible candidate for priority ~A~
-     (it might blow up in my face soon if i don't act on it)
-   - ~C~: do this whenever you feel like it some day in the future
-   #+BEGIN_SRC emacs-lisp
+    Set the default priority to C. This reflects how i use priorities:
+    - ~A~: urgent, do this right now or it will blow up in your face
+    - ~B~: do this one of these days, a possible candidate for priority ~A~
+      (it might blow up in my face soon if i don't act on it)
+    - ~C~: do this whenever you feel like it some day in the future
+    #+BEGIN_SRC emacs-lisp
    (setq org-default-priority 67) ;; the ascii code for C
-   #+END_SRC
+    #+END_SRC
 
-   Make it so that tags are put to the right-hand side of the window in org-agenda
-   #+BEGIN_SRC emacs-lisp
+    Make it so that tags are put to the right-hand side of the window in org-agenda
+    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
      (defun place-agenda-tags ()
        "Put the agenda tags by the right border of the agenda window."
        (setq org-agenda-tags-column (- 4 (window-width)))
        (org-agenda-align-tags))
-   #+END_SRC
+    #+END_SRC
 
-*** Org-mode agenda custom views                              :sysenv:
-**** Monthly budget view
-     Taken from here:
-     http://jcardente.blogspot.de/2010/06/org-mode-hack-tasks-done-last-month.html
+**** Org-mode agenda custom views
+***** Monthly budget view                                     :sysenv:
+      Taken from here:
+      http://jcardente.blogspot.de/2010/06/org-mode-hack-tasks-done-last-month.html
 
-     I use it to create my monthly financial report.
+      I use it to create my monthly financial report.
 
-     #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp
        (if (equal "home" (getenv "SYSENV"))
            (progn
 
@@ -885,114 +907,7 @@ Inside a code-block, just call `self-insert-command'."
                   for-month for-year "TODO=\"DONE\"+budget")))
              )
          )
-     #+END_SRC
-
-*** Ox-Jira
-    Manually copied from baron42bba's config
-    #+BEGIN_SRC emacs-lisp
-    (use-package ox-jira
-    :config
-
-    )
-    #+END_SRC
-
-    We are lazy and want to speed up things:
-
-    #+BEGIN_SRC emacs-lisp
-      (defun bba-org-export-jira-clipboard()
-        "narrow to org subtree and store content in jira format in clipboard."
-        (interactive)
-        (org-narrow-to-subtree)
-        (bba-export-jira-org)
-        (let ((org-export-use-babel nil))
-          (ox-jira-export-as-jira))
-        (delete-region (point) (progn (forward-line 1)(point)))
-        (push-mark (point))
-        (push-mark (point-max) nil t)
-        (goto-char (point-min))
-        (kill-ring-save 1 1 1)
-        (other-window -1)
-        (widen)
-        (other-window 1)
-        )
-
-      (define-key org-mode-map "\C-c\S-j" 'bba-org-export-jira-clipboard)
-    #+END_SRC
-
-    Besides the clipboard we want also an org file in =/tmp/= to attach to
-    the jira ticket. Of course some boiler plate for the poor souls who
-    never heard of orgmode.
-
-    #+BEGIN_SRC emacs-lisp
-      (defun bba-export-jira-org()
-        "export current narrowed view to file in tmp and open a finder window on OS-X."
-        (interactive)
-        (goto-char (point-min))
-        (insert "# This file is just plain text called orgmode")
-        (newline)
-        (insert "# https://en.wikipedia.org/wiki/Org-mode")
-        (newline)
-        (insert "# You can open it in any text editor or file reader.")
-        (newline)
-        (insert "# You might want to use Emacs for best experience.")
-        (newline)
-        (if (re-search-forward "jira:" nil t 1)
-            (if (org-in-regexp org-bracket-link-regexp 1)
-                (let ((remove (list (match-beginning 0) (match-end 0)))
-                      (description (last (split-string (if (match-end 3)
-                                                           (match-string-no-properties 3)
-                                                         (match-string-no-properties 1)) ":"))))
-                  (push-mark (point))
-                  (push-mark (point-max) nil t)
-                  (goto-char (point-min))
-                  (write-region (mark) (point) (concat "/tmp/" (car description) ".org") nil nil )
-                  (deactivate-mark)
-                  (if (string-equal system-type "darwin")(shell-command "open /tmp/"))
-                  )))
-        (goto-char (point-min))
-        (kill-line 4)
-        )
-    #+END_SRC
-
-*** Super-agenda
-    Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
-
-    In the following i cut down the example from the github source from the things that cant
-    possibly match to the stuff i use in my config
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-super-agenda
-        :ensure t
-        :config
-        (org-super-agenda-mode)
-        (setq org-super-agenda-groups
-              '(;; Each group has an implicit boolean OR operator between its selectors.
-                (:name "Today"  ; Optionally specify section name
-                       :time-grid t)  ; Items that appear on the time grid
-                (:name "Important"
-                       ;; Single arguments given alone
-                       :tag ("budget" "sprint" "kanban" "promise")
-                       :priority "A")
-                (:priority<= "B"
-                             ;; Show this section after "Today" and "Important", because
-                             ;; their order is unspecified, defaulting to 0. Sections
-                             ;; are displayed lowest-number-first.
-                             :order 1)
-                ;; After the last group, the agenda will display items that didn't
-                ;; match any of these groups, with the default order position of 99
-                ))
-        )
-    #+END_SRC
-
-*** Idle org agenda
-    #+BEGIN_SRC emacs-lisp :tangle no
-(use-package idle-org-agenda
-     :after org-agenda
-     :ensure t
-     :config
-     (idle-org-agenda-mode)
-     (setq idle-org-agenda-interval 900)
-)
-    #+END_SRC
+      #+END_SRC
 
 *** Org-mode todo-keywords                                    :sysenv:
     #+BEGIN_SRC emacs-lisp
@@ -1007,7 +922,6 @@ Inside a code-block, just call `self-insert-command'."
      )
     #+END_SRC
 
-*** Org-mode todo-keyword faces
     Keyword-faces, these are independant of the system in use, even when org-todo-keywords differ
     from system to system.
     #+BEGIN_SRC emacs-lisp
@@ -1026,189 +940,6 @@ Inside a code-block, just call `self-insert-command'."
               ("PENDING" . (:foreground "#f0c674" :background "#d09216"))
               ("DELEGATED" . (:foreground "#81a2be" :background "#456887" :box (:line-width 1 :style none)))
               ("CANCELED" . (:foreground "#b5bd68" :weight bold :box (:line-width 1 :style none)))))
-    #+END_SRC
-
-*** Latex-settings                                          :research:
-
-**** bjm-article Template
-     Including this into the usepackage-definition of org doesnt seem to work.
-     This is some sample-template called bjmarticle i copied from the webs.
-     #+BEGIN_SRC emacs-lisp
-       (require 'ox-latex)
-       (add-to-list 'org-latex-classes
-                    '("bjmarticle"
-                      "\\documentclass{article}
-                       \\usepackage[utf8]{inputenc}
-                       \\usepackage[T1]{fontenc}
-                       \\usepackage{graphicx}
-                       \\usepackage{longtable}
-                       \\usepackage{hyperref}
-                       \\usepackage{natbib}
-                       \\usepackage{amssymb}
-                       \\usepackage{amsmath}
-                       \\usepackage{geometry}
-                       \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in,headheight=30pt}
-                       \\setlength{\\parskip}{\\baselineskip}
-                       \\hypersetup{pdflang={German},colorlinks, linkcolor={red!50!black}, citecolor={blue!50!black}, urlcolor={blue!80!black}}
-                       \\setlength{\\parindent}{0pt}"
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                    )
-     #+END_SRC
-
-**** stsreport Template
-     A latex-template that is actually useful and that I will use for my bachelor-thesis.
-     #+BEGIN_SRC emacs-lisp
-       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-       (require 'ox-latex)
-       (add-to-list 'org-latex-classes
-                    '("stsreprt"
-                      "\\documentclass[fancyheadings]{stsreprt}
-                      [NO-DEFAULT-PACKAGES]"
-                      ("\\chapter{%s}" . "\\chapter*{%s}")
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
-                      )
-                    )
-     #+END_SRC
-
-**** Enable specific latex-headers
-     Taken from here:
-     http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
-
-     Disabled since org-contrib-plus seems to be causing issues now (<2020-04-12 Sun>).
-     #+BEGIN_SRC emacs-lisp :tangle no
-(use-package org
-  :ensure org-plus-contrib
-  :config
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines))
-  )
-     #+END_SRC
-
-**** Orgmode bibliography and latex compiler settings         :sysenv:
-     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package org-ref
-         :ensure t
-         :config
-         (setq org-ref-completion-library 'org-ref-helm-cite)
-         (require 'org-ref)
-         (require 'org-ref-pdf) ;; enable pdf drag n' drop
-         (require 'doi-utils)
-         (require 'org-ref-latex)
-         (require 'org-ref-bibtex)
-         (require 'org-ref-url-utils)
-
-         ;; -shell-escape added for "minted" package
-         (setq org-latex-pdf-process
-               '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                 "bibtex %b"
-                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
-               )
-         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
-         )
-     #+END_SRC
-
-     If we are at home I know where the paths should be
-     #+BEGIN_SRC emacs-lisp
-       (if (equal "home" (getenv "SYSENV"))
-           (progn
-             ;; see org-ref for use of these variables
-             (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
-                   org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
-                   org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
-                   org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
-                   )
-             )
-         )
-     #+END_SRC
-
-**** Customize the markdown export
-     I use =verbatim= markup to surround file-paths, in order to have them highlighted. The
-     following exports this markup to a more capable format.
-     #+BEGIN_SRC emacs-lisp
-(setq org-latex-text-markup-alist '((bold . "\\textbf{%s}")
-                                  (code . protectedtexttt)
-                                  (italic . "\\emph{%s}")
-                                  (strike-through . "\\sout{%s}")
-                                  (underline . "\\uline{%s}")
-                                  (verbatim . "\\path{%s}"))) ;; default: protectedtexttt
-     #+END_SRC
-
-     It however requires the following additional settings to actually work. This setting makes it
-     so paths are preferably broken near slashes. When there is no slash nearby the path simply
-     gets broken at a letter.
-     #+BEGIN_SRC latex :tangle no
-#+LaTeX_HEADER: \usepackage[colorlinks]{hyperref}
-#+LATEX_HEADER: \usepackage{etoolbox}
-#+LATEX_HEADER: \renewcommand{\UrlBreaks}{\do\/\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z}
-     #+END_SRC
-
-**** Minted, coloured source-blocks in latex
-     Enables the "minted" package with its required options for the source-block highlighting to
-     work. In addition to this I need the minted latex package, which relies on the external tool
-     pygmentize to be in path:
-     https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
-     #+BEGIN_SRC emacs-lisp :results silent
-       (require 'ox-latex)
-       (add-to-list 'org-latex-packages-alist '("" "minted"))
-
-       (setq org-latex-listings 'minted)
-
-       (setq org-latex-minted-options
-             '(("frame=single") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
-     #+END_SRC
-
-     In my case i had to delete the temporary folder in the same directory to make the coloring
-     work. Got this hint from here:
-     https://tex.stackexchange.com/questions/237075/minted-not-working
-
-*** Enable R codeblocks                              :research:sysenv:
-    For this to work i had to install the ess-package:
-    #+BEGIN_SRC sh :tangle no
-    sudo apt-get install ess
-    #+END_SRC
-
-    After installation of ess the following works.
-    #+BEGIN_SRC emacs-lisp
-      (if (equal "home" (getenv "SYSENV"))
-          (progn
-            ;; found out about the path with dpkg -L ess
-            (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
-            (require 'ess-site))
-        )
-    #+END_SRC
-
-    In addition we also need to load the org-babel language R over here:
-    [[*Org-mode][Org-mode section]].
-
-*** More latex settings - cdlatex
-    From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
-    "speed-up insertion of environments and math templates"
-
-    From cdlatex.el:
-    "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
-    #+BEGIN_SRC emacs-lisp
-      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
-      ;; (use-package auctex
-      ;; :ensure t
-      ;; )
-
-      ;; (use-package cdlatex
-      ;; :ensure t
-      ;; :config
-      ;; (require 'auctex)
-      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-      ;; )
     #+END_SRC
 
 *** Org-mode alerts and notifications
@@ -1578,8 +1309,7 @@ Inside a code-block, just call `self-insert-command'."
      #+END_SRC
 
 *** Org-mode org-clock-csv extension
-   Exports clock-data to csv which is a useful data-format for generating graphs! Im not far into
-   this topic though.
+   Exports clock-data to csv which is a useful data-format for generating graphs!
    #+BEGIN_SRC emacs-lisp
 (use-package org-clock-csv
   :ensure t
@@ -1597,15 +1327,283 @@ Inside a code-block, just call `self-insert-command'."
       )
    #+END_SRC
 
-*** Org-mode calendar extension
-   #+BEGIN_SRC emacs-lisp :tangle no
-(use-package calfw-org
-  :ensure t
+*** Ox-Jira
+    Manually copied from baron42bba's config
+    #+BEGIN_SRC emacs-lisp
+    (use-package ox-jira
+    :config
+
+    )
+    #+END_SRC
+
+    We are lazy and want to speed up things:
+
+    #+BEGIN_SRC emacs-lisp
+      (defun bba-org-export-jira-clipboard()
+        "narrow to org subtree and store content in jira format in clipboard."
+        (interactive)
+        (org-narrow-to-subtree)
+        (bba-export-jira-org)
+        (let ((org-export-use-babel nil))
+          (ox-jira-export-as-jira))
+        (delete-region (point) (progn (forward-line 1)(point)))
+        (push-mark (point))
+        (push-mark (point-max) nil t)
+        (goto-char (point-min))
+        (kill-ring-save 1 1 1)
+        (other-window -1)
+        (widen)
+        (other-window 1)
+        )
+
+      (define-key org-mode-map "\C-c\S-j" 'bba-org-export-jira-clipboard)
+    #+END_SRC
+
+    Besides the clipboard we want also an org file in =/tmp/= to attach to
+    the jira ticket. Of course some boiler plate for the poor souls who
+    never heard of orgmode.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun bba-export-jira-org()
+        "export current narrowed view to file in tmp and open a finder window on OS-X."
+        (interactive)
+        (goto-char (point-min))
+        (insert "# This file is just plain text called orgmode")
+        (newline)
+        (insert "# https://en.wikipedia.org/wiki/Org-mode")
+        (newline)
+        (insert "# You can open it in any text editor or file reader.")
+        (newline)
+        (insert "# You might want to use Emacs for best experience.")
+        (newline)
+        (if (re-search-forward "jira:" nil t 1)
+            (if (org-in-regexp org-bracket-link-regexp 1)
+                (let ((remove (list (match-beginning 0) (match-end 0)))
+                      (description (last (split-string (if (match-end 3)
+                                                           (match-string-no-properties 3)
+                                                         (match-string-no-properties 1)) ":"))))
+                  (push-mark (point))
+                  (push-mark (point-max) nil t)
+                  (goto-char (point-min))
+                  (write-region (mark) (point) (concat "/tmp/" (car description) ".org") nil nil )
+                  (deactivate-mark)
+                  (if (string-equal system-type "darwin")(shell-command "open /tmp/"))
+                  )))
+        (goto-char (point-min))
+        (kill-line 4)
+        )
+    #+END_SRC
+
+*** Latex-settings                                          :research:
+
+**** bjm-article Template
+     Including this into the usepackage-definition of org doesnt seem to work.
+     This is some sample-template called bjmarticle i copied from the webs.
+     #+BEGIN_SRC emacs-lisp
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("bjmarticle"
+                      "\\documentclass{article}
+                       \\usepackage[utf8]{inputenc}
+                       \\usepackage[T1]{fontenc}
+                       \\usepackage{graphicx}
+                       \\usepackage{longtable}
+                       \\usepackage{hyperref}
+                       \\usepackage{natbib}
+                       \\usepackage{amssymb}
+                       \\usepackage{amsmath}
+                       \\usepackage{geometry}
+                       \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in,headheight=30pt}
+                       \\setlength{\\parskip}{\\baselineskip}
+                       \\hypersetup{pdflang={German},colorlinks, linkcolor={red!50!black}, citecolor={blue!50!black}, urlcolor={blue!80!black}}
+                       \\setlength{\\parindent}{0pt}"
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                    )
+     #+END_SRC
+
+**** stsreport Template
+     A latex-template that is actually useful and that I will use for my bachelor-thesis.
+     #+BEGIN_SRC emacs-lisp
+       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("stsreprt"
+                      "\\documentclass[fancyheadings]{stsreprt}
+                      [NO-DEFAULT-PACKAGES]"
+                      ("\\chapter{%s}" . "\\chapter*{%s}")
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                      )
+                    )
+     #+END_SRC
+
+**** Enable specific latex-headers
+     Taken from here:
+     http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
+
+     Disabled since org-contrib-plus seems to be causing issues now (<2020-04-12 Sun>).
+     #+BEGIN_SRC emacs-lisp :tangle no
+(use-package org
+  :ensure org-plus-contrib
   :config
-  (require 'calfw-org)
-  (setq cfw:org-overwrite-default-keybinding t)
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
   )
-   #+END_SRC
+     #+END_SRC
+
+**** Orgmode bibliography and latex compiler settings         :sysenv:
+     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package org-ref
+         :ensure t
+         :config
+         (setq org-ref-completion-library 'org-ref-helm-cite)
+         (require 'org-ref)
+         (require 'org-ref-pdf) ;; enable pdf drag n' drop
+         (require 'doi-utils)
+         (require 'org-ref-latex)
+         (require 'org-ref-bibtex)
+         (require 'org-ref-url-utils)
+
+         ;; -shell-escape added for "minted" package
+         (setq org-latex-pdf-process
+               '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "bibtex %b"
+                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+               )
+         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+         )
+     #+END_SRC
+
+     If we are at home I know where the paths should be
+     #+BEGIN_SRC emacs-lisp
+       (if (equal "home" (getenv "SYSENV"))
+           (progn
+             ;; see org-ref for use of these variables
+             (setq org-ref-bibliography-notes "~/Dropbox/org/uni/bachelor_thesis/notes.org"
+                   org-ref-default-bibliography '("~/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib")
+                   org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/"
+                   org-ref-pdf-directory "~/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/"
+                   )
+             )
+         )
+     #+END_SRC
+
+**** Customize the markdown export
+     I use =verbatim= markup to surround file-paths, in order to have them highlighted. The
+     following exports this markup to a more capable format.
+     #+BEGIN_SRC emacs-lisp
+(setq org-latex-text-markup-alist '((bold . "\\textbf{%s}")
+                                  (code . protectedtexttt)
+                                  (italic . "\\emph{%s}")
+                                  (strike-through . "\\sout{%s}")
+                                  (underline . "\\uline{%s}")
+                                  (verbatim . "\\path{%s}"))) ;; default: protectedtexttt
+     #+END_SRC
+
+     It however requires the following additional settings to actually work. This setting makes it
+     so paths are preferably broken near slashes. When there is no slash nearby the path simply
+     gets broken at a letter.
+     #+BEGIN_SRC latex :tangle no
+#+LaTeX_HEADER: \usepackage[colorlinks]{hyperref}
+#+LATEX_HEADER: \usepackage{etoolbox}
+#+LATEX_HEADER: \renewcommand{\UrlBreaks}{\do\/\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z}
+     #+END_SRC
+
+**** Minted, coloured source-blocks in latex
+     Enables the "minted" package with its required options for the source-block highlighting to
+     work. In addition to this I need the minted latex package, which relies on the external tool
+     pygmentize to be in path:
+     https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
+     #+BEGIN_SRC emacs-lisp :results silent
+       (require 'ox-latex)
+       (add-to-list 'org-latex-packages-alist '("" "minted"))
+
+       (setq org-latex-listings 'minted)
+
+       (setq org-latex-minted-options
+             '(("frame=single") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
+     #+END_SRC
+
+     In my case i had to delete the temporary folder in the same directory to make the coloring
+     work. Got this hint from here:
+     https://tex.stackexchange.com/questions/237075/minted-not-working
+
+**** Pretty quotations for nice latex exports               :research:
+     Taken from here: http://endlessparentheses.com/prettify-your-quotation-marks.html
+     #+BEGIN_SRC emacs-lisp :tangle no
+(define-key org-mode-map "\"" #'endless/round-quotes)
+(eval-after-load 'markdown-mode
+  '(define-key markdown-mode-map "\""
+     #'endless/round-quotes))
+
+(defun endless/round-quotes (italicize)
+  "Insert “” and leave point in the middle.
+With prefix argument ITALICIZE, insert /“”/ instead
+\(meant for org-mode).
+Inside a code-block, just call `self-insert-command'."
+  (interactive "P")
+  (if (and (derived-mode-p 'org-mode)
+           (org-in-block-p '("src" "latex" "html")))
+      (call-interactively #'self-insert-command)
+    (if (looking-at "”[/=_\\*]?")
+        (goto-char (match-end 0))
+      (when italicize
+        (if (derived-mode-p 'markdown-mode)
+            (insert "__")
+          (insert "//"))
+        (forward-char -1))
+      (insert "“”")
+      (forward-char -1))))
+     #+END_SRC
+
+**** Cdlatex
+     From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
+     "speed-up insertion of environments and math templates"
+
+     From cdlatex.el:
+     "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
+     #+BEGIN_SRC emacs-lisp
+      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
+      ;; (use-package auctex
+      ;; :ensure t
+      ;; )
+
+      ;; (use-package cdlatex
+      ;; :ensure t
+      ;; :config
+      ;; (require 'auctex)
+      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+      ;; )
+     #+END_SRC
+
+*** Enable R codeblocks                              :research:sysenv:
+    For this to work i had to install the ess-package:
+    #+BEGIN_SRC sh :tangle no
+    sudo apt-get install ess
+    #+END_SRC
+
+    After installation of ess the following works.
+    #+BEGIN_SRC emacs-lisp
+      (if (equal "home" (getenv "SYSENV"))
+          (progn
+            ;; found out about the path with dpkg -L ess
+            (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
+            (require 'ess-site))
+        )
+    #+END_SRC
+
+    In addition we also need to load the org-babel language R over here:
+    [[*Org-mode][Org-mode section]].
 
 *** cm-mode for advanced authoring markup
     I like the idea of inserting comments like this package suggests, but I am still just trying
