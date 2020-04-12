@@ -466,6 +466,16 @@
     (global-set-key (kbd "M-o") 'other-window)
     #+END_SRC
 
+
+    Set the key modifiers on Mac to behave similarly to Linux or Windows.
+    #+BEGIN_SRC emacs-lisp
+(if (string-equal system-type "darwin")
+    (setq mac-command-modifier 'meta
+          mac-right-option-modifier 'none
+          mac-option-modifier 'super)
+  )
+    #+END_SRC
+
 *** Set certain paths when on university pc
     These settings are for the university PC
     #+BEGIN_SRC emacs-lisp :tangle no
