@@ -554,7 +554,7 @@
    #+BEGIN_SRC emacs-lisp
      (use-package org
        :pin manual ;; manually update
-       :ensure org-plus-contrib
+       :ensure t
        :init
        ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
        ;; This HAS to come before (require 'org) / the init section of use-package
@@ -1156,14 +1156,15 @@ Inside a code-block, just call `self-insert-command'."
      Taken from here:
      http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package org
-        :ensure org-plus-contrib
-        :config
-        (require 'ox-extra)
-        (ox-extras-activate '(ignore-headlines))
-        )
-    #+END_SRC
+     Disabled since org-contrib-plus seems to be causing issues now (<2020-04-12 Sun>).
+     #+BEGIN_SRC emacs-lisp :tangle no
+(use-package org
+  :ensure org-plus-contrib
+  :config
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
+  )
+     #+END_SRC
 
 **** Orgmode bibliography and latex compiler settings         :sysenv:
      Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
