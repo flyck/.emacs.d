@@ -644,7 +644,7 @@
     #+END_SRC
 
 
-    Done hide the markdown markesr:
+    Don't hide the markdown markers
     #+BEGIN_SRC emacs-lisp
 (setq org-hide-emphasis-markers nil)
     #+END_SRC
