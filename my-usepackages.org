@@ -687,6 +687,7 @@ sudo apt-get install aspell-de
 
     Explicitly enable the sourceblock shortcuts (i.e. automatically expanding "<s" to an org-mode
     sourceblock). Once this worked out of the box, after an update I now need this.
+    https://github.com/syl20bnr/spacemacs/issues/11798
     #+begin_src emacs-lisp
     (require 'org-tempo)
     #+end_src
