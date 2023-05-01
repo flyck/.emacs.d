@@ -2483,7 +2483,7 @@ sudo gem install puppet-lint
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'monokai t)
+  (load-theme 'grandshell t)
   ;; (use-package dichromacy-theme
   ;; :ensure t
   ;; :config
