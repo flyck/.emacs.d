@@ -65,6 +65,8 @@
 (diminish  'subword-mode)
    #+END_SRC
 ** Nerdtree
+   A file explorer side bar.
+
    #+BEGIN_SRC emacs-lisp
 (use-package neotree
 :ensure t
@@ -76,17 +78,19 @@
    #+END_SRC
 
 ** Recentf
-  I hate browsing for files (I frequently use), this package is supposed to help me out with that
+  I hate browsing for files (I frequently use), this package is supposed to help me out with that.
+
+  Enriches the recentf view in helm browsing and enables crazy-fast file openings in combination
+  with idos `C-x C-r`. Personally I only use helm though.
+
   #+BEGIN_SRC emacs-lisp
     (use-package recentf
-      ;; i think it's build-in anyways but I'll just throw config at this problem until it is resolved
       :ensure t
       :config
-      ;; Quote: When using TrampMode with recentf.el, it’s advisable to turn off the cleanup feature
+      ;; When using TrampMode with recentf.el, it’s advisable to turn off the cleanup feature
       ;; of recentf that attempts to stat all the files and remove them from the recently accessed
       ;; list if they are readable. Tramp means that this requires recentf to open up a remote site
       ;; which will block your emacs process at the most inopportune times.
-      ;;
       (setq recentf-auto-cleanup 'never)
       (recentf-mode 1)
       (setq recentf-max-saved-items 0)
@@ -129,18 +133,9 @@
   in an overview which is really good. A downfall to this is that it cant be used for
   keyboard-macros, for these the standard isearch works way better.
 
-  Keeps breaking, hotfix is to reinstall the package regularly
-  #+BEGIN_SRC emacs-lisp :tangle no
-    (use-package helm-swoop
-      :ensure t
-      :config
-      (global-set-key (kbd "C-s") 'helm-swoop-without-pre-input)
-      )
-  #+END_SRC
-
-  Replace it with swiper for now, atleast that works
+  helm-swoop kept braking on my and didnt support coloring. Replaced it with swiper, which works great.
   #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "C-s") 'swiper)
   #+END_SRC
 
 ** Finding files
