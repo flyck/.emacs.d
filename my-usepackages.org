@@ -2342,6 +2342,9 @@ sudo gem install puppet-lint
   :config
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   (global-set-key (kbd "C-x p") #'tide-fix)
+  (global-set-key (kbd "C-x lr") #'tide-references)
+  (global-set-key (kbd "C-x rs") #'tide-rename-symbol)
+  (global-set-key (kbd "C-x rf") #'tide-rename-file)
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
