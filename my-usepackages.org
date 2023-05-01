@@ -220,6 +220,17 @@
 
 * Conveniences
 
+** Emojify mode
+   #+begin_src emacs-lisp
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
+  :config
+  (custom-set-variables
+   '(emojify-display-style 'image)
+   '(emojify-emoji-styles '(unicode)))
+  )
+   #+end_src
+
 ** Undo-tree
    Undo-tree provides a graphical representation of recent changes made to the file. When I first
    starting to use it it felt terrible, since a whole new window opens every time i call it. With
@@ -284,7 +295,6 @@
   :ensure t
   )
     #+END_SRC
-
 
 ** Beginend
    Beginend is a package that is supposed to improve on the navigation to the beginning and end of
