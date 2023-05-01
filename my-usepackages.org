@@ -2,27 +2,11 @@
 #+Author:  Felix Brilej
 
 * Initialization
-  I set some general CoLor variables with the prefix CL and i try to stick to these throughout
-  this document whenever i redefine colors. I consider this my standard-library of "good colors"
-  that i should use as my kind of color-palette when i go around and change defaults.
-
   #+BEGIN_SRC emacs-lisp
 (setenv "SYSENV" "work")
 (require 'use-package)
 ;; (setq debug-on-error t) (turn on if needed)
 (setq package-check-signature nil) ;; disables public key errors that i dont feel like investigating
-
-(setq cl-selection-background "ivory1")
-(setq cl-selection-foreground "gray5")
-
-(setq cl-headline "ghost white")
-(setq cl-first-level "royal blue")
-;; (setq cl-second-level "IndianRed3")
-(setq cl-second-level "cornflower blue")
-(setq cl-third-level "SlateBlue3")
-;; alternative for sunny days
-;; (setq cl-third-level "SkyBlue1")
-(setq cl-meta-information-one "cornflower blue")
   #+END_SRC
 
   Keep .emacs.d clean
@@ -129,9 +113,6 @@
 				    helm-source-bookmarks
 				    helm-source-buffer-not-found))
   (helm-mode 1)
-  (set-face-attribute 'helm-selection nil
-                    :background cl-selection-background
-                    :foreground cl-selection-foreground)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
   ;;(define-key global-map "\C-s" 'isearch-forward)
@@ -2675,6 +2656,28 @@ sudo gem install puppet-lint
   (global-set-key (kbd "C-M-|") 'theme-looper-select-theme-from-all)
   )
    #+END_SRC
+
+** Good Colors
+   I set some general CoLor variables with the prefix CL and i try to stick to these throughout
+   this document whenever i redefine colors. I consider this my standard-library of "good colors"
+   that i should use as my kind of color-palette when i go around and change defaults.
+
+   Somewhat of a hangover from times when themes supported not all of the modes I used.
+
+  #+begin_src emacs-lisp
+(setq cl-selection-background "ivory1")
+(setq cl-selection-foreground "gray5")
+
+(setq cl-headline "ghost white")
+(setq cl-first-level "royal blue")
+(setq cl-second-level "IndianRed3")
+(setq cl-second-level "cornflower blue")
+(setq cl-third-level "SlateBlue3")
+;; alternative for lighter themes
+(setq cl-third-level "SkyBlue1")
+(setq cl-meta-information-one "cornflower blue")
+  #+end_src
+
 
 ** Rebecca theme
    #+BEGIN_SRC emacs-lisp :tangle no
