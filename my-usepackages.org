@@ -519,6 +519,7 @@ sudo apt-get install aspell-de
   (if (string-equal system-type "darwin")
       (progn
         (add-to-list 'exec-path "/usr/bin")
+        (add-to-list 'exec-path "/opt/homebrew/bin")
         (setenv "PATH" (concat "/opt/homebrew/opt/node@14/bin" ":" (getenv "PATH")))
         (add-to-list 'exec-path "/opt/homebrew/opt/node@14/bin")
         (setenv "PATH" (concat "/opt/homebrew/bin" ":" (getenv "PATH")))
