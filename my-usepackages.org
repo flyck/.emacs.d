@@ -1,30 +1,15 @@
 #+Title:   My use-package configuration in org-mode
 #+Author:  Felix Brilej
 
-* Initialization
+* SYSENV Setup                                                :sysenv:
+  SYSENV is an env variable i set to enable environment specific config (work / uni /
+  private). Copied from the great [[https://github.com/baron42bba][baron42bba]].
+
+  Set a ~SYSENV~ default.
   #+BEGIN_SRC emacs-lisp
 (setenv "SYSENV" "work")
-(require 'use-package)
-;; (setq debug-on-error t) (turn on if needed)
-(setq package-check-signature nil) ;; disables public key errors that i dont feel like investigating
-  #+END_SRC
 
-  Keep .emacs.d clean
-  #+BEGIN_SRC emacs-lisp
-(use-package no-littering
-  :ensure t
-  :config
-  (require 'recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
-;; have elfeeds database in the cloud instead of ~/.emacs.d/var/
-(setq elfeed-db-directory "~/Dropbox/org/elfeed/db/")
-  #+END_SRC
-
-* SYSENV Setup                                                :sysenv:
-  Set a ~SYSENV~ default. Useful for my Mac where I can't seem to set an environment variable for
-  my emacsclient installation.
-  #+BEGIN_SRC emacs-lisp
+;; useful for non-mac systems where such kind of env variables can be easily set outside of emacs.
 (if (equal (getenv "SYSENV") nil)
     (setenv "SYSENV" "home"))
   #+END_SRC
@@ -44,6 +29,25 @@
     (setq fbr/home-dir "~"))
 (if (string-equal system-type "windows-nt")
   (setq fbr/home-dir (concat "C:/Users/" (getenv "USERNAME"))))
+  #+END_SRC
+
+* Initialization
+  #+BEGIN_SRC emacs-lisp
+(require 'use-package)
+;; (setq debug-on-error t) (turn on if needed)
+(setq package-check-signature nil) ;; disables public key errors that i dont feel like investigating
+  #+END_SRC
+
+  Keep .emacs.d clean
+  #+BEGIN_SRC emacs-lisp
+(use-package no-littering
+  :ensure t
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
+;; have elfeeds database in the cloud instead of ~/.emacs.d/var/
+(setq elfeed-db-directory "~/Dropbox/org/elfeed/db/")
   #+END_SRC
 
 * Keyboard macros
