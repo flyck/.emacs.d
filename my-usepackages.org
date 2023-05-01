@@ -2352,6 +2352,7 @@ sudo gem install puppet-lint
   ;; javascript
   (add-hook 'js2-mode-hook #'setup-tide-mode)
   (add-hook 'js-mode-hook #'setup-tide-mode)
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   ;; configure javascript-tide checker to run after your default javascript checker
    #+end_src
 
