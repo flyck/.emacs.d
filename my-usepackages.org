@@ -2106,6 +2106,11 @@ sudo apt-get install ess
   :ensure t
   )
   #+END_SRC
+** Git Highlight changes
+#+begin_src emacs-lisp
+(global-diff-hl-mode)
+(global-diff-hl-show-hunk-mouse-mode 1)
+#+end_src
 
 ** Line numbers (linum)
    #+BEGIN_SRC emacs-lisp
