@@ -449,6 +449,9 @@
          (if (string-equal system-type "gnu/linux")
     	  (async-shell-command (concat "nautilus " (file-name-directory (buffer-file-name))))
            )
+         (if (string-equal system-type "darwin")
+    	  (async-shell-command (concat "open -a Finder " (file-name-directory (buffer-file-name))))
+           )
          )
     #+END_SRC
 
