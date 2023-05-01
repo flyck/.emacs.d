@@ -33,15 +33,20 @@
     This block adds the melpa and org repository if they aren't added already. This way this
     command is stateless which helps for debugging.
     #+BEGIN_SRC emacs-lisp
-      (unless (assoc-default "melpa" package-archives)
-        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-	; (package-refresh-contents)
-      )
-      (unless (assoc-default "org" package-archives)
-        ; added for org-plus-contrib package
-        (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-      	; (package-refresh-contents)
-      )
+      ;; (unless (assoc-default "melpa" package-archives)
+      ;;   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+      ;;   ; (package-refresh-contents)
+      ;; )
+      ;; (unless (assoc-default "org" package-archives)
+      ;;   ; added for org-plus-contrib package
+      ;;   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+      ;; 	; (package-refresh-contents)
+      ;; )
+(custom-set-variables
+  '(package-archives
+   '(("melpa" . "http://melpa.org/packages/")
+     ("elpa" . "http://elpa.gnu.org/packages/"))))
+
     #+END_SRC
 
     Use =M-x package-refresh-contents= to reload the list of packages

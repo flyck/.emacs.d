@@ -598,8 +598,9 @@ sudo apt-get install aspell-de
 ** Org-mode
    #+BEGIN_SRC emacs-lisp
      (use-package org
-       :pin manual ;; update manually
-       :ensure t
+       ;;:pin manual ;; update manually
+       :ensure org
+       :pin elpa
        :init
        ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
        ;; This HAS to come before (require 'org) / the init section of use-package

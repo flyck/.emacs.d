@@ -4,8 +4,10 @@
                         (expand-file-name "org"
                         (expand-file-name "src" dotfiles-dir))))
 
+
+
 ;; Load Org-Mode and Org-Babel
-(require 'org-install)
+;(require 'org-install)
 
 ;; Processed the emacs config
 (org-babel-load-file (expand-file-name "my-stock-changes.org" dotfiles-dir))
