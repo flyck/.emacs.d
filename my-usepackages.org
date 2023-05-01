@@ -2177,6 +2177,20 @@ sudo apt-get install ess
    (setq flycheck-terraform-tflint-executable "/usr/local/bin/tflint")
    #+END_SRC
 
+** Golang
+   Guide: http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/
+#+begin_src emacs-lisp
+(add-to-list 'exec-path "/Users/felix.brilej/go/bin")
+(defun my-go-mode-hook ()
+  ; Call Gofmt before saving
+  ;(add-hook 'before-save-hook 'gofmt-before-save)
+  ; Godef jump key binding
+  (local-set-key (kbd "M-.") 'godef-jump)
+  (local-set-key (kbd "M-*") 'pop-tag-mark)
+  )
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+#+end_src
+
 ** Jenkins Groovy
    #+BEGIN_SRC emacs-lisp
    (setq groovy-indent-offset 2)
