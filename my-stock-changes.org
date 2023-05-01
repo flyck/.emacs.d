@@ -433,6 +433,9 @@
          (if (string-equal system-type "gnu/linux")
     	  (async-shell-command (concat "gnome-terminal " (file-name-directory (buffer-file-name))))
            )
+         (if (string-equal system-type "darwin")
+    	  (async-shell-command (concat "open -a iTerm " (file-name-directory (buffer-file-name))))
+           )
          )
     #+END_SRC
 *** Open current directory in nautilus / explorer
