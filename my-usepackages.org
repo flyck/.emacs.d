@@ -2442,6 +2442,7 @@ sudo gem install puppet-lint
   - github-theme
   - night-owl-theme
   - zenburn-theme
+  - weyland-yutani
 
   Themes i never used for long
   - alect-themes
@@ -2461,11 +2462,12 @@ sudo gem install puppet-lint
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (use-package weyland-yutani-theme
-  :ensure t
-  :config
-  (load-theme 'weyland-yutani t)
-  )
+  (load-theme 'monokai t)
+  ;; (use-package dichromacy-theme
+  ;; :ensure t
+  ;; :config
+  ;; (load-theme 'dichromacy t)
+  ;; )
   #+END_SRC
 
 ** Theme Looper
