@@ -21,9 +21,9 @@
   - The overall file-structure is not a mess
 
   🌵 Things I struggle with:
-  - My customized org-agenda takes forever to load (~11 seconds on my laptop)
-  - Indenting and line-wrapping in org-mode
-  - Empty lines in new headings in org-mode
+  - Indenting and line-wrapping in org-mode since recent org update
+  - Keeping all my org configuration consistent
+  - Minor things about my typescript and rust setup
 
 ** The ongoing debate about the right coding-system
    Right now I use the unix coding system everywhere, this might be subject to change though.
