@@ -2128,7 +2128,8 @@ sudo apt-get install ess
         ("FIXME"  . "#ff5faf")
         ("DEBUG"  . "#1E90FF")
         ("GOTCHA" . "#1E90FF")
-        ("STUB"   . "#1E90FF")))
+        ("STUB"   . "#1E90FF")
+        ("DONE"   . "#7FFFD4")))
 (global-hl-todo-mode)
    #+END_SRC
 
