@@ -1395,12 +1395,12 @@ sudo gem install puppet-lint
 (use-package tide
   :ensure t
   :config
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
-  (global-set-key (kbd "C-x p") #'tide-fix)
-  (global-set-key (kbd "C-x lr") #'tide-references)
-  (global-set-key (kbd "C-x rs") #'tide-rename-symbol)
-  (global-set-key (kbd "C-x rf") #'tide-rename-file)
-  (global-set-key (kbd "C-x re") #'next-error)
+  (define-key company-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+  (define-key tide-mode-map (kbd "C-x p") #'tide-fix)
+  (define-key tide-mode-map (kbd "C-x lr") #'tide-references)
+  (define-key tide-mode-map (kbd "C-x rs") #'tide-rename-symbol)
+  (define-key tide-mode-map (kbd "C-x rf") #'tide-rename-file)
+  (define-key tide-mode-map (kbd "C-x re") #'next-error)
 (setq tide-node-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/bin/node")
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
