@@ -239,9 +239,10 @@
       (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring last-kbd-macro kmacro-ring shell-command-history))
     #+END_SRC
 
-    Clean up unnecessary spaces on save and show them while they are still there
+    Clean up unnecessary spaces on save and show them while they are still there.
     #+BEGIN_SRC emacs-lisp
       (add-hook 'before-save-hook 'delete-trailing-whitespace)
+      (toggle-indicate-empty-lines t)
       (setq show-trailing-whitespace t)
     #+END_SRC
 
