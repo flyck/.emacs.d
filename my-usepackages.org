@@ -769,6 +769,67 @@ sudo apt-get install aspell-de
     #+END_SRC
 
 * Programming
+** Rust
+  Using the rust-analyzer + rustic which i installed like so: https://rust-analyzer.github.io/manual.html#emacs
+
+
+  Issues with my setup:
+  - debugging does not work
+    - workaround: use logging
+  - I cannot resolve std:: crates
+    - https://github.com/rust-lang/rust-analyzer/issues/6063
+    - workaround: use website doc. or hover over the thing with the mouse.
+
+
+  Enable Debugging: (work in progress)
+  #+begin_src emacs-lisp
+(use-package dap-mode
+  :ensure t
+  :config
+  (require 'dap-cpptools)
+  )
+  #+end_src
+  - make sure to execute `dap-cpptools-setup` once
+  - works in vscode with their lldb
+  - my errors
+    - https://stackoverflow.com/questions/67270447/vscode-lldb-on-macos-error-when-starting-debugging-session
+  - https://emacs-lsp.github.io/dap-mode/page/configuration/#rust different approach(?)
+    - run ~dap-gdb-lldb-setup~ once
+  - qbuild my own lldb-mi version which was the only one which at least started in emacs
+    - https://github.com/lldb-tools/lldb-mi
+      #+begin_src emacs-lisp
+(require 'dap-cpptools)
+;; (setq lsp-rust-analyzer-debug-lens-extra-dap-args
+;;       `(:MIMode "lldb"
+;;                 ;; :miDebuggerPath "/usr/bin/lldb"
+;;                 :miDebuggerPath "/Users/felix.brilej/git/lldb-mi/src/lldb-mi"
+;;                 :stopAtEntry t
+;;                 :externalConsole
+;;                 :json-false))
+
+(require 'dap-gdb-lldb)
+(dap-register-debug-template "Rust::GDB Run Configuration"
+                             (list :type "gdb"
+                                   :request "launch"
+                                   :name "GDB::Run"
+                           :gdbpath "rust-gdb"
+                                   :target nil
+                                   :cwd nil))
+      #+end_src
+
+  #+begin_src emacs-lisp
+(use-package rustic
+  :ensure t
+  :config
+  (require 'dap-cpptools)
+  :after (company flycheck)
+  :hook ((rustic-mode . linum-mode))
+  )
+
+(with-eval-after-load 'rustic
+  (define-key company-active-map (kbd "<tab>") #'company-indent-or-complete-common))
+  #+end_src
+
 ** Astro Build
    Needs first a manual installation:
      #+begin_src sh
