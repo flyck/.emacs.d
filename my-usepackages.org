@@ -2498,16 +2498,75 @@ sudo gem install puppet-lint
 )
    #+END_SRC
 
-** Typescript programming
+** Typescript
+   Company coding style: 2 tab indentation
+   #+begin_src emacs-lisp
+(setq typescript-indent-level 2)
+   #+end_src
+
+   Prettier
+#+begin_src emacs-lisp
+(use-package prettier-js
+  :ensure t)
+;; (eval-after-load 'web-mode
+;;     '(progn
+;;        (add-hook 'web-mode-hook #'prettier-js-mode))
+#+end_src
+
+
+*** Typescript programing (LSP-Mode)
+    Helpful:
+    - https://www.reddit.com/r/emacs/comments/11ojgek/companymode_hook_with_lspmodemap_binding/
+
+    #+begin_src emacs-lisp :tangle no
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :after company
+  :config
+  (local-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  :after (typescript-mode company flycheck)
+  :bind
+  (:map lsp-mode-map
+  ("<tab>" . company-indent-or-complete-common))
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (typescript-mode . lsp)
+         (js-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration)
+         (lsp-mode . linum-mode))
+  :commands lsp)
+
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; if you are helm user
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; optional if you want which-key integration
+(use-package which-key
+    :config
+    (which-key-mode))
+
+(with-eval-after-load 'lsp-mode
+  (define-key company-active-map (kbd "<tab>") #'company-indent-or-complete-common))
+    #+end_src
+
+*** Typescript programming (Tide, inactive)
    :LOGBOOK:
    CLOCK: [2022-01-30 Sun 11:58]--[2022-01-30 Sun 12:08] =>  0:10
    :END:
    Helpful for editing CDK stacks and infrastructure code!
 
-   Company coding style: 2 tab indentation
-   #+begin_src emacs-lisp
-(setq typescript-indent-level 2)
-   #+end_src
+   I'm attempting to move away from it though as lsp-mode has a nice headerline and it seems the
+   more future proof approach [[https://github.com/ananthakumaran/tide/issues/361][tide issue]].
 
    Tide: typescript mode for emacs
    #+begin_src emacs-lisp
