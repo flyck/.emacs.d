@@ -2079,14 +2079,18 @@ sudo apt-get install ess
    #+END_SRC
 
 * Programming
-  I rarely use emacs as an IDE, so this is not a rich section.
+** Astro Build
+   Needs first a manual installation:
+     #+begin_src sh
+npm i -g @astrojs/language-server @astrojs/ts-plugin
+     #+end_src
 
 
-  #+BEGIN_SRC emacs-lisp
-(use-package yaml-mode
-  :ensure t
-  )
-  #+END_SRC
+   #+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.astro\\'" . lsp-mode))
+(add-to-list 'exec-path "/Users/felix.brilej/.nvm/versions/node/v14.19.1/bin")
+   #+end_src
+
 ** Git Highlight changes
 #+begin_src emacs-lisp
 (global-diff-hl-mode)
@@ -2113,6 +2117,37 @@ sudo apt-get install ess
         ("DONE"   . "#7FFFD4")))
 (global-hl-todo-mode)
    #+END_SRC
+
+** Yaml
+   #+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :ensure t
+  )
+   #+END_SRC
+
+   Add a horizontal line while editing yaml.
+   #+BEGIN_SRC emacs-lisp
+(use-package highlight-indent-guides
+  :ensure t
+  :config
+  (setq highlight-indent-guides-method 'column)
+  (setq highlight-indent-guides-responsive 'top)
+  (require 'yaml-mode)
+  (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
+  )
+   #+END_SRC
+
+
+** GraphQl
+   #+begin_src emacs-lisp
+(use-package graphql-mode
+  :ensure t
+  :config
+  ;; support also weird .graphqls file ending at work
+  (add-to-list 'auto-mode-alist '("\\.graphqls\\'" . graphql-mode))
+  )
+  #+end_src
+
 
 ** CloudFormation
    #+BEGIN_SRC emacs-lisp
@@ -2149,16 +2184,6 @@ sudo apt-get install ess
 (provide 'flycheck-cfnlint)
    #+END_SRC
 
-   Add a horizontal line while editing yaml.
-   #+BEGIN_SRC emacs-lisp :tangle no
-(use-package highlight-indent-guides
-  :ensure t
-  :config
-  (setq highlight-indent-guides-method 'character)
-  (require 'yaml-mode)
-  (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
-  )
-   #+END_SRC
 
 ** Terraform
 
