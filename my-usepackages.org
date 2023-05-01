@@ -530,21 +530,6 @@ sudo apt-get install aspell-de
    #+END_SRC
 
 
-   magit-gitflow is a cool addition to magit
-   #+BEGIN_SRC sh :tangle no
-   # install requirements for magit-gitflow on ubuntu
-   sudo apt-get install git-flow
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
-   (use-package magit-gitflow
-     :ensure t
-     :config
-     (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
-     )
-   #+END_SRC
-
 *** TODO Warn if username and useremail are not set
 
 *** Define emacs shutdown function (taken from baron42bba)
