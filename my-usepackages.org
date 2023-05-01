@@ -470,1188 +470,6 @@ sudo apt-get install aspell-de
 (global-set-key (kbd "C-x 3") 'fbr/split-window-right-and-switch)
    #+END_SRC
 
-* The big guns
-
-** Magit                                                      :sysenv:
-   On some systems the "GIT_ASKPASS" variable i set leads to a nice GUI for entering usename on
-   passwords, on other systems i get an ugly error-message everytime i "git push". This is open
-   for improvement but not a big issue.
-
-   I dont load this package on systems where i dont have the "SYSENV" environment variable
-   set. The reason being that magit requires a relatively new git version, and to avoid the magit
-   warning about the old version of git that is probably installed on fresh systems i rather dont
-   even use it.
-   #+BEGIN_SRC emacs-lisp
-;; set the key-binding unconditionally for times when magit is not yet loaded yet due to the
-;; usepackage-defer option
-(define-key global-map (kbd "C-c m") 'magit-status)
-;; Warning: The Windows User-Home needs to be in some kind of path such that magit finds the
-;; .gitconfig
-(use-package magit
-  :ensure t
-  :config
-  (if (string-equal system-type "windows-nt")
-      (progn
-        (add-to-list 'exec-path "C:/Program Files/Git/bin")
-        (setenv "GIT_ASKPASS" "git-gui--askpass")
-        )
-    )
-  (if (string-equal system-type "darwin")
-      (progn
-        (add-to-list 'exec-path "/usr/bin")
-        (add-to-list 'exec-path "/opt/homebrew/bin")
-        (setenv "PATH" (concat "/opt/homebrew/opt/node@14/bin" ":" (getenv "PATH")))
-        (add-to-list 'exec-path "/opt/homebrew/opt/node@14/bin")
-        (setenv "PATH" (concat "/opt/homebrew/bin" ":" (getenv "PATH")))
-        (add-to-list 'exec-path "/opt/homebrew/bin")
-        (setenv "PATH" (concat "/opt/homebrew/sbin" ":" (getenv "PATH")))
-        (add-to-list 'exec-path "/opt/homebrew/sbin")
-        (setenv "GIT_SSH_COMMAND" "/usr/bin/ssh")
-        )
-    )
-  )
-   #+END_SRC
-
-
-   Also use this:
-   #+BEGIN_SRC emacs-lisp
-     (use-package git-timemachine
-       :ensure t
-       )
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package magit-todos
-       :ensure t
-       :config
-       (require 'magit-todos)
-       )
-   #+END_SRC
-
-
-*** TODO Warn if username and useremail are not set
-
-*** Define emacs shutdown function (taken from baron42bba)
-    Emacs is a powerful tool, so powerfull that i need to protect myself from deleting huge
-    chunks of my org-files on accident without noticing. I can do this by committing after each
-    day of work, so if i find out today that recently i must have deleted some part of my org-file
-    i can go back into the file-history to bring it back. The emacs backup-files dont help in this
-    scenario.
-
-    #+BEGIN_SRC emacs-lisp :tangle no
-      ;; define function to shutdown emacs server instance
-      (defun server-shutdown ()
-        "Save buffers, Quit, and Shutdown (kill) server"
-        (interactive)
-        (save-some-buffers)
-        (if (equal "home" (getenv "SYSENV"))
-            (progn
-              (setq fbr/my-git-dir (concat fbr/home-dir "/Dropbox/org/gtd/"))
-              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
-              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
-              ))
-        (if (equal "work" (getenv "SYSENV"))
-            (progn
-              (setq fbr/my-git-dir (concat "~/Documents/org/"))
-              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
-              ;; (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master")) ;; we dont need a backup here
-              ))
-        (kill-emacs)
-        )
-    #+END_SRC
-
-** Org-mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package org
-       ;;:pin manual ;; update manually
-       :ensure org
-       :pin elpa
-       :init
-       ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
-       ;; This HAS to come before (require 'org) / the init section of use-package
-       (setq org-emphasis-regexp-components
-             '("     ('\"{“”"
-               "-   .,!?;''“”\")}/\\“”"
-               "    \t\r\n,"
-               "."
-               5))
-       :config
-       ;; Add org-mode as the default major-mode for .org files
-       (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-       ;; Remove windows CTRL characters
-       (add-hook 'comint-output-filter-functions
-                        'comint-strip-ctrl-m)
-       ;; autofill hooks for automatic indentation
-       (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
-       (add-hook 'org-mode-hook 'turn-on-auto-fill)
-       ;; dont scroll automatically such that "point" is visible
-       (setq auto-hscroll-mode nil)
-       ;; when i narrow down to the current subsection using `org-tree-to-indirect-buffer' i dont want
-       ;; to create a new window, but rather open the new buffer at the current position
-       (setq org-indirect-buffer-display 'current-window)
-       )
-   #+END_SRC
-
-
-*** Org-mode operation speed improvments
-    Keyboard shortcuts are probably the first place to start
-    #+BEGIN_SRC emacs-lisp
-      (fset 'fbr/convert-listitem-into-checklistitem
-            "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
-      (define-key global-map "\C-cb" 'fbr/convert-listitem-into-checklistitem)
-      (define-key global-map "\C-cl" 'org-store-link)
-      (define-key global-map "\C-ca" 'org-agenda)
-      (define-key global-map "\C-cc" 'org-capture)
-      (define-key global-map "\M-n" 'org-metadown)
-      (define-key global-map "\M-p" 'org-metaup)
-      (define-key org-mode-map "\C-m" 'nil) ;; why do i do this?
-      (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
-      (global-set-key (kbd "<f9>") 'org-todo)
-      (define-key global-map (kbd "<f10>") 'org-clock-goto)
-    #+END_SRC
-
-
-    Jump to beginning / end of heading by default (should make navigation faster once i get used
-    to this)
-    #+BEGIN_SRC emacs-lisp
-      (setq org-special-ctrl-a/e t)
-    #+END_SRC
-
-
-    Truely global org-mode keybindings (taken from here:
-    https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs)
-
-
-    Sadly i didnt get this to work with C-c C-x C-j, C-j always created a newline. However i think
-    this is a good start, therefor im keeping this!
-    #+BEGIN_SRC emacs-lisp :results silent :tangle no
-      (defvar my-keys-minor-mode-map
-        (let ((map (make-sparse-keymap)))
-          ;; make this one global so i can jump from everywhere
-          (define-key map (kbd "\C-c\C-x\C-j") 'org-clock-goto)
-          map)
-        "my-keys-minor-mode keymap.")
-
-      (define-minor-mode my-keys-minor-mode
-        "A minor mode so that my key settings override annoying major modes."
-        :init-value t
-        :lighter " my-keys")
-
-      (my-keys-minor-mode 1)
-
-      (add-hook 'after-load-functions 'my-keys-have-priority)
-
-      (defun my-keys-have-priority (_file)
-        "Try to ensure that my keybindings retain priority over other minor modes.
-
-      Called via the `after-load-functions' special hook."
-        (unless (eq (caar minor-mode-map-alist) 'my-keys-minor-mode)
-          (let ((mykeys (assq 'my-keys-minor-mode minor-mode-map-alist)))
-            (assq-delete-all 'my-keys-minor-mode minor-mode-map-alist)
-            (add-to-list 'minor-mode-map-alist mykeys))))
-    #+END_SRC
-
-
-    Explicitly enable the sourceblock shortcuts (i.e. automatically expanding "<s" to an org-mode
-    sourceblock). Once this worked out of the box, after an update I now need this.
-    https://github.com/syl20bnr/spacemacs/issues/11798
-    #+begin_src emacs-lisp
-    (require 'org-tempo)
-    #+end_src
-
-
-*** Org-mode visual improvements
-    Strike through DONE headlines
-    #+BEGIN_SRC emacs-lisp
-(setq org-fontify-done-headline t)
-    #+END_SRC
-
-
-    Don't hide the markdown markers
-    #+BEGIN_SRC emacs-lisp
-(setq org-hide-emphasis-markers nil)
-    #+END_SRC
-
-
-    Change from ... to the arrow
-    #+BEGIN_SRC emacs-lisp
-(setq org-ellipsis "⤵")
-(custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
-    #+END_SRC
-
-    Fontify done checkbox items in org-mode
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (font-lock-add-keywords
-       'org-mode
-       `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend))
-       'append)
-    #+END_SRC
-
-    Circulate Bullets instead of asteriks for list items
-    #+BEGIN_SRC emacs-lisp
-      (font-lock-add-keywords 'org-mode
-                              '(("^ +\\([-*]\\) "
-                                 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-    #+END_SRC
-
-*** Org-mode capture
-    Makes it so org-capture takes up the whole screen.
-
-    Taken from here: https://fuco1.github.io/2017-09-02-Maximize-the-org-capture-buffer.html
-    #+BEGIN_SRC emacs-lisp
-      (defvar my-org-capture-before-config nil
-        "Window configuration before `org-capture'.")
-
-      (defadvice org-capture (before save-config activate)
-        "Save the window configuration before `org-capture'."
-        (setq my-org-capture-before-config (current-window-configuration)))
-
-      (add-hook 'org-capture-mode-hook 'delete-other-windows)
-
-      (defun my-org-capture-cleanup ()
-        "Clean up the frame created while capturing via org-protocol."
-        ;; In case we run capture from emacs itself and not an external app,
-        ;; we want to restore the old window config
-        (when my-org-capture-before-config
-          (set-window-configuration my-org-capture-before-config))
-        (-when-let ((&alist 'name name) (frame-parameters))
-          (when (equal name "org-protocol-capture")
-            (delete-frame))))
-
-      (add-hook 'org-capture-after-finalize-hook 'my-org-capture-cleanup)
-    #+END_SRC
-
-*** Org-mode tags
-    The horizontal position of tags is set here.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-tags-column -70)
-    #+END_SRC
-
-    This setting should work together with your line-wrapping limit, such that tagged headings
-    match the line-wrapped text below.
-
-    To align the tags that already exist simple execute =org-align-all-tags= on the file. This is
-    useful when changing the above setting, since it doesnt affect existing org-files.
-
-*** Org-mode agenda
-
-**** Org-mode agenda-files                                    :sysenv:
-     Depending on my system-environment which i deduce from the system environment variable
-     "SYSENV" which i manually set on the systems i use i have different workflows.
-
-     At work i have more todo states, and different agenda files than for example at home. This is
-     reflected by the following settings.
-
-***** Home
-       #+BEGIN_SRC emacs-lisp
-(if (equal "home" (getenv "SYSENV"))
-    (progn
-      (setq org-agenda-files
-            (list
-             (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org")
-             (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org_archive")
-             (concat fbr/home-dir "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
-             (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
-             (concat fbr/home-dir "/Dropbox/org/gtd/tasks_2015")
-             (concat fbr/home-dir "/Dropbox/org/gtd/tasks_2016")
-             (concat fbr/home-dir "/Dropbox/org/gtd/tasks_2017")
-             ))
-      ;; org-capture setup
-      (setq org-default-notes-file (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org"))
-      (setq org-capture-templates
-            '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
-               "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
-              ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
-               "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-              ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
-               "* %? :idea: \n%t" :clock-in t :clock-resume t)
-              )
-            )
-      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-      )
-  )
-       #+END_SRC
-
-***** Work
-      #+BEGIN_SRC emacs-lisp
-(if (equal "work" (getenv "SYSENV"))
-    (progn
-      (setq org-agenda-files
-            (list (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
-      ;; org-capture setup
-      (setq org-default-notes-file (concat fbr/home-dir "/Dropbox/work/org/projects.org"))
-      (setq org-capture-templates
-            '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
-               "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
-              ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
-               "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
-              ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
-               "* %? :idea: \n%t" :clock-in t :clock-resume t)
-              )
-            )
-      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-      )
-  )
-      #+END_SRC
-
-***** Shortcut to open my main agenda file
-      #+BEGIN_SRC emacs-lisp
-       (defun fbr/open_main_agenda_file()
-         (interactive)
-         (case (intern (getenv "SYSENV"))
-           (home (find-file (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org")))
-           (work (find-file (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
-           (otherwise (message "No SYSENV found. Don't know what to open."))
-           )
-         )
-
-       (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
-      #+END_SRC
-
-**** Super-agenda
-     Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
-
-     In the following i cut down the example from the github source from the things that cant
-     possibly match to the stuff i use in my config
-     #+BEGIN_SRC emacs-lisp
-      (use-package org-super-agenda
-        :ensure t
-        :config
-        (org-super-agenda-mode)
-        (setq org-super-agenda-groups
-              '(;; Each group has an implicit boolean OR operator between its selectors.
-                (:name "Today"  ; Optionally specify section name
-                       :time-grid t)  ; Items that appear on the time grid
-                (:name "Important"
-                       ;; Single arguments given alone
-                       :tag ("budget" "sprint" "kanban" "promise")
-                       :priority "A")
-                (:priority<= "B"
-                             ;; Show this section after "Today" and "Important", because
-                             ;; their order is unspecified, defaulting to 0. Sections
-                             ;; are displayed lowest-number-first.
-                             :order 1)
-                ;; After the last group, the agenda will display items that didn't
-                ;; match any of these groups, with the default order position of 99
-                ))
-        )
-     #+END_SRC
-
-**** Idle org agenda
-     #+BEGIN_SRC emacs-lisp :tangle no
-(use-package idle-org-agenda
-     :after org-agenda
-     :ensure t
-     :config
-     (idle-org-agenda-mode)
-     (setq idle-org-agenda-interval 900)
-)
-     #+END_SRC
-
-**** Org-mode agenda settings
-    #+BEGIN_SRC emacs-lisp
-     ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
-     ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
-     (setq org-agenda-start-with-clockreport-mode nil)
-     ;; Set default column view headings: Task Total-Time Time-Stamp
-     (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
-     ;; A package to visualize repeated tasks in the org agenda
-     (require 'org-habit)
-     (add-to-list 'org-modules 'org-habit)
-     (setq org-habit-show-habits-only-for-today nil)
-     ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
-     (setq org-agenda-archives-mode t)
-     (defun fbr/org-agenda-reduce-to-current-file()
-       (interactive)
-       (setq org-agenda-files (list (buffer-file-name)))
-       )
-     ;; start the agenda in a full window
-     (setq org-agenda-window-setup 'current-window)
-     ;; indicate the markdown-level when displaying tasks in agenda
-     (setq org-tags-match-list-sublevels 'indented)
-    #+END_SRC
-
-    Set the default priority to C. This reflects how i use priorities:
-    - ~A~: urgent, do this right now or it will blow up in your face
-    - ~B~: do this one of these days, a possible candidate for priority ~A~
-      (it might blow up in my face soon if i don't act on it)
-    - ~C~: do this whenever you feel like it some day in the future
-    #+BEGIN_SRC emacs-lisp
-   (setq org-default-priority 67) ;; the ascii code for C
-    #+END_SRC
-
-    Make it so that tags are put to the right-hand side of the window in org-agenda
-    #+BEGIN_SRC emacs-lisp
-     (add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
-     (defun place-agenda-tags ()
-       "Put the agenda tags by the right border of the agenda window."
-       (setq org-agenda-tags-column (- 4 (window-width)))
-       (org-agenda-align-tags))
-    #+END_SRC
-
-**** Org-mode agenda custom views
-***** Monthly budget view                                     :sysenv:
-      Taken from here:
-      http://jcardente.blogspot.de/2010/06/org-mode-hack-tasks-done-last-month.html
-
-      I use it to create my monthly financial report.
-
-      #+BEGIN_SRC emacs-lisp
-       (if (equal "home" (getenv "SYSENV"))
-           (progn
-
-             (require 'calendar)
-
-             (defun fbr/org-tasks-closed-in-month (&optional month year match-string)
-               "Produces an org agenda tags view list of the tasks completed
-       in the specified month and year. Month parameter expects a number
-       from 1 to 12. Year parameter expects a four digit number. Defaults
-       to the current month when arguments are not provided. Additional search
-       criteria can be provided via the optional match-string argument "
-               (interactive)
-               (let* ((today (calendar-current-date))
-                      (for-month (or month (calendar-extract-month today)))
-                      (for-year  (or year  (calendar-extract-year today))))
-                 (org-tags-view nil
-                                (concat
-                                 match-string
-                                 (format "+CLOSED>=\"[%d-%02d-01]\""
-                                         for-year for-month)
-                                 (format "+CLOSED<=\"[%d-%02d-%02d]\""
-                                         for-year for-month
-                                         (calendar-last-day-of-month for-month for-year))))))
-
-             (defun fbr/budget-tasks-last-month ()
-               "Produces an org agenda tags view list of all the tasks completed
-       last month with the tag budget."
-               (interactive)
-               (let* ((today (calendar-current-date))
-                      (for-month (calendar-extract-month today))
-                      (for-year  (calendar-extract-year today)))
-                 (calendar-increment-month for-month for-year -1)
-                 (fbr/org-tasks-closed-in-month
-                  for-month for-year "TODO=\"DONE\"+budget")))
-             )
-         )
-      #+END_SRC
-
-*** Org-mode todo-keywords                                    :sysenv:
-    #+BEGIN_SRC emacs-lisp
-   (if (equal "work" (getenv "SYSENV"))
-       (progn (setq org-todo-keywords
-                    '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "REVIEW(r)" "|" "CANCELED(c)" "DONE(d)"))))
-     )
-   (if (or (equal "home" (getenv "SYSENV"))
-           (equal "linux-vm" (getenv "SYSENV")))
-       (progn (setq org-todo-keywords
-                    '((sequence "TODO(t)" "PENDING(p)" "|" "CANCELED(c)" "DONE(d)"))))
-     )
-    #+END_SRC
-
-    Keyword-faces, these are independant of the system in use, even when org-todo-keywords differ
-    from system to system.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-todo-keyword-faces
-            '(("TODO" . org-warning)
-              ("PENDING" . "#f0c674")
-              ("DELEGATED" . "#81a2be")
-              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
-    #+END_SRC
-
-    These keyword faces have an added background face. This looks good in some themes and i might
-    toggle it from theme to theme.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-todo-keyword-faces
-            '(("TODO" . org-warning)
-              ("PENDING" . (:foreground "#f0c674" :background nil))
-              ("DELEGATED" . (:foreground "#81a2be" :background "#456887" :box (:line-width 1 :style none)))
-              ("CANCELED" . (:foreground "#b5bd68" :weight bold :box (:line-width 1 :style none)))
-              ("REVIEW" (:foreground "#A3FFE3" :background nil))
-              ))
-    #+END_SRC
-
-*** Org-mode alerts and notifications
-    This section is a work-in-progress. It works in some places, it throws no errors but thats it.
-
-    This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
-    #+BEGIN_SRC emacs-lisp
-       ;; Make appt aware of appointments from the agenda
-       (defun fbr/org-agenda-to-appt ()
-         "Activate appointments found in `org-agenda-files'."
-         (interactive)
-         (require 'org)
-         (let* ((today (org-date-to-gregorian
-                        (time-to-days (current-time))))
-                (files org-agenda-files) entries file)
-           (while (setq file (pop files))
-             (setq entries (append entries (org-agenda-get-day-entries
-                                            file today :timestamp))))
-           (setq entries (delq nil entries))
-           (mapc (lambda(x)
-                   (let* ((event (org-trim (get-text-property 1 'txt x)))
-                          (time-of-day (get-text-property 1 'time-of-day x)) tod)
-                     (when time-of-day
-                       (setq tod (number-to-string time-of-day)
-                             tod (when (string-match
-                                        "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
-                                   (concat (match-string 1 tod) ":"
-                                           (match-string 2 tod))))
-                       (if tod (appt-add tod event))))) entries)))
-       (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
-         "Clear the appt-time-msg-list."
-         (defvar appt-time-msg-list)
-         (setq appt-time-msg-list nil))
-       (org-agenda-to-appt)
-    #+END_SRC
-
-**** Org-mode alert extension
-    This is a package on top of the original =alert.el=
-
-    Im pretty sure this makes my "fbr/tea-timer" possible which is defined somewhere else. This way
-    i can basically remind myself to not spend too much time on a task by setting a timer
-    before-hand. This can also be done similarly with "C-c C-x C-e" after clocking into a task. This way an
-    expected time-consumption can be set and the timer gets red once we exceed this time, which is
-    not as convenient as having an extra alert-window in my oppinion.
-
-    Go through this: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
-
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (use-package org-alert
-        :if (string-equal system-type "gnu/linux")
-        :config
-        (setq alert-default-style 'libnotify)
-        (setq org-alert-interval 300)
-        (org-alert-enable)
-        )
-    #+END_SRC
-
-    Experimental part taken from here: http://emacs-fu.blogspot.de/2009/11/showing-pop-ups.html
-
-    Ideas / Programs I brought in:
-    - [X] Use notify.exe
-    - [X] Use =start-process= instead of =shell-command= for better testing
-    - [ ] use "Media Player Classic" for the sound
-      - it probably works like this: "/play /minimized / close"
-    #+BEGIN_SRC emacs-lisp
-      (defun djcb-popup (title msg &optional icon sound)
-        "Show a popup if we're on windows, or echo it otherwise; TITLE
-        is the title of the message, MSG is the context. Optionally,
-        you can provide an ICON and a sound to be played"
-
-        (interactive)
-        ;; (when sound (shell-command
-        ;;              (concat "mplayer -really-quiet " sound " 2> /dev/null")))
-        (if (equal "home" (getenv "SYSENV"))
-            (start-process "process-name" nil (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/notifu64.exe")
-                           "/p"  title
-                           "/m" msg
-                           "/i" (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/appointment-soon.ico"))
-          ;; text only version as fall-backn
-          (message (concat title " : "  msg)))
-        )
-      ;; test:
-      ;; (djcb-popup "org-mode Notification" "time is up")
-
-      ;; the appointment notification facility
-      (setq
-       appt-message-warning-time 15 ;; warn 15 min in advance
-
-       appt-display-mode-line t     ;; show in the modeline
-       appt-display-format 'window) ;; use our func
-      (appt-activate 1)              ;; active appt (appointment notification)
-      (display-time)                 ;; time display is required for this...
-
-      ;; update appt each time agenda opened
-      (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
-
-      ;; our little façade-function for djcb-popup
-      (defun djcb-appt-display (min-to-app new-time msg)
-        (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
-                    ))
-      (setq appt-disp-window-function (function djcb-appt-display))
-    #+END_SRC
-
-**** Org-mode notifications
-     Disabled since it gives error "not compiled with dbus support".
-     #+BEGIN_SRC emacs-lisp :tangle no
-       (require 'notifications)
-
-       (notifications-notify :title "Achtung!"
-                             :body (format "You have an appointment in %d minutes" 10)
-                             :app-name "Emacs: Org"
-                             :sound-name "alarm-clock-elapsed")
-     #+END_SRC
-
-*** Org-mode sourceblocks / org-babel
-    Languages to load
-
-    This hints towards renaming "sh" to shell: http://thread.gmane.org/gmane.emacs.orgmode/102877/focus=102882
-    #+BEGIN_SRC emacs-lisp
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '(
-         (python . t)
-         (R . t)
-         (latex . t)
-         (lisp . t)
-         (shell . t)
-         (perl . t)
-         (dot . t) ;; activates graphviz dot support
-         ))
-    #+END_SRC
-
-    Remove ^M Errors in Babel
-    #+BEGIN_SRC emacs-lisp
-      (add-to-list 'process-coding-system-alist
-                   '("bash" . (undecided-unix)))
-    #+END_SRC
-
-    Send stderror into the result drawer instead of an extra window
-    #+BEGIN_SRC emacs-lisp
-      (setq org-babel-default-header-args:sh
-            '((:prologue . "exec 2>&1") (:epilogue . ":"))
-            )
-    #+END_SRC
-
-    Make TAB act as if it were issued in a buffer of the language’s major mode (doesnt work
-    completely how i want it to yet, therefor untangled)
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (setq org-src-tab-acts-natively t)
-    #+END_SRC
-
-    When editing a code snippet, use the current window rather than opening up a new one (which
-    shows the same information). This feels so much better!
-    #+BEGIN_SRC emacs-lisp
-      (setq org-src-window-setup 'current-window)
-    #+END_SRC
-
-    Load syntax-highlighting for source-blocks
-    #+BEGIN_SRC emacs-lisp
-    (setq org-src-fontify-natively t)
-    #+END_SRC
-
-    Dont format (indent) the source-code when exiting the special environment (for more info on
-    this look into the function "org-edit-src-code").
-    #+BEGIN_SRC emacs-lisp
-    (setq org-src-preserve-indentation t)
-    #+END_SRC
-
-    Dont try to evaluate source-blocks on export (this setting has fixed a weird bug for me, which
-    showed this message: org-babel-exp-process-buffer: Wrong type argument: stringp, nil).
-    #+BEGIN_SRC emacs-lisp
-    (setq org-export-babel-evaluate nil)
-    #+END_SRC
-
-    Enable asynchronous org-babel execution. A ~:async~ flag needs to be added to the code-blocks
-    which should use this behaviour. Can also be set per file with: ~#+PROPERTY: header-args :async~
-
-    Source seems to be over here: https://github.com/astahlman/ob-async
-
-    Currently untangled since it seems to be obsolete: /Warning (emacs):
-    ob-async-org-babel-execute-src-block is longer needed in org-ctrl-c-ctrl-c-hook/
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (use-package ob-async
-        :ensure t
-        :config
-        (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)
-        )
-    #+END_SRC
-
-    Enables me to toggle source-block results and hides result blocks which is great. Inspired
-    from here:
-    https://emacs.stackexchange.com/questions/7211/collapse-src-blocks-in-org-mode-by-default
-    #+BEGIN_SRC emacs-lisp
-(defvar org-blocks-hidden nil)
-
-(defun org-toggle-blocks ()
-  (interactive)
-  (if org-blocks-hidden
-      (org-show-block-all)
-    (org-hide-block-all))
-  (setq-local org-blocks-hidden (not org-blocks-hidden)))
-
-;(add-hook 'org-mode-hook 'org-toggle-blocks)
-
-(defun org-hide-results-blocks ()
-  (interactive)
-  (org-hide-block-all)
-  (org-show-block-all)
-  )
-
-(add-hook 'org-mode-hook 'org-hide-results-blocks)
-
-(define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
-    #+END_SRC
-
-**** Copy previous source-block
-     This is helpful in training sessions (or when being lazy). (taken from here:
-     https://github.com/baron42bba/.emacs.d/commit/41e2ab53e32abc12a1fbaf050e277228605f1338)
-
-     #+BEGIN_SRC emacs-lisp
-       (defun bba-copy-and-yank-org-src-block()
-         "copy last org src block and insert it at point.
-       If region is active copy only the src begin and src end lines."
-         (interactive)
-         (if (use-region-p)
-             (progn
-               (let (-p1 -p2 srclength)
-                 (setq -p1 (region-beginning) -p2 (region-end))
-                 (setq mark-active nil)
-                 (re-search-backward "\#\\+BEGIN_SRC")
-                 (set-mark-command nil)
-                 (forward-line)
-                 (beginning-of-line)
-                 (kill-ring-save 1 1 1)
-                 (goto-char -p1)
-                 (set-mark-command nil)
-                 (insert (pop kill-ring))
-                 (setq srclength (- (region-end) (region-beginning)))
-                 (setq mark-active nil)
-                 (re-search-backward "\#\\+END_SRC")
-                 (set-mark-command nil)
-                 (forward-line)
-                 (beginning-of-line)
-                 (kill-ring-save 1 1 1)
-                 (kill-append "\n" nil)
-                 (goto-char (+ -p2 srclength))
-                 (insert (pop kill-ring))
-                 )
-               )
-           (progn
-             (push-mark)
-             (re-search-backward "\#\\+BEGIN_SRC")
-             (set-mark-command nil)
-             (re-search-forward "\#\\+END_SRC")
-             (forward-line)
-             (beginning-of-line)
-             (kill-ring-save 1 1 1)
-             (set-mark-command '1)
-             (set-mark-command '1)
-             (insert (pop kill-ring))
-             (re-search-backward "\#\\+BEGIN_SRC")
-             (forward-line)
-             ))
-         )
-
-       (defun bba-copy-org-src-block()
-         "copy last org src block and insert it at point."
-         (interactive)
-         (push-mark)
-         (re-search-backward "\#\\+BEGIN_SRC")
-         (set-mark-command nil)
-         (re-search-forward "\#\\+END_SRC")
-         (forward-line)
-         (beginning-of-line)
-         (kill-ring-save 1 1 1)
-         (set-mark-command '1)
-         (set-mark-command '1)
-         )
-
-       (define-key org-mode-map "\C-c\S-w" 'bba-copy-and-yank-org-src-block)
-       (define-key org-mode-map (kbd "C-c s-w") 'bba-copy-org-src-block)
-     #+END_SRC
-
-*** Org-mode time logging
-    log the time when a task is "done"
-    #+BEGIN_SRC emacs-lisp
-    (setq org-log-done t)
-    #+END_SRC
-
-    Set the format of the logged time
-    #+BEGIN_SRC emacs-lisp
-    ;; log times into a hideable logbook drawer
-    (setq org-log-into-drawer t)
-    ;; makes sure LOGBOOK and PROPERTIES go first
-    (setq org-log-state-notes-insert-after-drawers t)
-    #+END_SRC
-
-*** Org-mode html export
-    I have a bunch of css files within the "styles"-folder which i use on and off. They can then
-    be used by adding the following line to the beginning of the file (path has to be
-    adapted). This is not optimal yet, since i have to copy over the "styles" folder to every
-    /org-mode directory/
-    #+BEGIN_SRC emacs-lisp :tangle no
-    #+HTML_HEAD:   <link rel="stylesheet" type="text/css" href="styles\\markdown.css" />
-    #+END_SRC
-
-    Remove the "validate"-link from the org-html export
-    #+BEGIN_SRC emacs-lisp
-    (setq org-html-postamble nil)
-    #+END_SRC
-
-    Makes it so that names that include underscores dont look weird on html-export in case the
-    org-mode exporter recognizes it as a superscript (my_hostname otherwise gets exported weird)
-    #+BEGIN_SRC emacs-lisp
-    (setq org-export-with-sub-superscripts nil)
-    #+END_SRC
-
-    Include a couple of information into the html-export and set the codig-system
-    #+BEGIN_SRC emacs-lisp
-    (setq org-export-coding-system 'utf-8-unix)
-    (setq org-export-with-clocks t)
-    (setq org-export-preserve-breaks t)
-    #+END_SRC
-
-**** ox-twbs package for better html export
-     This package really has a good, yet simply html export and conveniently adds itself as a
-     menu-entry to the html export-menu (triggered by C-c C-e and w o)
-     #+BEGIN_SRC emacs-lisp
-       (use-package ox-twbs
-         :ensure t
-       )
-     #+END_SRC
-
-**** Orgmode htmlize extension
-     Inserts highlighting of Org Source-Blocks on Html-Export
-     #+BEGIN_SRC emacs-lisp
-       (use-package htmlize
-         :ensure t
-         )
-     #+END_SRC
-
-**** Make presentations with org-reveal                     :research:
-     Downloaded this repo: https://github.com/hakimel/reveal.js.git
-     #+BEGIN_SRC emacs-lisp
-       (use-package ox-reveal
-         :ensure t
-         :config
-         (if (equal "work" (getenv "SYSENV"))
-             (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/node_modules/reveal.js")))
-         )
-     #+END_SRC
-
-**** Export with specific html theme
-     Taken from here: http://correl.phoenixinquis.net/2016/02/23/org-publish-with-theme.html
-     #+BEGIN_SRC emacs-lisp :tangle no
-(defun my/with-theme (theme fn &rest args)
-  (let ((current-themes custom-enabled-themes))
-    (mapcar #'disable-theme custom-enabled-themes)
-    (load-theme theme t)
-    (let ((result (apply fn args)))
-      (mapcar #'disable-theme custom-enabled-themes)
-      (mapcar (lambda (theme) (load-theme theme t)) current-themes)
-      result)))
-
-(advice-add #'org-export-to-file :around (apply-partially #'my/with-theme 'deeper-blue))
-(advice-add #'org-export-to-buffer :around (apply-partially #'my/with-theme 'deeper-blue))
-     #+END_SRC
-
-*** Org-mode org-clock-csv extension
-   Exports clock-data to csv which is a useful data-format for generating graphs!
-   #+BEGIN_SRC emacs-lisp
-(use-package org-clock-csv
-  :ensure t
-  )
-   #+END_SRC
-
-*** Org-mode openwith extension                               :sysenv:
-    Open pdfs with an external pdf-viewer to get a good resolution.
-    #+BEGIN_SRC emacs-lisp
-      (use-package openwith
-        :if (string-equal system-type "gnu/linux")
-        :config
-        (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
-        (openwith-mode t)
-      )
-   #+END_SRC
-
-*** Ox-Jira
-    Manually copied from baron42bba's config
-    #+BEGIN_SRC emacs-lisp
-    (use-package ox-jira
-    :config
-
-    )
-    #+END_SRC
-
-    We are lazy and want to speed up things:
-
-    #+BEGIN_SRC emacs-lisp
-      (defun bba-org-export-jira-clipboard()
-        "narrow to org subtree and store content in jira format in clipboard."
-        (interactive)
-        (org-narrow-to-subtree)
-        (bba-export-jira-org)
-        (let ((org-export-use-babel nil))
-          (ox-jira-export-as-jira))
-        (delete-region (point) (progn (forward-line 1)(point)))
-        (push-mark (point))
-        (push-mark (point-max) nil t)
-        (goto-char (point-min))
-        (kill-ring-save 1 1 1)
-        (other-window -1)
-        (widen)
-        (other-window 1)
-        )
-
-      (define-key org-mode-map "\C-c\S-j" 'bba-org-export-jira-clipboard)
-    #+END_SRC
-
-    Besides the clipboard we want also an org file in =/tmp/= to attach to
-    the jira ticket. Of course some boiler plate for the poor souls who
-    never heard of orgmode.
-
-    #+BEGIN_SRC emacs-lisp
-      (defun bba-export-jira-org()
-        "export current narrowed view to file in tmp and open a finder window on OS-X."
-        (interactive)
-        (goto-char (point-min))
-        (insert "# This file is just plain text called orgmode")
-        (newline)
-        (insert "# https://en.wikipedia.org/wiki/Org-mode")
-        (newline)
-        (insert "# You can open it in any text editor or file reader.")
-        (newline)
-        (insert "# You might want to use Emacs for best experience.")
-        (newline)
-        (if (re-search-forward "jira:" nil t 1)
-            (if (org-in-regexp org-bracket-link-regexp 1)
-                (let ((remove (list (match-beginning 0) (match-end 0)))
-                      (description (last (split-string (if (match-end 3)
-                                                           (match-string-no-properties 3)
-                                                         (match-string-no-properties 1)) ":"))))
-                  (push-mark (point))
-                  (push-mark (point-max) nil t)
-                  (goto-char (point-min))
-                  (write-region (mark) (point) (concat "/tmp/" (car description) ".org") nil nil )
-                  (deactivate-mark)
-                  (if (string-equal system-type "darwin")(shell-command "open /tmp/"))
-                  )))
-        (goto-char (point-min))
-        (kill-line 4)
-        )
-    #+END_SRC
-
-*** Latex-settings                                          :research:
-
-**** bjm-article Template
-     Including this into the usepackage-definition of org doesnt seem to work.
-     This is some sample-template called bjmarticle i copied from the webs.
-     #+BEGIN_SRC emacs-lisp
-       (require 'ox-latex)
-       (add-to-list 'org-latex-classes
-                    '("bjmarticle"
-                      "\\documentclass{article}
-                       \\usepackage[utf8]{inputenc}
-                       \\usepackage[T1]{fontenc}
-                       \\usepackage{graphicx}
-                       \\usepackage{longtable}
-                       \\usepackage{hyperref}
-                       \\usepackage{natbib}
-                       \\usepackage{amssymb}
-                       \\usepackage{amsmath}
-                       \\usepackage{geometry}
-                       \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in,headheight=30pt}
-                       \\setlength{\\parskip}{\\baselineskip}
-                       \\hypersetup{pdflang={German},colorlinks, linkcolor={red!50!black}, citecolor={blue!50!black}, urlcolor={blue!80!black}}
-                       \\setlength{\\parindent}{0pt}"
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                    )
-     #+END_SRC
-
-**** stsreport Template
-     A latex-template that is actually useful and that I will use for my bachelor-thesis.
-     #+BEGIN_SRC emacs-lisp
-       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
-       (require 'ox-latex)
-       (add-to-list 'org-latex-classes
-                    '("stsreprt"
-                      "\\documentclass[fancyheadings]{stsreprt}
-                      [NO-DEFAULT-PACKAGES]"
-                      ("\\chapter{%s}" . "\\chapter*{%s}")
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
-                      )
-                    )
-     #+END_SRC
-
-**** Enable specific latex-headers
-     Taken from here:
-     http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
-
-     Disabled since org-contrib-plus seems to be causing issues now (<2020-04-12 Sun>).
-     #+BEGIN_SRC emacs-lisp :tangle no
-(use-package org
-  :ensure org-plus-contrib
-  :config
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines))
-  )
-     #+END_SRC
-
-**** Orgmode bibliography and latex compiler settings         :sysenv:
-     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package org-ref
-         :ensure t
-         :config
-         (setq org-ref-completion-library 'org-ref-helm-cite)
-         (require 'org-ref)
-         (require 'org-ref-pdf) ;; enable pdf drag n' drop
-         (require 'doi-utils)
-         (require 'org-ref-latex)
-         (require 'org-ref-bibtex)
-         (require 'org-ref-url-utils)
-
-         ;; -shell-escape added for "minted" package
-         (setq org-latex-pdf-process
-               '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                 "bibtex %b"
-                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
-               )
-         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
-         )
-     #+END_SRC
-
-     If we are at home I know where the paths should be
-     #+BEGIN_SRC emacs-lisp
-       (if (equal "home" (getenv "SYSENV"))
-           (progn
-             ;; see org-ref for use of these variables
-             (setq org-ref-bibliography-notes (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/notes.org")
-                   org-ref-default-bibliography '((concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib"))
-                   org-ref-pdf-directory (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/")
-                   org-ref-pdf-directory (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/")
-                   )
-             )
-         )
-     #+END_SRC
-
-**** Customize the markdown export
-     I use =verbatim= markup to surround file-paths, in order to have them highlighted. The
-     following exports this markup to a more capable format.
-     #+BEGIN_SRC emacs-lisp
-(setq org-latex-text-markup-alist '((bold . "\\textbf{%s}")
-                                  (code . protectedtexttt)
-                                  (italic . "\\emph{%s}")
-                                  (strike-through . "\\sout{%s}")
-                                  (underline . "\\uline{%s}")
-                                  (verbatim . "\\path{%s}"))) ;; default: protectedtexttt
-     #+END_SRC
-
-     It however requires the following additional settings to actually work. This setting makes it
-     so paths are preferably broken near slashes. When there is no slash nearby the path simply
-     gets broken at a letter.
-     #+BEGIN_SRC latex :tangle no
-#+LaTeX_HEADER: \usepackage[colorlinks]{hyperref}
-#+LATEX_HEADER: \usepackage{etoolbox}
-#+LATEX_HEADER: \renewcommand{\UrlBreaks}{\do\/\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z}
-     #+END_SRC
-
-**** Minted, coloured source-blocks in latex
-     Enables the "minted" package with its required options for the source-block highlighting to
-     work. In addition to this I need the minted latex package, which relies on the external tool
-     pygmentize to be in path:
-     https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
-     #+BEGIN_SRC emacs-lisp :results silent
-       (require 'ox-latex)
-       (add-to-list 'org-latex-packages-alist '("" "minted"))
-
-       (setq org-latex-listings 'minted)
-
-       (setq org-latex-minted-options
-             '(("frame=single") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
-     #+END_SRC
-
-     In my case i had to delete the temporary folder in the same directory to make the coloring
-     work. Got this hint from here:
-     https://tex.stackexchange.com/questions/237075/minted-not-working
-
-**** Pretty quotations for nice latex exports               :research:
-     Taken from here: http://endlessparentheses.com/prettify-your-quotation-marks.html
-     #+BEGIN_SRC emacs-lisp :tangle no
-(define-key org-mode-map "\"" #'endless/round-quotes)
-(eval-after-load 'markdown-mode
-  '(define-key markdown-mode-map "\""
-     #'endless/round-quotes))
-
-(defun endless/round-quotes (italicize)
-  "Insert “” and leave point in the middle.
-With prefix argument ITALICIZE, insert /“”/ instead
-\(meant for org-mode).
-Inside a code-block, just call `self-insert-command'."
-  (interactive "P")
-  (if (and (derived-mode-p 'org-mode)
-           (org-in-block-p '("src" "latex" "html")))
-      (call-interactively #'self-insert-command)
-    (if (looking-at "”[/=_\\*]?")
-        (goto-char (match-end 0))
-      (when italicize
-        (if (derived-mode-p 'markdown-mode)
-            (insert "__")
-          (insert "//"))
-        (forward-char -1))
-      (insert "“”")
-      (forward-char -1))))
-     #+END_SRC
-
-**** Cdlatex
-     From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
-     "speed-up insertion of environments and math templates"
-
-     From cdlatex.el:
-     "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
-     #+BEGIN_SRC emacs-lisp
-      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
-      ;; (use-package auctex
-      ;; :ensure t
-      ;; )
-
-      ;; (use-package cdlatex
-      ;; :ensure t
-      ;; :config
-      ;; (require 'auctex)
-      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-      ;; )
-     #+END_SRC
-
-*** Enable R codeblocks                              :research:sysenv:
-    For this to work i had to install the ess-package:
-    #+BEGIN_SRC sh :tangle no
-sudo apt-get install ess
-    #+END_SRC
-
-    After installation of ess the following works.
-    #+BEGIN_SRC emacs-lisp :tangle no
-(if (equal "home" (getenv "SYSENV"))
-    (progn
-      ;; found out about the path with dpkg -L ess
-      (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
-      (require 'ess-site))
-  )
-    #+END_SRC
-
-    In addition we also need to load the org-babel language R over here:
-    [[*Org-mode][Org-mode section]].
-
-*** cm-mode for advanced authoring markup
-    I like the idea of inserting comments like this package suggests, but I am still just trying
-    this mode out.
-
-    Demo: http://criticmarkup.com/
-
-    Notes:
-    - Breaks my indentation-shortcut M-q (fill-paragraph)
-    - Creates notes that I havent figured out how to delete yet, there seems to be no delete
-      command, just a command that inserts a "delete comment".
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (use-package cm-mode
-        :ensure t
-        :config
-        (setq cm-read-only-annotations nil)
-        )
-    #+END_SRC
-
 ** Tramp
    Tramp can be used to edit remote files.
 
@@ -1808,211 +626,6 @@ sudo apt-get install ess
        )
    #+END_SRC
 
-** Blogging                                                   :sysenv:
-   Doesnt work out of the box, needs some setup! See "setup the blog" for more info.
-
-
-   Makes syntax highlighting work by exporting it properly:
-   https://emacs.stackexchange.com/questions/42471/how-to-export-markdown-from-org-mode-with-syntax
-   #+begin_src emacs-lisp
-(use-package ox-gfm
-  :ensure t
-  :config
-  (eval-after-load "org"
-    '(require 'ox-gfm nil t))
-  )
-   #+end_src
-
-
-   Taken from: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
-   #+BEGIN_SRC emacs-lisp
-(if (or (equal "home" (getenv "SYSENV"))
-        (equal "work" (getenv "SYSENV"))
-        )
-    (progn
-      (defvar hugo-content-dir "~/Dropbox/org/blog/content/"
-        "Path to Hugo's content directory")
-
-      (defun hugo-ensure-property (property)
-        "Make sure that a property exists. If not, it will be created.
-
-     Returns the property name if the property has been created,
-     otherwise nil."
-        (if (org-entry-get nil property)
-            nil
-          (progn (org-entry-put nil property "")
-                 property)))
-
-      (defun hugo-ensure-properties ()
-        "This ensures that several properties exists. If not, these
-     properties will be created in an empty form. In this case, the
-     drawer will also be opened and the cursor will be positioned
-     at the first element that needs to be filled.
-
-     Returns list of properties that still must be filled in"
-        (require 'dash)
-        (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
-              first)
-          (save-excursion
-            (unless (org-entry-get nil "TITLE")
-              (org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
-            (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_FILE"))))
-            (unless (org-entry-get nil "HUGO_DATE")
-              (org-entry-put nil "HUGO_DATE" current-time)))
-          (when first
-            (goto-char (org-entry-beginning-position))
-            ;; The following opens the drawer
-            (forward-line 1)
-            (beginning-of-line 1)
-            (when (looking-at org-drawer-regexp)
-              (org-flag-drawer nil))
-            ;; And now move to the drawer property
-            (search-forward (concat ":" first ":"))
-            (end-of-line))
-          first))
-
-      (defun hugo ()
-        (interactive)
-        (unless (hugo-ensure-properties)
-          (let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
-                 (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-                 (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-                 (fm (concat "+++\n"
-                             title
-                             date
-                             tags
-                             "+++\n\n"))
-                 (file     (org-entry-get nil "HUGO_FILE"))
-                 (coding-system-for-write buffer-file-coding-system)
-                 (backend  'md)
-                 (blog))
-            ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
-            ;;(if (require 'ox-gfm nil t) TODO My changes
-            (setq backend 'gfm)
-            ;;(require 'ox-md))
-            (setq blog (org-export-as backend t))
-            ;; Normalize save file path
-            (unless (string-match "^[/~]" file)
-              (setq file (concat hugo-content-dir file))
-              (unless (string-match "\\.md$" file)
-                (setq file (concat file ".md")))
-              ;; save markdown
-              (with-temp-buffer
-                (insert fm)
-                (insert blog)
-                (untabify (point-min) (point-max))
-                (write-file file)
-                (message "Exported to %s" file))
-              ))))
-      )
-  )
-   #+END_SRC
-
-*** Blogging Setup: How to blog from org-mode to github-pages   :blog:
-    :PROPERTIES:
-    :TITLE:    Setting up the blog
-    :HUGO_TAGS: emacs, blogging
-    :HUGO_TOPICS: emacs
-    :HUGO_FILE: post/setting_up_the_blog.md
-    :HUGO_DATE: [2017-08-15 Di 22:14]
-    :END:
-    Github pages ~cn~ are really an optimal way for org-mode nerds to blog. We usually have a github
-    account anyway to manage our 1000+ commits big emacs config accross multiple devices, and we
-    have learned enough about emacs to dish out some knowledge through our own blog.
-
-    How can you blog comfortably in this setup? Let's get started...
-
-    #+BEGIN_EXPORT html
-    <!--more-->
-    #+END_EXPORT
-
-    Steps:
-    - Create a directory where I want the blog to be, in my case =~/Dropbox/org/blog=
-    - Follow the steps from here: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
-    - Install hugo (on Windows 10)
-      1. Install chocolatey https://chocolatey.org/install#install-with-cmdexe
-         #+BEGIN_SRC sh :tangle no
-         # for the powershell, close it after execution
-         Set-ExecutionPolicy Bypass; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-         #+END_SRC
-      2. Install hugo using chocolatey:
-         #+BEGIN_SRC sh :tangle no
-         # on the normal shell
-         choco install hugo -confirm
-         #+END_SRC
-    - Follow the startup steps for hugo to setup a site and get the server running
-      #+BEGIN_SRC sh :tangle no
-      # some command to create a default site from the tutorial
-      # then download a theme
-      # copy the exampleSite structure from the theme directoy into the main blog directory to have some dummy content
-      # - usually this dummy content also explains the theme capabilities
-      cp -R theme/$theme_name/exampleSite .
-      hugo server
-      # look at the site
-      #+END_SRC
-    - Create a github.io repository and connect it to the directory
-      - Create the github repository
-        - Navigate to your github account and create this repo: username.github.io
-      - Create the local repository
-        #+BEGIN_SRC sh :tangle no
-        cd ~/Dropbox/org/blog
-        git init
-        git remote add origin https://github.com/username/username.github.io.git
-        #+END_SRC
-    - Further steps:
-      - [ ] https://gohugo.io/themes/customizing/ Check out the customizing tutorial
-      - [ ] Settle on a theme
-        - I tried out ananke, a default theme
-        - I tried out "bluestnight". Now i have to customize it.
-          - Disabled the patreon widget
-        - I tried out beautifulhugo
-      - [ ] Check out this link: https://vurt.co.uk/post/blogging-with-emacs-and-hugo/
-
-*** Blogging Setup: Workflow for writing a new blogpost         :blog:
-    :PROPERTIES:
-    :TITLE:    Blogging Setup: Workflow for writing a new blogpost
-    :HUGO_TAGS: emacs, blogging
-    :HUGO_TOPICS: emacs
-    :HUGO_FILE: post/workflow_for_new_blogpost.md
-    :HUGO_DATE: [2017-08-15 Di 22:14]
-    :END:
-    Creating a new blog post using the previously describe setup should be easy and
-    comfortable. These are the generic steps for adding a blog-post.
-
-    #+BEGIN_EXPORT html
-    <!--more-->
-    #+END_EXPORT
-
-    1) *Create the content in org-mode*: Open any org-file on the computer and write a blogpost.
-       - Any existing org-mode heading could be turned into a blogpost, but most generic notes
-         dont make for a good blog post. Some of them can be a good basis though.
-    2) *Tag it so i can find it again later*: Tag it with “blog” so I can find it through the
-       agenda. Enables me to list how much time i spend blogging in a week / month / year.
-    3) *Create hugo variable placeholders*: Navigate to the headline and press =M-x hugo=
-    4) *Fill in the hugo variables*. An example is below:
-       #+BEGIN_SRC org
-         :PROPERTIES:
-         :TITLE:    Setting up the blog
-         :HUGO_TAGS: emacs blogging
-         :HUGO_TOPICS: emacs
-         :HUGO_FILE: setting_up_the_blog.md
-         :HUGO_DATE: [2017-08-15 Di 22:14]
-         :END:
-       #+END_SRC
-       - It is hidden in an org-mode drawer which makes it easy to hide
-    5) *Convert the headline into a markdown file according to the hugo variables*: Navigate to the
-       headline and press =M-x hugo=
-    6) *Regenerate the website including the new markdown file*: Open a shell (I use git bash on
-       Windows), navigate to the blog directory and execute =hugo=
-       - Optional: Debugging, check the blog post formatting before uploading it
-       - For this execute “hugo server” and navigate to the local blog
-       - Downside: pictures dont get resolved correctly
-    7) *Publish the website*
-       #+BEGIN_SRC sh
-       cd public
-       git add * && git commit -m "site update" && git push origin master
-       #+END_SRC
-
 ** SQL
    Thanks to baron42bba and https://truongtx.me/2014/08/23/setup-emacs-as-an-sql-database-client
    I yet have to actually test this config.
@@ -2063,6 +676,98 @@ sudo apt-get install ess
    (provide 'my-password)
    #+END_SRC
 
+* Magit                                                       :sysenv:
+   On some systems the "GIT_ASKPASS" variable i set leads to a nice GUI for entering usename on
+   passwords, on other systems i get an ugly error-message everytime i "git push". This is open
+   for improvement but not a big issue.
+
+   I dont load this package on systems where i dont have the "SYSENV" environment variable
+   set. The reason being that magit requires a relatively new git version, and to avoid the magit
+   warning about the old version of git that is probably installed on fresh systems i rather dont
+   even use it.
+   #+BEGIN_SRC emacs-lisp
+;; set the key-binding unconditionally for times when magit is not yet loaded yet due to the
+;; usepackage-defer option
+(define-key global-map (kbd "C-c m") 'magit-status)
+;; Warning: The Windows User-Home needs to be in some kind of path such that magit finds the
+;; .gitconfig
+(use-package magit
+  :ensure t
+  :config
+  (if (string-equal system-type "windows-nt")
+      (progn
+        (add-to-list 'exec-path "C:/Program Files/Git/bin")
+        (setenv "GIT_ASKPASS" "git-gui--askpass")
+        )
+    )
+  (if (string-equal system-type "darwin")
+      (progn
+        (add-to-list 'exec-path "/usr/bin")
+        (add-to-list 'exec-path "/opt/homebrew/bin")
+        (setenv "PATH" (concat "/opt/homebrew/opt/node@14/bin" ":" (getenv "PATH")))
+        (add-to-list 'exec-path "/opt/homebrew/opt/node@14/bin")
+        (setenv "PATH" (concat "/opt/homebrew/bin" ":" (getenv "PATH")))
+        (add-to-list 'exec-path "/opt/homebrew/bin")
+        (setenv "PATH" (concat "/opt/homebrew/sbin" ":" (getenv "PATH")))
+        (add-to-list 'exec-path "/opt/homebrew/sbin")
+        (add-to-list 'exec-path "/Users/felix.brilej/.nvm/versions/node/v14.19.1/bin/astro-ls")
+        (setenv "GIT_SSH_COMMAND" "/usr/bin/ssh")
+        (add-to-list 'exec-path "/Users/felix.brilej/.cargo/bin")
+        (setenv "PATH" (concat "/Users/felix.brilej/.cargo/bin" ":" (getenv "PATH")))
+        )
+    )
+  )
+   #+END_SRC
+
+
+   Also use this:
+   #+BEGIN_SRC emacs-lisp
+     (use-package git-timemachine
+       :ensure t
+       )
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit-todos
+       :ensure t
+       :config
+       (require 'magit-todos)
+       )
+   #+END_SRC
+
+
+** TODO Warn if username and useremail are not set
+
+** Define emacs shutdown function (taken from baron42bba)
+    Emacs is a powerful tool, so powerfull that i need to protect myself from deleting huge
+    chunks of my org-files on accident without noticing. I can do this by committing after each
+    day of work, so if i find out today that recently i must have deleted some part of my org-file
+    i can go back into the file-history to bring it back. The emacs backup-files dont help in this
+    scenario.
+
+    #+BEGIN_SRC emacs-lisp :tangle no
+      ;; define function to shutdown emacs server instance
+      (defun server-shutdown ()
+        "Save buffers, Quit, and Shutdown (kill) server"
+        (interactive)
+        (save-some-buffers)
+        (if (equal "home" (getenv "SYSENV"))
+            (progn
+              (setq fbr/my-git-dir (concat fbr/home-dir "/Dropbox/org/gtd/"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master"))
+              ))
+        (if (equal "work" (getenv "SYSENV"))
+            (progn
+              (setq fbr/my-git-dir (concat "~/Documents/org/"))
+              (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git commit -a -m 'autocommit'"))
+              ;; (shell-command (concat "git --work-tree " fbr/my-git-dir " --git-dir " fbr/my-git-dir ".git push backup master")) ;; we dont need a backup here
+              ))
+        (kill-emacs)
+        )
+    #+END_SRC
+
 * Programming
 ** Astro Build
    Needs first a manual installation:
@@ -2088,6 +793,7 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
    (add-hook 'python-mode-hook (lambda () (linum-mode)))
    (add-hook 'bash-mode-hook (lambda () (linum-mode)))
    (add-hook 'yaml-mode-hook (lambda () (linum-mode)))
+   (add-hook 'go-mode-hook (lambda () (linum-mode)))
    #+END_SRC
 
 ** Highlight todo, fixme, etc.
@@ -2567,6 +1273,8 @@ sudo gem install puppet-lint
   (global-set-key (kbd "C-x lr") #'tide-references)
   (global-set-key (kbd "C-x rs") #'tide-rename-symbol)
   (global-set-key (kbd "C-x rf") #'tide-rename-file)
+  (global-set-key (kbd "C-x re") #'next-error)
+(setq tide-node-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/bin/node")
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
@@ -2599,10 +1307,9 @@ sudo gem install puppet-lint
   (add-hook 'js-mode-hook #'setup-tide-mode)
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   ;; configure javascript-tide checker to run after your default javascript checker
-   #+end_src
 
-   #+RESULTS:
-   | setup-tide-mode |
+;;(setq tide-tsserver-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
+   #+end_src
 
 
    Company mode for auto-completion
@@ -2708,7 +1415,7 @@ sudo gem install puppet-lint
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'grandshell t)
+  (load-theme 'doom-old-hope t)
   ;; (use-package dichromacy-theme
   ;; :ensure t
   ;; :config
@@ -2976,6 +1683,1304 @@ sudo gem install puppet-lint
     (set-default 'cursor-type 'box)
     (set-cursor-color "#6aaf6a")
   #+END_SRC
+
+* Org-mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       ;;:pin manual ;; update manually
+       :ensure org
+       :pin elpa
+       :init
+       ;; Taken from: http://endlessparentheses.com/applying-markup-to-strings-in-org-mode.html
+       ;; This HAS to come before (require 'org) / the init section of use-package
+       (setq org-emphasis-regexp-components
+             '("     ('\"{“”"
+               "-   .,!?;''“”\")}/\\“”"
+               "    \t\r\n,"
+               "."
+               5))
+       :config
+       ;; Add org-mode as the default major-mode for .org files
+       (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+       ;; Remove windows CTRL characters
+       (add-hook 'comint-output-filter-functions
+                        'comint-strip-ctrl-m)
+       ;; autofill hooks for automatic indentation
+       (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
+       (add-hook 'org-mode-hook 'turn-on-auto-fill)
+       ;; dont scroll automatically such that "point" is visible
+       (setq auto-hscroll-mode nil)
+       ;; when i narrow down to the current subsection using `org-tree-to-indirect-buffer' i dont want
+       ;; to create a new window, but rather open the new buffer at the current position
+       (setq org-indirect-buffer-display 'current-window)
+       )
+   #+END_SRC
+
+
+** Org-mode operation speed improvments
+    Keyboard shortcuts are probably the first place to start
+    #+BEGIN_SRC emacs-lisp
+      (fset 'fbr/convert-listitem-into-checklistitem
+            "\355\C-f\C-f[]\C-f\C-b \C-b\C-b \C-a\C-n")
+      (define-key global-map "\C-cb" 'fbr/convert-listitem-into-checklistitem)
+      (define-key global-map "\C-cl" 'org-store-link)
+      (define-key global-map "\C-ca" 'org-agenda)
+      (define-key global-map "\C-cc" 'org-capture)
+      (define-key global-map "\M-n" 'org-metadown)
+      (define-key global-map "\M-p" 'org-metaup)
+      (define-key org-mode-map "\C-m" 'nil) ;; why do i do this?
+      (define-key org-mode-map (kbd "<f5>") 'org-babel-execute-src-block)
+      (global-set-key (kbd "<f9>") 'org-todo)
+      (define-key global-map (kbd "<f10>") 'org-clock-goto)
+    #+END_SRC
+
+
+    Jump to beginning / end of heading by default (should make navigation faster once i get used
+    to this)
+    #+BEGIN_SRC emacs-lisp
+      (setq org-special-ctrl-a/e t)
+    #+END_SRC
+
+
+    Truely global org-mode keybindings (taken from here:
+    https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs)
+
+
+    Sadly i didnt get this to work with C-c C-x C-j, C-j always created a newline. However i think
+    this is a good start, therefor im keeping this!
+    #+BEGIN_SRC emacs-lisp :results silent :tangle no
+      (defvar my-keys-minor-mode-map
+        (let ((map (make-sparse-keymap)))
+          ;; make this one global so i can jump from everywhere
+          (define-key map (kbd "\C-c\C-x\C-j") 'org-clock-goto)
+          map)
+        "my-keys-minor-mode keymap.")
+
+      (define-minor-mode my-keys-minor-mode
+        "A minor mode so that my key settings override annoying major modes."
+        :init-value t
+        :lighter " my-keys")
+
+      (my-keys-minor-mode 1)
+
+      (add-hook 'after-load-functions 'my-keys-have-priority)
+
+      (defun my-keys-have-priority (_file)
+        "Try to ensure that my keybindings retain priority over other minor modes.
+
+      Called via the `after-load-functions' special hook."
+        (unless (eq (caar minor-mode-map-alist) 'my-keys-minor-mode)
+          (let ((mykeys (assq 'my-keys-minor-mode minor-mode-map-alist)))
+            (assq-delete-all 'my-keys-minor-mode minor-mode-map-alist)
+            (add-to-list 'minor-mode-map-alist mykeys))))
+    #+END_SRC
+
+
+    Explicitly enable the sourceblock shortcuts (i.e. automatically expanding "<s" to an org-mode
+    sourceblock). Once this worked out of the box, after an update I now need this.
+    https://github.com/syl20bnr/spacemacs/issues/11798
+    #+begin_src emacs-lisp
+    (require 'org-tempo)
+    #+end_src
+
+
+** Org-mode visual improvements
+    Strike through DONE headlines
+    #+BEGIN_SRC emacs-lisp
+(setq org-fontify-done-headline t)
+    #+END_SRC
+
+
+    Don't hide the markdown markers
+    #+BEGIN_SRC emacs-lisp
+(setq org-hide-emphasis-markers nil)
+    #+END_SRC
+
+
+    Change from ... to the arrow
+    #+BEGIN_SRC emacs-lisp
+(setq org-ellipsis "⤵")
+(custom-set-faces '(org-ellipsis ((t (:inherit org-ellispsis :height 0.7)))))
+    #+END_SRC
+
+    Fontify done checkbox items in org-mode
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (font-lock-add-keywords
+       'org-mode
+       `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend))
+       'append)
+    #+END_SRC
+
+    Circulate Bullets instead of asteriks for list items
+    #+BEGIN_SRC emacs-lisp
+      (font-lock-add-keywords 'org-mode
+                              '(("^ +\\([-*]\\) "
+                                 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    #+END_SRC
+
+** Org-mode capture
+    Makes it so org-capture takes up the whole screen.
+
+    Taken from here: https://fuco1.github.io/2017-09-02-Maximize-the-org-capture-buffer.html
+    #+BEGIN_SRC emacs-lisp
+      (defvar my-org-capture-before-config nil
+        "Window configuration before `org-capture'.")
+
+      (defadvice org-capture (before save-config activate)
+        "Save the window configuration before `org-capture'."
+        (setq my-org-capture-before-config (current-window-configuration)))
+
+      (add-hook 'org-capture-mode-hook 'delete-other-windows)
+
+      (defun my-org-capture-cleanup ()
+        "Clean up the frame created while capturing via org-protocol."
+        ;; In case we run capture from emacs itself and not an external app,
+        ;; we want to restore the old window config
+        (when my-org-capture-before-config
+          (set-window-configuration my-org-capture-before-config))
+        (-when-let ((&alist 'name name) (frame-parameters))
+          (when (equal name "org-protocol-capture")
+            (delete-frame))))
+
+      (add-hook 'org-capture-after-finalize-hook 'my-org-capture-cleanup)
+    #+END_SRC
+
+** Org-mode tags
+    The horizontal position of tags is set here.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-tags-column -70)
+    #+END_SRC
+
+    This setting should work together with your line-wrapping limit, such that tagged headings
+    match the line-wrapped text below.
+
+    To align the tags that already exist simple execute =org-align-all-tags= on the file. This is
+    useful when changing the above setting, since it doesnt affect existing org-files.
+
+** Org-mode agenda
+
+*** Org-mode agenda-files                                     :sysenv:
+     Depending on my system-environment which i deduce from the system environment variable
+     "SYSENV" which i manually set on the systems i use i have different workflows.
+
+     At work i have more todo states, and different agenda files than for example at home. This is
+     reflected by the following settings.
+
+**** Home
+       #+BEGIN_SRC emacs-lisp
+(if (equal "home" (getenv "SYSENV"))
+    (progn
+      (setq org-agenda-files
+            (list
+             (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org")
+             (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org_archive")
+             (concat fbr/home-dir "/Dropbox/org/hobby/dactyl-keyboard/dactyl-keyboard-guide/index.org")
+             (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.org")
+             (concat fbr/home-dir "/Dropbox/org/gtd/tasks_2015")
+             (concat fbr/home-dir "/Dropbox/org/gtd/tasks_2016")
+             (concat fbr/home-dir "/Dropbox/org/gtd/tasks_2017")
+             ))
+      ;; org-capture setup
+      (setq org-default-notes-file (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org"))
+      (setq org-capture-templates
+            '(("t" "todo" entry (file+headline org-default-notes-file "Events / Aufgaben")
+               "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
+              ("m" "Meeting" entry (file+headline org-default-notes-file "Events / Aufgaben")
+               "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+              ("i" "Idea" entry (file+headline org-default-notes-file "Events / Aufgaben")
+               "* %? :idea: \n%t" :clock-in t :clock-resume t)
+              )
+            )
+      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+      )
+  )
+       #+END_SRC
+
+**** Work
+      #+BEGIN_SRC emacs-lisp
+(if (equal "work" (getenv "SYSENV"))
+    (progn
+      (setq org-agenda-files
+            (list (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
+      ;; org-capture setup
+      (setq org-default-notes-file (concat fbr/home-dir "/Dropbox/work/org/projects.org"))
+      (setq org-capture-templates
+            '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
+               "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
+              ("m" "Meeting" entry (file+headline org-default-notes-file "Aufgaben")
+               "* Meeting mit %? :meeting:\n%t" :clock-in t :clock-resume t)
+              ("i" "Idea" entry (file+headline org-default-notes-file "Aufgaben")
+               "* %? :idea: \n%t" :clock-in t :clock-resume t)
+              )
+            )
+      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
+      )
+  )
+      #+END_SRC
+
+**** Shortcut to open my main agenda file
+      #+BEGIN_SRC emacs-lisp
+       (defun fbr/open_main_agenda_file()
+         (interactive)
+         (case (intern (getenv "SYSENV"))
+           (home (find-file (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org")))
+           (work (find-file (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
+           (otherwise (message "No SYSENV found. Don't know what to open."))
+           )
+         )
+
+       (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
+      #+END_SRC
+
+*** Super-agenda
+     Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
+
+     In the following i cut down the example from the github source from the things that cant
+     possibly match to the stuff i use in my config
+     #+BEGIN_SRC emacs-lisp
+      (use-package org-super-agenda
+        :ensure t
+        :config
+        (org-super-agenda-mode)
+        (setq org-super-agenda-groups
+              '(;; Each group has an implicit boolean OR operator between its selectors.
+                (:name "Today"  ; Optionally specify section name
+                       :time-grid t)  ; Items that appear on the time grid
+                (:name "Important"
+                       ;; Single arguments given alone
+                       :tag ("budget" "sprint" "kanban" "promise")
+                       :priority "A")
+                (:priority<= "B"
+                             ;; Show this section after "Today" and "Important", because
+                             ;; their order is unspecified, defaulting to 0. Sections
+                             ;; are displayed lowest-number-first.
+                             :order 1)
+                ;; After the last group, the agenda will display items that didn't
+                ;; match any of these groups, with the default order position of 99
+                ))
+        )
+     #+END_SRC
+
+*** Idle org agenda
+     #+BEGIN_SRC emacs-lisp :tangle no
+(use-package idle-org-agenda
+     :after org-agenda
+     :ensure t
+     :config
+     (idle-org-agenda-mode)
+     (setq idle-org-agenda-interval 900)
+)
+     #+END_SRC
+
+*** Org-mode agenda settings
+    #+BEGIN_SRC emacs-lisp
+     ;; (time consuming!) appends a list of how much time was spend on which heading (project) at the
+     ;; end of the default agenda view. Disabled by default, sometimes i like to toggle it on.
+     (setq org-agenda-start-with-clockreport-mode nil)
+     ;; Set default column view headings: Task Total-Time Time-Stamp
+     (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
+     ;; A package to visualize repeated tasks in the org agenda
+     (require 'org-habit)
+     (add-to-list 'org-modules 'org-habit)
+     (setq org-habit-show-habits-only-for-today nil)
+     ;; add archived tasks to the agenda and clocktable, otherwise they dont show up
+     (setq org-agenda-archives-mode t)
+     (defun fbr/org-agenda-reduce-to-current-file()
+       (interactive)
+       (setq org-agenda-files (list (buffer-file-name)))
+       )
+     ;; start the agenda in a full window
+     (setq org-agenda-window-setup 'current-window)
+     ;; indicate the markdown-level when displaying tasks in agenda
+     (setq org-tags-match-list-sublevels 'indented)
+    #+END_SRC
+
+    Set the default priority to C. This reflects how i use priorities:
+    - ~A~: urgent, do this right now or it will blow up in your face
+    - ~B~: do this one of these days, a possible candidate for priority ~A~
+      (it might blow up in my face soon if i don't act on it)
+    - ~C~: do this whenever you feel like it some day in the future
+    #+BEGIN_SRC emacs-lisp
+   (setq org-default-priority 67) ;; the ascii code for C
+    #+END_SRC
+
+    Make it so that tags are put to the right-hand side of the window in org-agenda
+    #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
+     (defun place-agenda-tags ()
+       "Put the agenda tags by the right border of the agenda window."
+       (setq org-agenda-tags-column (- 4 (window-width)))
+       (org-agenda-align-tags))
+    #+END_SRC
+
+*** Org-mode agenda custom views
+**** Monthly budget view                                      :sysenv:
+      Taken from here:
+      http://jcardente.blogspot.de/2010/06/org-mode-hack-tasks-done-last-month.html
+
+      I use it to create my monthly financial report.
+
+      #+BEGIN_SRC emacs-lisp
+       (if (equal "home" (getenv "SYSENV"))
+           (progn
+
+             (require 'calendar)
+
+             (defun fbr/org-tasks-closed-in-month (&optional month year match-string)
+               "Produces an org agenda tags view list of the tasks completed
+       in the specified month and year. Month parameter expects a number
+       from 1 to 12. Year parameter expects a four digit number. Defaults
+       to the current month when arguments are not provided. Additional search
+       criteria can be provided via the optional match-string argument "
+               (interactive)
+               (let* ((today (calendar-current-date))
+                      (for-month (or month (calendar-extract-month today)))
+                      (for-year  (or year  (calendar-extract-year today))))
+                 (org-tags-view nil
+                                (concat
+                                 match-string
+                                 (format "+CLOSED>=\"[%d-%02d-01]\""
+                                         for-year for-month)
+                                 (format "+CLOSED<=\"[%d-%02d-%02d]\""
+                                         for-year for-month
+                                         (calendar-last-day-of-month for-month for-year))))))
+
+             (defun fbr/budget-tasks-last-month ()
+               "Produces an org agenda tags view list of all the tasks completed
+       last month with the tag budget."
+               (interactive)
+               (let* ((today (calendar-current-date))
+                      (for-month (calendar-extract-month today))
+                      (for-year  (calendar-extract-year today)))
+                 (calendar-increment-month for-month for-year -1)
+                 (fbr/org-tasks-closed-in-month
+                  for-month for-year "TODO=\"DONE\"+budget")))
+             )
+         )
+      #+END_SRC
+
+** Org-mode todo-keywords                                     :sysenv:
+    #+BEGIN_SRC emacs-lisp
+   (if (equal "work" (getenv "SYSENV"))
+       (progn (setq org-todo-keywords
+                    '((sequence "TODO(t)" "PENDING(p)" "DELEGATED(e)" "REVIEW(r)" "|" "CANCELED(c)" "DONE(d)"))))
+     )
+   (if (or (equal "home" (getenv "SYSENV"))
+           (equal "linux-vm" (getenv "SYSENV")))
+       (progn (setq org-todo-keywords
+                    '((sequence "TODO(t)" "PENDING(p)" "|" "CANCELED(c)" "DONE(d)"))))
+     )
+    #+END_SRC
+
+    Keyword-faces, these are independant of the system in use, even when org-todo-keywords differ
+    from system to system.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-todo-keyword-faces
+            '(("TODO" . org-warning)
+              ("PENDING" . "#f0c674")
+              ("DELEGATED" . "#81a2be")
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold))))
+    #+END_SRC
+
+    These keyword faces have an added background face. This looks good in some themes and i might
+    toggle it from theme to theme.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-todo-keyword-faces
+            '(("TODO" . org-warning)
+              ("PENDING" . (:foreground "#f0c674" :background nil))
+              ("DELEGATED" . (:foreground "#81a2be" :background "#456887" :box (:line-width 1 :style none)))
+              ("CANCELED" . (:foreground "#b5bd68" :weight bold :box (:line-width 1 :style none)))
+              ("REVIEW" (:foreground "#A3FFE3" :background nil))
+              ))
+    #+END_SRC
+
+** Org-mode alerts and notifications
+    This section is a work-in-progress. It works in some places, it throws no errors but thats it.
+
+    This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
+    #+BEGIN_SRC emacs-lisp
+       ;; Make appt aware of appointments from the agenda
+       (defun fbr/org-agenda-to-appt ()
+         "Activate appointments found in `org-agenda-files'."
+         (interactive)
+         (require 'org)
+         (let* ((today (org-date-to-gregorian
+                        (time-to-days (current-time))))
+                (files org-agenda-files) entries file)
+           (while (setq file (pop files))
+             (setq entries (append entries (org-agenda-get-day-entries
+                                            file today :timestamp))))
+           (setq entries (delq nil entries))
+           (mapc (lambda(x)
+                   (let* ((event (org-trim (get-text-property 1 'txt x)))
+                          (time-of-day (get-text-property 1 'time-of-day x)) tod)
+                     (when time-of-day
+                       (setq tod (number-to-string time-of-day)
+                             tod (when (string-match
+                                        "\\([0-9]\\{1,2\\}\\)\\([0-9]\\{2\\}\\)" tod)
+                                   (concat (match-string 1 tod) ":"
+                                           (match-string 2 tod))))
+                       (if tod (appt-add tod event))))) entries)))
+       (defadvice fbr/org-agenda-to-appt (before wickedcool activate)
+         "Clear the appt-time-msg-list."
+         (defvar appt-time-msg-list)
+         (setq appt-time-msg-list nil))
+       (org-agenda-to-appt)
+    #+END_SRC
+
+*** Org-mode alert extension
+    This is a package on top of the original =alert.el=
+
+    Im pretty sure this makes my "fbr/tea-timer" possible which is defined somewhere else. This way
+    i can basically remind myself to not spend too much time on a task by setting a timer
+    before-hand. This can also be done similarly with "C-c C-x C-e" after clocking into a task. This way an
+    expected time-consumption can be set and the timer gets red once we exceed this time, which is
+    not as convenient as having an extra alert-window in my oppinion.
+
+    Go through this: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
+
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (use-package org-alert
+        :if (string-equal system-type "gnu/linux")
+        :config
+        (setq alert-default-style 'libnotify)
+        (setq org-alert-interval 300)
+        (org-alert-enable)
+        )
+    #+END_SRC
+
+    Experimental part taken from here: http://emacs-fu.blogspot.de/2009/11/showing-pop-ups.html
+
+    Ideas / Programs I brought in:
+    - [X] Use notify.exe
+    - [X] Use =start-process= instead of =shell-command= for better testing
+    - [ ] use "Media Player Classic" for the sound
+      - it probably works like this: "/play /minimized / close"
+    #+BEGIN_SRC emacs-lisp
+      (defun djcb-popup (title msg &optional icon sound)
+        "Show a popup if we're on windows, or echo it otherwise; TITLE
+        is the title of the message, MSG is the context. Optionally,
+        you can provide an ICON and a sound to be played"
+
+        (interactive)
+        ;; (when sound (shell-command
+        ;;              (concat "mplayer -really-quiet " sound " 2> /dev/null")))
+        (if (equal "home" (getenv "SYSENV"))
+            (start-process "process-name" nil (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/notifu64.exe")
+                           "/p"  title
+                           "/m" msg
+                           "/i" (concat "c:/users/" (getenv "USERNAME") "/.emacs.d/notifu/appointment-soon.ico"))
+          ;; text only version as fall-backn
+          (message (concat title " : "  msg)))
+        )
+      ;; test:
+      ;; (djcb-popup "org-mode Notification" "time is up")
+
+      ;; the appointment notification facility
+      (setq
+       appt-message-warning-time 15 ;; warn 15 min in advance
+
+       appt-display-mode-line t     ;; show in the modeline
+       appt-display-format 'window) ;; use our func
+      (appt-activate 1)              ;; active appt (appointment notification)
+      (display-time)                 ;; time display is required for this...
+
+      ;; update appt each time agenda opened
+      (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+
+      ;; our little façade-function for djcb-popup
+      (defun djcb-appt-display (min-to-app new-time msg)
+        (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
+                    ))
+      (setq appt-disp-window-function (function djcb-appt-display))
+    #+END_SRC
+
+*** Org-mode notifications
+     Disabled since it gives error "not compiled with dbus support".
+     #+BEGIN_SRC emacs-lisp :tangle no
+       (require 'notifications)
+
+       (notifications-notify :title "Achtung!"
+                             :body (format "You have an appointment in %d minutes" 10)
+                             :app-name "Emacs: Org"
+                             :sound-name "alarm-clock-elapsed")
+     #+END_SRC
+
+** Org-mode sourceblocks / org-babel
+    Languages to load
+
+    This hints towards renaming "sh" to shell: http://thread.gmane.org/gmane.emacs.orgmode/102877/focus=102882
+    #+BEGIN_SRC emacs-lisp
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '(
+         (python . t)
+         (R . t)
+         (latex . t)
+         (lisp . t)
+         (shell . t)
+         (perl . t)
+         (sql . t)
+         (dot . t) ;; activates graphviz dot support
+         ))
+    #+END_SRC
+
+    Remove ^M Errors in Babel
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'process-coding-system-alist
+                   '("bash" . (undecided-unix)))
+    #+END_SRC
+
+    Send stderror into the result drawer instead of an extra window
+    #+BEGIN_SRC emacs-lisp
+      (setq org-babel-default-header-args:sh
+            '((:prologue . "exec 2>&1") (:epilogue . ":"))
+            )
+    #+END_SRC
+
+    Make TAB act as if it were issued in a buffer of the language’s major mode (doesnt work
+    completely how i want it to yet, therefor untangled)
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (setq org-src-tab-acts-natively t)
+    #+END_SRC
+
+    When editing a code snippet, use the current window rather than opening up a new one (which
+    shows the same information). This feels so much better!
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-window-setup 'current-window)
+    #+END_SRC
+
+    Load syntax-highlighting for source-blocks
+    #+BEGIN_SRC emacs-lisp
+    (setq org-src-fontify-natively t)
+    #+END_SRC
+
+    Dont format (indent) the source-code when exiting the special environment (for more info on
+    this look into the function "org-edit-src-code").
+    #+BEGIN_SRC emacs-lisp
+    (setq org-src-preserve-indentation t)
+    #+END_SRC
+
+    Dont try to evaluate source-blocks on export (this setting has fixed a weird bug for me, which
+    showed this message: org-babel-exp-process-buffer: Wrong type argument: stringp, nil).
+    #+BEGIN_SRC emacs-lisp
+    (setq org-export-babel-evaluate nil)
+    #+END_SRC
+
+    Enable asynchronous org-babel execution. A ~:async~ flag needs to be added to the code-blocks
+    which should use this behaviour. Can also be set per file with: ~#+PROPERTY: header-args :async~
+
+    Source seems to be over here: https://github.com/astahlman/ob-async
+
+    Currently untangled since it seems to be obsolete: /Warning (emacs):
+    ob-async-org-babel-execute-src-block is longer needed in org-ctrl-c-ctrl-c-hook/
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (use-package ob-async
+        :ensure t
+        :config
+        (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)
+        )
+    #+END_SRC
+
+    Enables me to toggle source-block results and hides result blocks which is great. Inspired
+    from here:
+    https://emacs.stackexchange.com/questions/7211/collapse-src-blocks-in-org-mode-by-default
+    #+BEGIN_SRC emacs-lisp
+(defvar org-blocks-hidden nil)
+
+(defun org-toggle-blocks ()
+  (interactive)
+  (if org-blocks-hidden
+      (org-show-block-all)
+    (org-hide-block-all))
+  (setq-local org-blocks-hidden (not org-blocks-hidden)))
+
+;(add-hook 'org-mode-hook 'org-toggle-blocks)
+
+(defun org-hide-results-blocks ()
+  (interactive)
+  (org-hide-block-all)
+  (org-show-block-all)
+  )
+
+(add-hook 'org-mode-hook 'org-hide-results-blocks)
+
+(define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
+    #+END_SRC
+
+*** Copy previous source-block
+     This is helpful in training sessions (or when being lazy). (taken from here:
+     https://github.com/baron42bba/.emacs.d/commit/41e2ab53e32abc12a1fbaf050e277228605f1338)
+
+     #+BEGIN_SRC emacs-lisp
+       (defun bba-copy-and-yank-org-src-block()
+         "copy last org src block and insert it at point.
+       If region is active copy only the src begin and src end lines."
+         (interactive)
+         (if (use-region-p)
+             (progn
+               (let (-p1 -p2 srclength)
+                 (setq -p1 (region-beginning) -p2 (region-end))
+                 (setq mark-active nil)
+                 (re-search-backward "\#\\+BEGIN_SRC")
+                 (set-mark-command nil)
+                 (forward-line)
+                 (beginning-of-line)
+                 (kill-ring-save 1 1 1)
+                 (goto-char -p1)
+                 (set-mark-command nil)
+                 (insert (pop kill-ring))
+                 (setq srclength (- (region-end) (region-beginning)))
+                 (setq mark-active nil)
+                 (re-search-backward "\#\\+END_SRC")
+                 (set-mark-command nil)
+                 (forward-line)
+                 (beginning-of-line)
+                 (kill-ring-save 1 1 1)
+                 (kill-append "\n" nil)
+                 (goto-char (+ -p2 srclength))
+                 (insert (pop kill-ring))
+                 )
+               )
+           (progn
+             (push-mark)
+             (re-search-backward "\#\\+BEGIN_SRC")
+             (set-mark-command nil)
+             (re-search-forward "\#\\+END_SRC")
+             (forward-line)
+             (beginning-of-line)
+             (kill-ring-save 1 1 1)
+             (set-mark-command '1)
+             (set-mark-command '1)
+             (insert (pop kill-ring))
+             (re-search-backward "\#\\+BEGIN_SRC")
+             (forward-line)
+             ))
+         )
+
+       (defun bba-copy-org-src-block()
+         "copy last org src block and insert it at point."
+         (interactive)
+         (push-mark)
+         (re-search-backward "\#\\+BEGIN_SRC")
+         (set-mark-command nil)
+         (re-search-forward "\#\\+END_SRC")
+         (forward-line)
+         (beginning-of-line)
+         (kill-ring-save 1 1 1)
+         (set-mark-command '1)
+         (set-mark-command '1)
+         )
+
+       (define-key org-mode-map "\C-c\S-w" 'bba-copy-and-yank-org-src-block)
+       (define-key org-mode-map (kbd "C-c s-w") 'bba-copy-org-src-block)
+     #+END_SRC
+
+** Org-mode time logging
+    log the time when a task is "done"
+    #+BEGIN_SRC emacs-lisp
+    (setq org-log-done t)
+    #+END_SRC
+
+    Set the format of the logged time
+    #+BEGIN_SRC emacs-lisp
+    ;; log times into a hideable logbook drawer
+    (setq org-log-into-drawer t)
+    ;; makes sure LOGBOOK and PROPERTIES go first
+    (setq org-log-state-notes-insert-after-drawers t)
+    #+END_SRC
+
+** Org-mode html export
+    I have a bunch of css files within the "styles"-folder which i use on and off. They can then
+    be used by adding the following line to the beginning of the file (path has to be
+    adapted). This is not optimal yet, since i have to copy over the "styles" folder to every
+    /org-mode directory/
+    #+BEGIN_SRC emacs-lisp :tangle no
+    #+HTML_HEAD:   <link rel="stylesheet" type="text/css" href="styles\\markdown.css" />
+    #+END_SRC
+
+    Remove the "validate"-link from the org-html export
+    #+BEGIN_SRC emacs-lisp
+    (setq org-html-postamble nil)
+    #+END_SRC
+
+    Makes it so that names that include underscores dont look weird on html-export in case the
+    org-mode exporter recognizes it as a superscript (my_hostname otherwise gets exported weird)
+    #+BEGIN_SRC emacs-lisp
+    (setq org-export-with-sub-superscripts nil)
+    #+END_SRC
+
+    Include a couple of information into the html-export and set the codig-system
+    #+BEGIN_SRC emacs-lisp
+    (setq org-export-coding-system 'utf-8-unix)
+    (setq org-export-with-clocks t)
+    (setq org-export-preserve-breaks t)
+    #+END_SRC
+
+*** ox-twbs package for better html export
+     This package really has a good, yet simply html export and conveniently adds itself as a
+     menu-entry to the html export-menu (triggered by C-c C-e and w o)
+     #+BEGIN_SRC emacs-lisp
+       (use-package ox-twbs
+         :ensure t
+       )
+     #+END_SRC
+
+*** Orgmode htmlize extension
+     Inserts highlighting of Org Source-Blocks on Html-Export
+     #+BEGIN_SRC emacs-lisp
+       (use-package htmlize
+         :ensure t
+         )
+     #+END_SRC
+
+*** Make presentations with org-reveal                      :research:
+     Downloaded this repo: https://github.com/hakimel/reveal.js.git
+     #+BEGIN_SRC emacs-lisp
+       (use-package ox-reveal
+         :ensure t
+         :config
+         (if (equal "work" (getenv "SYSENV"))
+             (setq org-reveal-root (concat "file:///home/" (getenv "USERNAME") "/node_modules/reveal.js")))
+         )
+     #+END_SRC
+
+*** Export with specific html theme
+     Taken from here: http://correl.phoenixinquis.net/2016/02/23/org-publish-with-theme.html
+     #+BEGIN_SRC emacs-lisp :tangle no
+(defun my/with-theme (theme fn &rest args)
+  (let ((current-themes custom-enabled-themes))
+    (mapcar #'disable-theme custom-enabled-themes)
+    (load-theme theme t)
+    (let ((result (apply fn args)))
+      (mapcar #'disable-theme custom-enabled-themes)
+      (mapcar (lambda (theme) (load-theme theme t)) current-themes)
+      result)))
+
+(advice-add #'org-export-to-file :around (apply-partially #'my/with-theme 'deeper-blue))
+(advice-add #'org-export-to-buffer :around (apply-partially #'my/with-theme 'deeper-blue))
+     #+END_SRC
+
+** Org-mode org-clock-csv extension
+   Exports clock-data to csv which is a useful data-format for generating graphs!
+   #+BEGIN_SRC emacs-lisp
+(use-package org-clock-csv
+  :ensure t
+  )
+   #+END_SRC
+
+** Org-mode openwith extension                                :sysenv:
+    Open pdfs with an external pdf-viewer to get a good resolution.
+    #+BEGIN_SRC emacs-lisp
+      (use-package openwith
+        :if (string-equal system-type "gnu/linux")
+        :config
+        (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
+        (openwith-mode t)
+      )
+   #+END_SRC
+
+** Ox-Jira
+    Manually copied from baron42bba's config
+    #+BEGIN_SRC emacs-lisp
+    (use-package ox-jira
+    :config
+
+    )
+    #+END_SRC
+
+    We are lazy and want to speed up things:
+
+    #+BEGIN_SRC emacs-lisp
+      (defun bba-org-export-jira-clipboard()
+        "narrow to org subtree and store content in jira format in clipboard."
+        (interactive)
+        (org-narrow-to-subtree)
+        (bba-export-jira-org)
+        (let ((org-export-use-babel nil))
+          (ox-jira-export-as-jira))
+        (delete-region (point) (progn (forward-line 1)(point)))
+        (push-mark (point))
+        (push-mark (point-max) nil t)
+        (goto-char (point-min))
+        (kill-ring-save 1 1 1)
+        (other-window -1)
+        (widen)
+        (other-window 1)
+        )
+
+      (define-key org-mode-map "\C-c\S-j" 'bba-org-export-jira-clipboard)
+    #+END_SRC
+
+    Besides the clipboard we want also an org file in =/tmp/= to attach to
+    the jira ticket. Of course some boiler plate for the poor souls who
+    never heard of orgmode.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun bba-export-jira-org()
+        "export current narrowed view to file in tmp and open a finder window on OS-X."
+        (interactive)
+        (goto-char (point-min))
+        (insert "# This file is just plain text called orgmode")
+        (newline)
+        (insert "# https://en.wikipedia.org/wiki/Org-mode")
+        (newline)
+        (insert "# You can open it in any text editor or file reader.")
+        (newline)
+        (insert "# You might want to use Emacs for best experience.")
+        (newline)
+        (if (re-search-forward "jira:" nil t 1)
+            (if (org-in-regexp org-bracket-link-regexp 1)
+                (let ((remove (list (match-beginning 0) (match-end 0)))
+                      (description (last (split-string (if (match-end 3)
+                                                           (match-string-no-properties 3)
+                                                         (match-string-no-properties 1)) ":"))))
+                  (push-mark (point))
+                  (push-mark (point-max) nil t)
+                  (goto-char (point-min))
+                  (write-region (mark) (point) (concat "/tmp/" (car description) ".org") nil nil )
+                  (deactivate-mark)
+                  (if (string-equal system-type "darwin")(shell-command "open /tmp/"))
+                  )))
+        (goto-char (point-min))
+        (kill-line 4)
+        )
+    #+END_SRC
+
+** Latex-settings                                           :research:
+
+*** bjm-article Template
+     Including this into the usepackage-definition of org doesnt seem to work.
+     This is some sample-template called bjmarticle i copied from the webs.
+     #+BEGIN_SRC emacs-lisp
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("bjmarticle"
+                      "\\documentclass{article}
+                       \\usepackage[utf8]{inputenc}
+                       \\usepackage[T1]{fontenc}
+                       \\usepackage{graphicx}
+                       \\usepackage{longtable}
+                       \\usepackage{hyperref}
+                       \\usepackage{natbib}
+                       \\usepackage{amssymb}
+                       \\usepackage{amsmath}
+                       \\usepackage{geometry}
+                       \\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in,headheight=30pt}
+                       \\setlength{\\parskip}{\\baselineskip}
+                       \\hypersetup{pdflang={German},colorlinks, linkcolor={red!50!black}, citecolor={blue!50!black}, urlcolor={blue!80!black}}
+                       \\setlength{\\parindent}{0pt}"
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                    )
+     #+END_SRC
+
+*** stsreport Template
+     A latex-template that is actually useful and that I will use for my bachelor-thesis.
+     #+BEGIN_SRC emacs-lisp
+       ;; Latex settings (somehow doesn't work if i put it in usepackage definition of org)
+       (require 'ox-latex)
+       (add-to-list 'org-latex-classes
+                    '("stsreprt"
+                      "\\documentclass[fancyheadings]{stsreprt}
+                      [NO-DEFAULT-PACKAGES]"
+                      ("\\chapter{%s}" . "\\chapter*{%s}")
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                      )
+                    )
+     #+END_SRC
+
+*** Enable specific latex-headers
+     Taken from here:
+     http://emacs.stackexchange.com/questions/7890/org-plus-contrib-and-org-with-require-or-use-package?noredirect=1&lq=1
+
+     Disabled since org-contrib-plus seems to be causing issues now (<2020-04-12 Sun>).
+     #+BEGIN_SRC emacs-lisp :tangle no
+(use-package org
+  :ensure org-plus-contrib
+  :config
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
+  )
+     #+END_SRC
+
+*** Orgmode bibliography and latex compiler settings          :sysenv:
+     Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package org-ref
+         :ensure t
+         :config
+         (setq org-ref-completion-library 'org-ref-helm-cite)
+         (require 'org-ref)
+         (require 'org-ref-pdf) ;; enable pdf drag n' drop
+         (require 'doi-utils)
+         (require 'org-ref-latex)
+         (require 'org-ref-bibtex)
+         (require 'org-ref-url-utils)
+
+         ;; -shell-escape added for "minted" package
+         (setq org-latex-pdf-process
+               '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "bibtex %b"
+                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+               )
+         (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+         )
+     #+END_SRC
+
+     If we are at home I know where the paths should be
+     #+BEGIN_SRC emacs-lisp
+       (if (equal "home" (getenv "SYSENV"))
+           (progn
+             ;; see org-ref for use of these variables
+             (setq org-ref-bibliography-notes (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/notes.org")
+                   org-ref-default-bibliography '((concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/bachelor_thesis.bib"))
+                   org-ref-pdf-directory (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/")
+                   org-ref-pdf-directory (concat fbr/home-dir "/Dropbox/org/uni/bachelor_thesis/bibtex-pdfs/")
+                   )
+             )
+         )
+     #+END_SRC
+
+*** Customize the markdown export
+     I use =verbatim= markup to surround file-paths, in order to have them highlighted. The
+     following exports this markup to a more capable format.
+     #+BEGIN_SRC emacs-lisp
+(setq org-latex-text-markup-alist '((bold . "\\textbf{%s}")
+                                  (code . protectedtexttt)
+                                  (italic . "\\emph{%s}")
+                                  (strike-through . "\\sout{%s}")
+                                  (underline . "\\uline{%s}")
+                                  (verbatim . "\\path{%s}"))) ;; default: protectedtexttt
+     #+END_SRC
+
+     It however requires the following additional settings to actually work. This setting makes it
+     so paths are preferably broken near slashes. When there is no slash nearby the path simply
+     gets broken at a letter.
+     #+BEGIN_SRC latex :tangle no
+#+LaTeX_HEADER: \usepackage[colorlinks]{hyperref}
+#+LATEX_HEADER: \usepackage{etoolbox}
+#+LATEX_HEADER: \renewcommand{\UrlBreaks}{\do\/\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z}
+     #+END_SRC
+
+*** Minted, coloured source-blocks in latex
+     Enables the "minted" package with its required options for the source-block highlighting to
+     work. In addition to this I need the minted latex package, which relies on the external tool
+     pygmentize to be in path:
+     https://tex.stackexchange.com/questions/23458/how-to-install-syntax-highlight-package-minted-on-windows-7
+     #+BEGIN_SRC emacs-lisp :results silent
+       (require 'ox-latex)
+       (add-to-list 'org-latex-packages-alist '("" "minted"))
+
+       (setq org-latex-listings 'minted)
+
+       (setq org-latex-minted-options
+             '(("frame=single") ("linenos=true") ("breaklines=true") ("breakanywhere=true")))
+     #+END_SRC
+
+     In my case i had to delete the temporary folder in the same directory to make the coloring
+     work. Got this hint from here:
+     https://tex.stackexchange.com/questions/237075/minted-not-working
+
+*** Pretty quotations for nice latex exports                :research:
+     Taken from here: http://endlessparentheses.com/prettify-your-quotation-marks.html
+     #+BEGIN_SRC emacs-lisp :tangle no
+(define-key org-mode-map "\"" #'endless/round-quotes)
+(eval-after-load 'markdown-mode
+  '(define-key markdown-mode-map "\""
+     #'endless/round-quotes))
+
+(defun endless/round-quotes (italicize)
+  "Insert “” and leave point in the middle.
+With prefix argument ITALICIZE, insert /“”/ instead
+\(meant for org-mode).
+Inside a code-block, just call `self-insert-command'."
+  (interactive "P")
+  (if (and (derived-mode-p 'org-mode)
+           (org-in-block-p '("src" "latex" "html")))
+      (call-interactively #'self-insert-command)
+    (if (looking-at "”[/=_\\*]?")
+        (goto-char (match-end 0))
+      (when italicize
+        (if (derived-mode-p 'markdown-mode)
+            (insert "__")
+          (insert "//"))
+        (forward-char -1))
+      (insert "“”")
+      (forward-char -1))))
+     #+END_SRC
+
+*** Cdlatex
+     From: http://www.clarkdonley.com/blog/2014-10-26-org-mode-and-writing-papers-some-tips.html
+     "speed-up insertion of environments and math templates"
+
+     From cdlatex.el:
+     "CDLaTeX requires texmathp.el which is distributed with AUCTeX."
+     #+BEGIN_SRC emacs-lisp
+      ;; ;; Debugger entered--Lisp error: (error "tex-jp.el:0:0: error: scan-error: (Unbalanced parentheses 22806 42543)")
+      ;; (use-package auctex
+      ;; :ensure t
+      ;; )
+
+      ;; (use-package cdlatex
+      ;; :ensure t
+      ;; :config
+      ;; (require 'auctex)
+      ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+      ;; )
+     #+END_SRC
+
+** Enable R codeblocks                               :research:sysenv:
+    For this to work i had to install the ess-package:
+    #+BEGIN_SRC sh :tangle no
+sudo apt-get install ess
+    #+END_SRC
+
+    After installation of ess the following works.
+    #+BEGIN_SRC emacs-lisp :tangle no
+(if (equal "home" (getenv "SYSENV"))
+    (progn
+      ;; found out about the path with dpkg -L ess
+      (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess/")
+      (require 'ess-site))
+  )
+    #+END_SRC
+
+    In addition we also need to load the org-babel language R over here:
+    [[*Org-mode][Org-mode section]].
+
+** cm-mode for advanced authoring markup
+    I like the idea of inserting comments like this package suggests, but I am still just trying
+    this mode out.
+
+    Demo: http://criticmarkup.com/
+
+    Notes:
+    - Breaks my indentation-shortcut M-q (fill-paragraph)
+    - Creates notes that I havent figured out how to delete yet, there seems to be no delete
+      command, just a command that inserts a "delete comment".
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (use-package cm-mode
+        :ensure t
+        :config
+        (setq cm-read-only-annotations nil)
+        )
+    #+END_SRC
+
+* Blogging                                                    :sysenv:
+   Doesnt work out of the box, needs some setup! See "setup the blog" for more info.
+
+
+   Makes syntax highlighting work by exporting it properly:
+   https://emacs.stackexchange.com/questions/42471/how-to-export-markdown-from-org-mode-with-syntax
+   #+begin_src emacs-lisp
+(use-package ox-gfm
+  :ensure t
+  :config
+  (eval-after-load "org"
+    '(require 'ox-gfm nil t))
+  )
+   #+end_src
+
+
+   Taken from: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
+   #+BEGIN_SRC emacs-lisp
+(if (or (equal "home" (getenv "SYSENV"))
+        (equal "work" (getenv "SYSENV"))
+        )
+    (progn
+      (defvar hugo-content-dir "~/Dropbox/org/blog/content/"
+        "Path to Hugo's content directory")
+
+      (defun hugo-ensure-property (property)
+        "Make sure that a property exists. If not, it will be created.
+
+     Returns the property name if the property has been created,
+     otherwise nil."
+        (if (org-entry-get nil property)
+            nil
+          (progn (org-entry-put nil property "")
+                 property)))
+
+      (defun hugo-ensure-properties ()
+        "This ensures that several properties exists. If not, these
+     properties will be created in an empty form. In this case, the
+     drawer will also be opened and the cursor will be positioned
+     at the first element that needs to be filled.
+
+     Returns list of properties that still must be filled in"
+        (require 'dash)
+        (let ((current-time (format-time-string (org-time-stamp-format t t) (org-current-time)))
+              first)
+          (save-excursion
+            (unless (org-entry-get nil "TITLE")
+              (org-entry-put nil "TITLE" (nth 4 (org-heading-components))))
+            (setq first (--first it (mapcar #'hugo-ensure-property '("HUGO_TAGS" "HUGO_FILE"))))
+            (unless (org-entry-get nil "HUGO_DATE")
+              (org-entry-put nil "HUGO_DATE" current-time)))
+          (when first
+            (goto-char (org-entry-beginning-position))
+            ;; The following opens the drawer
+            (forward-line 1)
+            (beginning-of-line 1)
+            (when (looking-at org-drawer-regexp)
+              (org-flag-drawer nil))
+            ;; And now move to the drawer property
+            (search-forward (concat ":" first ":"))
+            (end-of-line))
+          first))
+
+      (defun hugo ()
+        (interactive)
+        (unless (hugo-ensure-properties)
+          (let* ((title    (concat "title = \"" (org-entry-get nil "TITLE") "\"\n"))
+                 (date     (concat "date = \"" (format-time-string "%Y-%m-%d" (apply 'encode-time (org-parse-time-string (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
+                 (tags     (concat "tags = [ \"" (mapconcat 'identity (split-string (org-entry-get nil "HUGO_TAGS") "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+                 (fm (concat "+++\n"
+                             title
+                             date
+                             tags
+                             "+++\n\n"))
+                 (file     (org-entry-get nil "HUGO_FILE"))
+                 (coding-system-for-write buffer-file-coding-system)
+                 (backend  'md)
+                 (blog))
+            ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
+            ;;(if (require 'ox-gfm nil t) TODO My changes
+            (setq backend 'gfm)
+            ;;(require 'ox-md))
+            (setq blog (org-export-as backend t))
+            ;; Normalize save file path
+            (unless (string-match "^[/~]" file)
+              (setq file (concat hugo-content-dir file))
+              (unless (string-match "\\.md$" file)
+                (setq file (concat file ".md")))
+              ;; save markdown
+              (with-temp-buffer
+                (insert fm)
+                (insert blog)
+                (untabify (point-min) (point-max))
+                (write-file file)
+                (message "Exported to %s" file))
+              ))))
+      )
+  )
+   #+END_SRC
+
+** Blogging Setup: How to blog from org-mode to github-pages    :blog:
+    :PROPERTIES:
+    :TITLE:    Setting up the blog
+    :HUGO_TAGS: emacs, blogging
+    :HUGO_TOPICS: emacs
+    :HUGO_FILE: post/setting_up_the_blog.md
+    :HUGO_DATE: [2017-08-15 Di 22:14]
+    :END:
+    Github pages ~cn~ are really an optimal way for org-mode nerds to blog. We usually have a github
+    account anyway to manage our 1000+ commits big emacs config accross multiple devices, and we
+    have learned enough about emacs to dish out some knowledge through our own blog.
+
+    How can you blog comfortably in this setup? Let's get started...
+
+    #+BEGIN_EXPORT html
+    <!--more-->
+    #+END_EXPORT
+
+    Steps:
+    - Create a directory where I want the blog to be, in my case =~/Dropbox/org/blog=
+    - Follow the steps from here: http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
+    - Install hugo (on Windows 10)
+      1. Install chocolatey https://chocolatey.org/install#install-with-cmdexe
+         #+BEGIN_SRC sh :tangle no
+         # for the powershell, close it after execution
+         Set-ExecutionPolicy Bypass; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+         #+END_SRC
+      2. Install hugo using chocolatey:
+         #+BEGIN_SRC sh :tangle no
+         # on the normal shell
+         choco install hugo -confirm
+         #+END_SRC
+    - Follow the startup steps for hugo to setup a site and get the server running
+      #+BEGIN_SRC sh :tangle no
+      # some command to create a default site from the tutorial
+      # then download a theme
+      # copy the exampleSite structure from the theme directoy into the main blog directory to have some dummy content
+      # - usually this dummy content also explains the theme capabilities
+      cp -R theme/$theme_name/exampleSite .
+      hugo server
+      # look at the site
+      #+END_SRC
+    - Create a github.io repository and connect it to the directory
+      - Create the github repository
+        - Navigate to your github account and create this repo: username.github.io
+      - Create the local repository
+        #+BEGIN_SRC sh :tangle no
+        cd ~/Dropbox/org/blog
+        git init
+        git remote add origin https://github.com/username/username.github.io.git
+        #+END_SRC
+    - Further steps:
+      - [ ] https://gohugo.io/themes/customizing/ Check out the customizing tutorial
+      - [ ] Settle on a theme
+        - I tried out ananke, a default theme
+        - I tried out "bluestnight". Now i have to customize it.
+          - Disabled the patreon widget
+        - I tried out beautifulhugo
+      - [ ] Check out this link: https://vurt.co.uk/post/blogging-with-emacs-and-hugo/
+
+** Blogging Setup: Workflow for writing a new blogpost          :blog:
+    :PROPERTIES:
+    :TITLE:    Blogging Setup: Workflow for writing a new blogpost
+    :HUGO_TAGS: emacs, blogging
+    :HUGO_TOPICS: emacs
+    :HUGO_FILE: post/workflow_for_new_blogpost.md
+    :HUGO_DATE: [2017-08-15 Di 22:14]
+    :END:
+    Creating a new blog post using the previously describe setup should be easy and
+    comfortable. These are the generic steps for adding a blog-post.
+
+    #+BEGIN_EXPORT html
+    <!--more-->
+    #+END_EXPORT
+
+    1) *Create the content in org-mode*: Open any org-file on the computer and write a blogpost.
+       - Any existing org-mode heading could be turned into a blogpost, but most generic notes
+         dont make for a good blog post. Some of them can be a good basis though.
+    2) *Tag it so i can find it again later*: Tag it with “blog” so I can find it through the
+       agenda. Enables me to list how much time i spend blogging in a week / month / year.
+    3) *Create hugo variable placeholders*: Navigate to the headline and press =M-x hugo=
+    4) *Fill in the hugo variables*. An example is below:
+       #+BEGIN_SRC org
+         :PROPERTIES:
+         :TITLE:    Setting up the blog
+         :HUGO_TAGS: emacs blogging
+         :HUGO_TOPICS: emacs
+         :HUGO_FILE: setting_up_the_blog.md
+         :HUGO_DATE: [2017-08-15 Di 22:14]
+         :END:
+       #+END_SRC
+       - It is hidden in an org-mode drawer which makes it easy to hide
+    5) *Convert the headline into a markdown file according to the hugo variables*: Navigate to the
+       headline and press =M-x hugo=
+    6) *Regenerate the website including the new markdown file*: Open a shell (I use git bash on
+       Windows), navigate to the blog directory and execute =hugo=
+       - Optional: Debugging, check the blog post formatting before uploading it
+       - For this execute “hugo server” and navigate to the local blog
+       - Downside: pictures dont get resolved correctly
+    7) *Publish the website*
+       #+BEGIN_SRC sh
+       cd public
+       git add * && git commit -m "site update" && git push origin master
+       #+END_SRC
+
 
 * Modeline
   I never learned how to successfully edit the modeline yet, i just keep copying configs from nice
