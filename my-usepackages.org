@@ -68,6 +68,17 @@
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([123 return tab 6 11 16 5 return tab 32 32 34 80 97 114 97 109 101 116 101 114 75 101 121 5 58 32 25 21 67108896 67108896 134217830 34 return 34 80 97 114 97 109 101 116 101 114 86 97 108 117 101 16 5 44 14 14 44 14 134217826 1 134217830 134217826] 0 "%d")) arg)))
   #+END_SRC
 
+** Multiple Cursors
+#+begin_src emacs-lisp
+(use-package multiple-cursors
+  :ensure t
+  :config
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  )
+#+end_src
+
 * File-browsing and text-searching
 
 ** CamelCase
