@@ -2104,12 +2104,14 @@ sudo gem install puppet-lint
        (define-key global-map (kbd "<f6>") 'fbr/open_main_agenda_file)
       #+END_SRC
 
-*** Super-agenda
+*** Super-agenda (disabled)
      Org-super-agenda source: https://github.com/alphapapa/org-super-agenda
+
+     Disabled for now because I dont use it anymore.
 
      In the following i cut down the example from the github source from the things that cant
      possibly match to the stuff i use in my config
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package org-super-agenda
         :ensure t
         :config
