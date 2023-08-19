@@ -31,6 +31,12 @@
   (setq fbr/home-dir (concat "C:/Users/" (getenv "USERNAME"))))
   #+END_SRC
 
+* Ignore Emacs 29.1 Warnings
+
+#+begin_src emacs-lisp
+(setq warning-minimum-level :error)
+#+end_src
+
 * Initialization
   #+BEGIN_SRC emacs-lisp
 (require 'use-package)
@@ -45,9 +51,14 @@
   :config
   (require 'recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  ;; stop undo-tree explicitly from littering
+  (no-littering-theme-backups)
+)
 ;; have elfeeds database in the cloud instead of ~/.emacs.d/var/
 (setq elfeed-db-directory "~/Dropbox/org/elfeed/db/")
+
+
   #+END_SRC
 
 * Keyboard macros
@@ -889,7 +900,7 @@ sudo apt-get install aspell-de
   :config
   (require 'dap-cpptools)
   :after (company flycheck)
-  :hook ((rustic-mode . linum-mode))
+  :hook ((rustic-mode . display-line-numbers-mode))
   )
 
 (with-eval-after-load 'rustic
@@ -916,11 +927,11 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
 
 ** Line numbers (linum)
    #+BEGIN_SRC emacs-lisp
-   (add-hook 'groovy-mode-hook (lambda () (linum-mode)))
-   (add-hook 'python-mode-hook (lambda () (linum-mode)))
-   (add-hook 'bash-mode-hook (lambda () (linum-mode)))
-   (add-hook 'yaml-mode-hook (lambda () (linum-mode)))
-   (add-hook 'go-mode-hook (lambda () (linum-mode)))
+   (add-hook 'groovy-mode-hook (lambda () (display-line-numbers-mode)))
+   (add-hook 'python-mode-hook (lambda () (display-line-numbers-mode)))
+   (add-hook 'bash-mode-hook (lambda () (display-line-numbers-mode)))
+   (add-hook 'yaml-mode-hook (lambda () (display-line-numbers-mode)))
+   (add-hook 'go-mode-hook (lambda () (display-line-numbers-mode)))
    #+END_SRC
 
 ** Highlight todo, fixme, etc.
@@ -1017,7 +1028,7 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
 
    Other hooks:
    #+BEGIN_SRC emacs-lisp
-   (add-hook 'terraform-mode-hook (lambda () (linum-mode)))
+   (add-hook 'terraform-mode-hook (lambda () (display-line-numbers-mode)))
    (add-hook 'terraform-mode-hook (lambda () (flycheck-mode)))
    (setq flycheck-terraform-tflint-executable "/usr/local/bin/tflint")
    #+END_SRC
@@ -1287,6 +1298,7 @@ sudo gem install puppet-lint
    #+BEGIN_SRC emacs-lisp
    (setq json-reformat:indent-width 2)
    (setq js-indent-level 2)
+  (add-to-list 'auto-mode-alist '("\\.json\\'" . js-mode))
    #+END_SRC
 
 
@@ -1357,7 +1369,7 @@ sudo gem install puppet-lint
          (js-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
-         (lsp-mode . linum-mode))
+         (lsp-mode . display-line-numbers-mode))
   :commands lsp)
 
 ;; optionally
@@ -1415,7 +1427,7 @@ sudo gem install puppet-lint
     (setq flycheck-check-syntax-automatically '(save mode-enabled))
     (eldoc-mode +1)
     (tide-hl-identifier-mode +1)
-    (linum-mode +1)
+    (display-line-numbers-mode +1)
     ;; company is an optional dependency. You have to
     ;; install it separately via package-install
     ;; `M-x package-install [ret] company`
