@@ -905,7 +905,7 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
 
    #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.astro\\'" . lsp-mode))
-(add-to-list 'exec-path "/Users/felix.brilej/.nvm/versions/node/v14.19.1/bin")
+(add-to-list 'exec-path "/Users/felix.brilej/Library/Caches/fnm_multishells/16254_1692428449756/bin")
    #+end_src
 
 ** Git Highlight changes
