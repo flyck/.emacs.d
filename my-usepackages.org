@@ -116,6 +116,31 @@
       )
   #+END_SRC
 
+** Projectile
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-x p s") 'helm-projectile-ag)
+  (projectile-mode +1)
+  )
+
+(use-package helm-projectile
+  :ensure t
+)
+
+;; needed for projectile
+(use-package ag
+  :ensure t
+  )
+
+(use-package ripgrep
+  :ensure t
+  )
+#+end_src
+
+
 ** Helm
   A convenient interface to select about anything from a list: Browse files, select themes, show
   and select search-results and much more.
@@ -1408,12 +1433,12 @@ sudo gem install puppet-lint
   :ensure t
   :config
   (define-key company-mode-map (kbd "TAB") #'company-indent-or-complete-common)
-  (define-key tide-mode-map (kbd "C-x p") #'tide-fix)
+  (define-key tide-mode-map (kbd "C-x f") #'tide-fix)
   (define-key tide-mode-map (kbd "C-x lr") #'tide-references)
   (define-key tide-mode-map (kbd "C-x rs") #'tide-rename-symbol)
   (define-key tide-mode-map (kbd "C-x rf") #'tide-rename-file)
   (define-key tide-mode-map (kbd "C-x re") #'next-error)
-(setq tide-node-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/bin/node")
+(setq tide-node-executable "/Users/felix.brilej/Library/Caches/fnm_multishells/41137_1692191744238/bin/node")
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
@@ -1450,6 +1475,14 @@ sudo gem install puppet-lint
 ;;(setq tide-tsserver-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
    #+end_src
 
+
+   #+begin_src emacs-lisp
+(defun my-tide-hook ()
+  (when (and (eq major-mode 'typescript-mode)
+             (projectile-project-p))
+    ;; Your custom hook logic for TypeScript projects goes here
+    (message "Executing hook for TypeScript projects")))
+   #+end_src
 
    Company mode for auto-completion
    #+begin_src emacs-lisp
