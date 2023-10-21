@@ -1614,7 +1614,7 @@ sudo gem install puppet-lint
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'doom-old-hope t)
+  (load-theme 'catppuccin t)
   ;; (use-package dichromacy-theme
   ;; :ensure t
   ;; :config
@@ -1679,6 +1679,20 @@ sudo gem install puppet-lint
          )
          )
     #+END_SRC
+
+** Catpuccing theme
+#+begin_src emacs-lisp
+(use-package catppuccin-theme
+  :ensure t)
+#+end_src
+
+Helm is poorly stylized, this makes it a bit better:
+#+begin_src emacs-lisp :tangle no
+               (helm-selection :background ,ctp-surface0 :extend t)
+               (helm-selection-line)
+;; ...
+               (helm-source-header :foreground ,ctp-green)
+#+end_src
 
 ** Seti theme
    I used this theme for a long time and it is pretty good, but sometimes i have to mix it up!
