@@ -89,6 +89,10 @@
 ** Nerdtree
    A file explorer side bar.
 
+   A couple of things annoyed me even after some time with the default behavior. Checking out the
+   docs I found out all of these can be fixed with extra config. 😢
+   https://www.emacswiki.org/emacs/NeoTree
+
    #+BEGIN_SRC emacs-lisp
 (use-package neotree
 :ensure t
@@ -97,10 +101,17 @@
 (setq neo-auto-refresh t)
 (setq neo-show-hidden-files t)
 (setq neo-theme 'icons)
+(setq neo-window-fixed-size nil)
+;; Every time when the neotree window is opened, let it find current file and jump to node.
+(setq neo-smart-open t)
+;; When running ‘projectile-switch-project’ (C-c p p), ‘neotree’ will change root automatically.
+(setq projectile-switch-project-action 'neotree-projectile-action)
+
 )
 ;(add-to-list 'load-path "/some/path/neotree")
 ;(require 'neotree)
    #+END_SRC
+
 
 ** All the icons
    Required by neotree and requires also font setup
