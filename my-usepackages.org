@@ -94,10 +94,25 @@
 :ensure t
 :config
 (global-set-key [f12] 'neotree-toggle)
+(setq neo-auto-refresh t)
+(setq neo-show-hidden-files t)
+(setq neo-theme 'icons)
 )
 ;(add-to-list 'load-path "/some/path/neotree")
 ;(require 'neotree)
    #+END_SRC
+
+** All the icons
+   Required by neotree and requires also font setup
+   #+begin_src emacs-lisp
+(use-package all-the-icons
+  :ensure t)
+   #+end_src
+
+   After install, run this once:
+   #+begin_src emacs-lisp :tangle no
+(all-the-icons-install-fonts)
+   #+end_src
 
 ** Recentf
   I hate browsing for files (I frequently use), this package is supposed to help me out with that.
