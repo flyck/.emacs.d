@@ -876,6 +876,15 @@ sudo apt-get install aspell-de
    #+END_SRC
 
 
+   #+begin_src emacs-lisp
+(use-package git-link
+  :ensure t
+  :config
+  (setq git-link-open-in-browser t)
+  (global-set-key (kbd "C-x l g") 'git-link)
+  )
+   #+end_src
+
 ** TODO Warn if username and useremail are not set
 
 ** Define emacs shutdown function (taken from baron42bba)
