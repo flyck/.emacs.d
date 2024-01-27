@@ -1012,6 +1012,7 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
       '(("TODO"   . "#efe4a1")
         ("BUGBUG"  . "#ff5faf")
         ("FIXME"  . "#ff5faf")
+        ("NICETOHAVE" . "#1E90FF")
         ("DEBUG"  . "#1E90FF")
         ("GOTCHA" . "#1E90FF")
         ("STUB"   . "#1E90FF")
