@@ -1636,7 +1636,7 @@ sudo gem install puppet-lint
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'catppuccin t)
+  (load-theme 'doom-acario-light t)
   ;; (use-package dichromacy-theme
   ;; :ensure t
   ;; :config
