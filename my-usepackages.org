@@ -161,6 +161,7 @@
   (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-x p s") 'helm-projectile-ag)
   (projectile-mode +1)
+  (setq helm-ag-ignore-patterns '("node_modules"))
   )
 
 (use-package helm-projectile
