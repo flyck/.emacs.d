@@ -1487,7 +1487,6 @@ sudo gem install puppet-lint
   (define-key tide-mode-map (kbd "C-x rs") #'tide-rename-symbol)
   (define-key tide-mode-map (kbd "C-x rf") #'tide-rename-file)
   (define-key tide-mode-map (kbd "C-x re") #'next-error)
-(setq tide-node-executable "/Users/felix.brilej/Library/Caches/fnm_multishells/41137_1692191744238/bin/node")
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
