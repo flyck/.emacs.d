@@ -1418,6 +1418,32 @@ sudo gem install puppet-lint
 #+end_src
 
 
+*** Helpers
+#+begin_src emacs-lisp
+(defun convert-to-template-string ()
+  "Converts the string around point to a template string."
+  (interactive)
+  (save-excursion
+    (let ((start-point (re-search-backward "[\"'].*\\${" (line-beginning-position) t))
+          (end-point (re-search-forward "}.*[\"']" (line-end-position) t)))
+      (when (and start-point end-point (< start-point end-point))
+       (message "Start point: %s, End point: %s" start-point end-point)
+        (goto-char start-point)
+        (delete-char 1)
+        (insert "`")
+        (goto-char end-point)
+        (delete-char -1)
+        (insert "`")
+        ))))
+
+
+(defun templatestring-tab-function ()
+  "Wrapper for both default Tab behavior and convert-to-template-string."
+  (interactive)
+  (call-interactively 'company-indent-or-complete-common) ; Call the default Tab behavior
+  (convert-to-template-string))
+#+end_src
+
 *** Typescript programing (LSP-Mode)
     I'm attempting to move to LSP-mode but it is giving me issues on my work laptop with many big
     projects. Tide still seems more battle-tested.
@@ -1487,6 +1513,7 @@ sudo gem install puppet-lint
   (define-key tide-mode-map (kbd "C-x rs") #'tide-rename-symbol)
   (define-key tide-mode-map (kbd "C-x rf") #'tide-rename-file)
   (define-key tide-mode-map (kbd "C-x re") #'next-error)
+  (define-key tide-mode-map (kbd "TAB") #'templatestring-tab-function)
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
