@@ -118,6 +118,7 @@
     (setq inhibit-default-init t)
     (setq inhibit-startup-screen t)
     (setq transient-mark-mode 1)
+    (global-tab-line-mode t)
     #+END_SRC
 
     Take the short answer, y/n is yes/no
