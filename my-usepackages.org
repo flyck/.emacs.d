@@ -979,6 +979,12 @@ sudo apt-get install aspell-de
   (define-key company-active-map (kbd "<tab>") #'company-indent-or-complete-common))
   #+end_src
 
+** Gitlab
+#+begin_src emacs-lisp
+  (use-package gitlab-ci-mode
+    :ensure t)
+#+end_src
+
 ** Astro Build
    Needs first a manual installation:
      #+begin_src sh
