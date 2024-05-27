@@ -851,6 +851,7 @@ sudo apt-get install aspell-de
       (progn
         (add-to-list 'exec-path "/usr/bin")
         (add-to-list 'exec-path "/opt/homebrew/bin")
+        (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
         (setenv "PATH" (concat "/opt/homebrew/opt/node@14/bin" ":" (getenv "PATH")))
         (add-to-list 'exec-path "/opt/homebrew/opt/node@14/bin")
         (setenv "PATH" (concat "/opt/homebrew/bin" ":" (getenv "PATH")))
@@ -2937,10 +2938,10 @@ Helm is poorly stylized, this makes it a bit better:
 
          ;; -shell-escape added for "minted" package
          (setq org-latex-pdf-process
-               '("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                 "bibtex %b"
-                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f"
-                 "pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+               '("%latex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "%bib %b"
+                 "%latex -interaction nonstopmode -shell-escape -output-directory %o %f"
+                 "%latex -interaction nonstopmode -shell-escape -output-directory %o %f")
                )
          (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
          )
