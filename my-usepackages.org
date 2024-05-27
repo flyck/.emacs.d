@@ -155,32 +155,6 @@
       )
   #+END_SRC
 
-** Projectile
-#+begin_src emacs-lisp
-(use-package projectile
-  :ensure t
-  :config
-  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-x p s") 'helm-projectile-ag)
-  (projectile-mode +1)
-  (setq helm-ag-ignore-patterns '("node_modules"))
-  )
-
-(use-package helm-projectile
-  :ensure t
-)
-
-;; needed for projectile
-(use-package ag
-  :ensure t
-  )
-
-(use-package ripgrep
-  :ensure t
-  )
-#+end_src
-
-
 ** Helm
   A convenient interface to select about anything from a list: Browse files, select themes, show
   and select search-results and much more.
@@ -213,6 +187,37 @@
   #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-s") 'swiper)
   #+END_SRC
+
+  #+begin_src emacs-lisp
+(use-package helm-ag
+  :ensure t)
+  #+end_src
+
+** Projectile
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-x p s") 'helm-projectile-ag)
+  (projectile-mode +1)
+  (setq helm-ag-ignore-patterns '("node_modules"))
+  )
+
+(use-package helm-projectile
+  :ensure t
+)
+
+;; needed for projectile
+(use-package ag
+  :ensure t
+  )
+
+(use-package ripgrep
+  :ensure t
+  )
+#+end_src
+
 
 ** Finding files
    As great as helm is, there is an even better file-finding package, however it hinders me from
