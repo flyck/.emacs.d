@@ -2908,6 +2908,13 @@ Helm is poorly stylized, this makes it a bit better:
   )
      #+END_SRC
 
+*** Pdftools for org-ref
+
+#+begin_src emacs-lisp
+(use-package pdf-tools)
+;; (pdf-tools-install)
+#+end_src
+
 *** Orgmode bibliography and latex compiler settings          :sysenv:
      Inspired from J. Kitchin's youtube video: https://www.youtube.com/watch?v=2t925KRBbFc
 
@@ -2917,7 +2924,7 @@ Helm is poorly stylized, this makes it a bit better:
          :config
          (setq org-ref-completion-library 'org-ref-helm-cite)
          (require 'org-ref)
-         (require 'org-ref-pdf) ;; enable pdf drag n' drop
+         (require 'org-ref-pdf) ;; enable pdf drag n' drop ;; requires manual post-install step from pdf-tools package
          (require 'doi-utils)
          (require 'org-ref-latex)
          (require 'org-ref-bibtex)
