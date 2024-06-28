@@ -2095,13 +2095,43 @@ Helm is poorly stylized, this makes it a bit better:
     #+END_SRC
 
 
-    Explicitly enable the sourceblock shortcuts (i.e. automatically expanding "<s" to an org-mode
-    sourceblock). Once this worked out of the box, after an update I now need this.
+*** Org Sourceblocks (org-tempo)
+    Org-tempo explicitly enables the sourceblock shortcuts (i.e. automatically expanding "<s" to
+    an org-mode sourceblock). More documentation can be found at the Org Mode Easy Templates
+    documentation page.
+
+    Once this worked out of the box, after an update I now need this.
     https://github.com/syl20bnr/spacemacs/issues/11798
+
     #+begin_src emacs-lisp
-    (require 'org-tempo)
+;; This is needed as of Org 9.2
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+(add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
+(add-to-list 'org-structure-template-alist '("json" . "src json"))
     #+end_src
 
+** Org-mode Pomodoro
+#+begin_src emacs-lisp
+(use-package org-pomodoro
+  :ensure t
+      :custom-face
+    (org-pomodoro-mode-line ((t (:inherit warning))))
+    (org-pomodoro-mode-line-overtime ((t (:inherit error))))
+    (org-pomodoro-mode-line-break ((t (:inherit success))))
+  :config
+  ;(setq org-pomodoro-start-sound "~/.emacs.d/sounds/focus_bell.wav")
+  ;(setq org-pomodoro-short-break-sound "~/.emacs.d/sounds/three_beeps.wav")
+  ;(setq org-pomodoro-long-break-sound "~/.emacs.d/sounds/three_beeps.wav")
+  ;(setq org-pomodoro-finished-sound "~/.emacs.d/sounds/meditation_bell.wav")
+(setq org-pomodoro-keep-killed-pomodoro-time t)
+)
+
+#+end_src
 
 ** Org-mode visual improvements
     Strike through DONE headlines
