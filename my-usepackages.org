@@ -170,6 +170,7 @@
 				    helm-source-recentf
 				    helm-source-bookmarks
 				    helm-source-buffer-not-found))
+  (setq helm-move-to-line-cycle-in-source nil)
   (helm-mode 1)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
