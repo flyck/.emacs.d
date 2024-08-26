@@ -1070,6 +1070,14 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
 (global-hl-todo-mode)
    #+END_SRC
 
+** Dockerfiles
+   Syntax highlighting in dockerfiles :)
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :ensure t)
+#+end_src
+
 ** Yaml
    #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
