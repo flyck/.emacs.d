@@ -89,6 +89,29 @@
     (use-package dash)
     #+end_src
 
+*** Tab Line Mode
+    A very handy mode, which will display VS-Code like tabs at the top of the buffer. It has been
+    enabled by default in recent emacs versions.
+
+
+    I find the default theming of the tabs almost unusable. Luckily, somebody else already looked
+    into the customziation ([[https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html][kuduz amitp!]]):
+    #+begin_src emacs-lisp
+(set-face-attribute 'tab-line nil ;; background behind tabs
+      :background "gray40"
+      :foreground "gray60" :distant-foreground "gray50"
+      :family "Fira Sans Condensed" :height 1.1 :box nil)
+(set-face-attribute 'tab-line-tab nil ;; active tab in another window
+      :inherit 'tab-line
+      :foreground "gray70" :background "gray90" :box nil)
+(set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
+      :background "gray10" :foreground "white" :box nil)
+(set-face-attribute 'tab-line-tab-inactive nil ;; inactive tab
+      :background "gray80" :foreground "black" :box nil)
+(set-face-attribute 'tab-line-highlight nil ;; mouseover
+      :background "white" :foreground 'unspecified)
+    #+end_src
+
 *** Coding style
     #+BEGIN_SRC emacs-lisp
       (setq prefer-coding-system 'utf-8-unix)
