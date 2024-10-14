@@ -98,7 +98,7 @@
     into the customziation ([[https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html][kuduz amitp!]]):
     #+begin_src emacs-lisp
 (set-face-attribute 'tab-line nil ;; background behind tabs
-      :background "gray40"
+      :background "gray20"
       :foreground "gray60" :distant-foreground "gray50"
       :family "Fira Sans Condensed" :height 1.1 :box nil)
 (set-face-attribute 'tab-line-tab nil ;; active tab in another window
@@ -109,7 +109,7 @@
 (set-face-attribute 'tab-line-tab-inactive nil ;; inactive tab
       :background "gray80" :foreground "black" :box nil)
 (set-face-attribute 'tab-line-highlight nil ;; mouseover
-      :background "white" :foreground 'unspecified)
+      :background "DarkOrange1" :foreground 'unspecified)
     #+end_src
 
 *** Coding style
