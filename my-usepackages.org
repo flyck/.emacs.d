@@ -194,6 +194,16 @@
   :ensure t)
   #+end_src
 
+  looks kind of sexy but is a bit buggy (helm-ag not closeable, sometimes shows random tabs)
+  #+begin_src emacs-lisp :tangle no
+(use-package helm-posframe
+  :ensure t
+  :config
+  (helm-posframe-enable)q
+  (setq helm-posframe-border-width 2)
+  )
+  #+end_src
+
 ** Projectile
 #+begin_src emacs-lisp
 (use-package projectile
