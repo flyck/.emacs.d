@@ -97,6 +97,7 @@
     I find the default theming of the tabs almost unusable. Luckily, somebody else already looked
     into the customziation ([[https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html][kuduz amitp!]]):
     #+begin_src emacs-lisp
+(require 'tab-line)
 (set-face-attribute 'tab-line nil ;; background behind tabs
       :background "gray20"
       :foreground "gray60" :distant-foreground "gray50"
@@ -107,9 +108,9 @@
 (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
       :background "gray10" :foreground "white" :box nil)
 (set-face-attribute 'tab-line-tab-inactive nil ;; inactive tab
-      :background "gray80" :foreground "black" :box nil)
+      :background "gray60" :foreground "black" :box nil)
 (set-face-attribute 'tab-line-highlight nil ;; mouseover
-      :background "DarkOrange1" :foreground 'unspecified)
+      :background "DarkOrange1" :foreground "White")
     #+end_src
 
 *** Coding style
