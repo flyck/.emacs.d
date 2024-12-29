@@ -1484,6 +1484,15 @@ sudo gem install puppet-lint
 #+end_src
 
 
+*** Code Formatting
+    - https://github.com/radian-software/apheleia
+
+
+    #+begin_src emacs-lisp :tangle no
+(use-package aphelia
+  :ensure t)
+    #+end_src
+
 *** Helpers
 #+begin_src emacs-lisp
 (defun convert-to-template-string ()
@@ -1583,7 +1592,8 @@ sudo gem install puppet-lint
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
-         (before-save . tide-format-before-save))
+         ;; (before-save . tide-format-before-save)
+         )
   )
 
 (defun setup-tide-mode ()
@@ -1603,7 +1613,11 @@ sudo gem install puppet-lint
   (setq company-tooltip-align-annotations t)
 
   ;; formats the buffer before saving
-  (add-hook 'before-save-hook 'tide-format-before-save)
+  ;(add-hook 'before-save-hook 'tide-format-before-save)
+(add-hook 'tide-mode-hook
+          (lambda ()
+             (add-hook 'after-save-hook 'prettier-js nil 'make-it-local)))
+  ;; (add-hook 'before-save-hook 'prettier-js)
 
   (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
