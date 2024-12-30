@@ -1796,6 +1796,11 @@ sudo gem install puppet-lint
 (setq cl-meta-information-one "cornflower blue")
   #+end_src
 
+** Doom themes
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package doom-themes
+       :ensure t)
+   #+END_SRC
 
 ** Rebecca theme
    #+BEGIN_SRC emacs-lisp :tangle no
