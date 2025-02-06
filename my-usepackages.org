@@ -1677,7 +1677,7 @@ sudo gem install puppet-lint
    My attempt at linting.
    Based on this blog post: https://blog.ironboundsoftware.com/2016/12/05/improving-your-python-pylint-and-flake8-emacs/
    #+BEGIN_SRC emacs-lisp
-(use-package elpy
+(use-package emacs-lisp
   :ensure t
   :init
   (elpy-enable)
@@ -1687,8 +1687,37 @@ sudo gem install puppet-lint
     (add-hook 'elpy-mode-hook 'flycheck-mode))
   )
   (setq elpy-formatter "flake8")
+  (define-key elpy-mode-map (kbd "C-x lr") #'xref-find-references)
    #+END_SRC
 
+
+*** Pytest & Virtualenv
+    Requires direnv binary. `brew install direnv`
+    Requires .envrc in repository:
+    #+begin_src conf
+export VIRTUAL_ENV=.venv
+layout python3
+    #+end_src
+
+#+begin_src emacs-lisp
+(use-package python-pytest)
+(use-package tree-sitter)
+(treesit-install-language-grammar 'python)
+
+
+(use-package direnv
+ :config
+ (direnv-mode))
+(add-hook 'python-mode-hook 'direnv-update-environment)
+
+(use-package direnv
+  :demand t
+  :hook
+  ((after-init . direnv-mode)
+   (lsp-before-initialize-hook . direnv-update-environment))
+  :config
+  (setq direnv-always-show-summary nil))
+#+end_src
 ** C Lang                                                     :sysenv:
   The main thing i use from the following is the "jump to definition" function, which is otherwise
   a tedious manual task.
