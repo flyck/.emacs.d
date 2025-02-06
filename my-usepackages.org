@@ -100,7 +100,7 @@
 :ensure t
 :config
 (global-set-key [f12] 'neotree-toggle)
-(setq neo-auto-refresh t)
+(setq neo-autorefresh t)
 (setq neo-show-hidden-files t)
 (setq neo-theme 'icons)
 (setq neo-window-fixed-size nil)
@@ -108,7 +108,7 @@
 (setq neo-smart-open t)
 ;; When running ‘projectile-switch-project’ (C-c p p), ‘neotree’ will change root automatically.
 (setq projectile-switch-project-action 'neotree-projectile-action)
-
+(setq neo-vc-integration '(face))
 )
 ;(add-to-list 'load-path "/some/path/neotree")
 ;(require 'neotree)
