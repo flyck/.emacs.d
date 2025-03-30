@@ -1605,7 +1605,7 @@ sudo gem install puppet-lint
          ;; (before-save . tide-format-before-save)
          )
   )
-
+(add-to-list 'exec-path "/home/felix/.bun/bin")
 (defun setup-tide-mode ()
     (interactive)
     (tide-setup)
@@ -1623,10 +1623,11 @@ sudo gem install puppet-lint
   (setq company-tooltip-align-annotations t)
 
   ;; formats the buffer before saving
-  ;(add-hook 'before-save-hook 'tide-format-before-save)
-(add-hook 'tide-mode-hook
-          (lambda ()
-             (add-hook 'after-save-hook 'prettier-js nil 'make-it-local)))
+;;  (add-hook 'before-save-hook 'tide-format-before-save)
+;; issue: for a particular tsx file it creates an empty change which prevents it from being saved
+;; (add-hook 'tide-mode-hook
+;;           (lambda ()
+;;              (add-hook 'after-save-hook 'prettier-js nil 'make-it-local)))
   ;; (add-hook 'before-save-hook 'prettier-js)
 
   (add-hook 'typescript-mode-hook #'setup-tide-mode)
@@ -1640,8 +1641,19 @@ sudo gem install puppet-lint
   ;; configure javascript-tide checker to run after your default javascript checker
 
 ;;(setq tide-tsserver-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
+(setq tide-tsserver-executable "/home/felix/.emacs.d/elpa/tide-20241019.2101/tsserver")
+(setq tide-tsserver-executable "/home/felix/.bun/install/cache/typescript@5.4.2@@@1/bin/tsserver")
    #+end_src
 
+   #+begin_src emacs-lisp
+     (use-package biomejs-format
+       :ensure t
+       :config
+     (add-hook 'tide-mode-hook
+                (lambda ()
+                   (add-hook 'after-save-hook 'biomejs-format nil t)))
+     )
+   #+end_src
 
    #+begin_src emacs-lisp
 (defun my-tide-hook ()
