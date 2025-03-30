@@ -1783,7 +1783,7 @@ layout python3
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'doom-acario-light t)
+  (load-theme 'doom-henna t)
   ;; (use-package dichromacy-theme
   ;; :ensure t
   ;; :config
