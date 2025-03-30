@@ -540,5 +540,6 @@
       ;; For Graphviz
       (setenv "PATH" (concat (getenv "PATH") ";H:\\Win7PoolData\\Desktop\\GraphViz\\bin"))
       (setq exec-path (append exec-path '("H:/Win7PoolData/Desktop/GraphViz/bin")))
+      (setq exec-path (append exec-path '("/home/felix/.local/bin/")))
  #+END_SRC
 .
