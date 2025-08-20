@@ -26,8 +26,8 @@
   - Keeping all my org configuration consistent
 
 ** The structure of these config files
-   - org-init.el :: bootstraps the initialization through org-mode
-   - init.org :: customizes the default emacs behaviour
+   - init.el :: bootstraps the initialization through org-mode
+   - my-stock-changes.org :: customizes the default emacs behaviour
    - my-org-usepackages.org :: adds and customizes packages
    - elisp-goodies.el :: some of my custom functions and work-in-progress
 
