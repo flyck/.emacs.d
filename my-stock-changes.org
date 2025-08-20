@@ -136,6 +136,14 @@
       ;; regarding programming: https://www.emacswiki.org/emacs/AutoFillMode
     #+END_SRC
 
+*** Copy-clipboard hack
+    Save whatever’s in the current (system) clipboard before replacing it with the Emacs’ text.
+
+    More tricks like this: https://github.com/dakrone/eos/blob/master/eos.org
+    #+BEGIN_SRC emacs-lisp
+(setq save-interprogram-paste-before-kill t)
+    #+END_SRC
+
 *** Conveniences
     Emacs Startup changes
     #+BEGIN_SRC emacs-lisp

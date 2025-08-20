@@ -460,16 +460,6 @@ sudo apt-get install aspell-de
    #+END_SRC
 
 
-   I dont use this hook right now since it slow editing down a bit and correct spelling is
-   actually not that crucial. Also writing german and english in the same document seems confusing
-   for flyspell (as for every / most grammar correction programms).
-   #+BEGIN_SRC emacs-lisp :tangle no
-(if (equal "home" (getenv "SYSENV"))
-    (add-hook 'org-mode-hook 'turn-on-flyspell)
-  )
-   #+END_SRC
-
-
    The flyspell settings for work and home, requires a manual "aspell" installation.
    - https://www.emacswiki.org/emacs/FlySpell
    #+BEGIN_SRC emacs-lisp
@@ -527,13 +517,6 @@ sudo apt-get install aspell-de
   )
    #+END_SRC
 
-** Copy-clipboard hack
-   Save whatever’s in the current (system) clipboard before replacing it with the Emacs’ text.
-
-   More tricks like this: https://github.com/dakrone/eos/blob/master/eos.org
-   #+BEGIN_SRC emacs-lisp
-(setq save-interprogram-paste-before-kill t)
-   #+END_SRC
 
 ** Jump to split window
    When splitting a window, I invariably want to switch to the new window. This makes that automatic.
