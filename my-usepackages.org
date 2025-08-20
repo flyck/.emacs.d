@@ -2045,10 +2045,8 @@ Helm is poorly stylized, this makes it a bit better:
    #+END_SRC
 
 * The cursor style
-  Set this after the themes since some themes reset this.
-
-  Currently untangled since the cursor seems to adapt the text color which makes it hard to spot
-  at times.
+  Set this after the themes since some themes reset this.  Currently disabled, as allowing the
+  theme to style the cursor is usually fine.
   #+BEGIN_SRC emacs-lisp :tangle no
     (set-default 'cursor-type 'box)
     (set-cursor-color "#6aaf6a")
