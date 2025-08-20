@@ -200,8 +200,8 @@
 
     Transparency settings
     #+BEGIN_SRC emacs-lisp
-      (set-frame-parameter (selected-frame) 'alpha '(95 95)) ;; affects the current window
-      (add-to-list 'default-frame-alist '(alpha 95 95)) ;; affects newly opened windows
+      (set-frame-parameter (selected-frame) 'alpha '(100 100)) ;; affects the current window
+      (add-to-list 'default-frame-alist '(alpha 100 100)) ;; affects newly opened windows
     #+END_SRC
 
     Customize the interface to be more slim
