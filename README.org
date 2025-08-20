@@ -21,34 +21,20 @@
   - The overall file-structure is not a mess
 
   🌵 Things I struggle with:
-  - Indenting and line-wrapping in org-mode since recent org update
-  - Keeping all my org configuration consistent
   - Minor things about my typescript and rust setup
+  - Having great keybindings for all situations (my navigation could be better)
+  - Keeping all my org configuration consistent
 
-** The ongoing debate about the right coding-system
-   Right now I use the unix coding system everywhere, this might be subject to change though.
-
-   Pros:
-   - Its easier to copy stuff into the terminal from for example an org-file without weird
-     line-ending interactions
-   - Makes org-babel codeblocks work in the first place on linux systems, otherwise they cannot
-     execute
-   - I edit org-files from linux and on windows, which due to org-babel requiring linux
-     line-endings makes deciding for either one of them a necessity. Making such a decision
-     globally of course also affects the coding-style of this config which I want to share with
-     others.
-   - There is no comfortable way to convert line-endings without me noticing it, another reason
-     why I have to decide for one of the two
-
-   Cons:
-   - Editing my configs or files from the Windows Default Editor doesn't work
-   - My colleagues are not able to visit my config files since they dont care and only use the
-     dos-coding system
+** The structure of these config files
+   - org-init.el :: bootstraps the initialization through org-mode
+   - init.org :: customizes the default emacs behaviour
+   - my-org-usepackages.org :: adds and customizes packages
+   - elisp-goodies.el :: some of my custom functions and work-in-progress
 
 ** Research enabled by this config
-   I'm writing my bachelor-thesis with this config. In order to do that i included quite alot of
-   config settings into my emacs config. An alternative to this would be downloading an emacs
-   distribution / config that is designed just for writing scientifical papers, like [[https://github.com/jkitchin/scimax][Scimax]].
+   I wrote my bachelor-thesis with this config. In order to do that I needed to extend my org-mode
+   config extensively. An alternative to this would be downloading an emacs distribution / config
+   that is designed just for writing scientifical papers, like [[https://github.com/jkitchin/scimax][Scimax]].
 
    Configuration that specifically enables me to do that is tagged with "research". On linux i had
    to install packages ontop of simple configuration inside emacs:
@@ -67,24 +53,3 @@
    - Install the url package
    - Add the binary directory of miktex to the environment variables and restart emacs
    - Try the export!
-
-** The structure of these config files
-   - org-init.el :: bootstraps the initialization through org-mode
-   - init.org :: customizes the default emacs behaviour
-   - my-org-usepackages.org :: adds and customizes packages
-   - elisp-goodies.el :: some of my custom functions and work-in-progress
-
-* Special key-bindings i use
-  It is kind of a stretch to keep reaching for the Ctrl-Key on the bottom left of the
-  keyboard. Having pain from keep reaching to this key is also referred to as the "emacs-pinky".
-
-  An idea to mitigate this problem is to make caps-lock a second ctrl key.
-
-  On Ubuntu this can be done using the ~gnome-tweak-tool~.
-
-* Finally, reminders to myself
-  Remember to set the git author correctly when on different laptops
-  #+begin_src sh
-git config user.name "flyck"
-git config user.email mymail.com
-  #+end_src
