@@ -898,12 +898,12 @@ sudo apt-get install aspell-de
 
 
    #+begin_src emacs-lisp
-(use-package git-link
-  :ensure t
-  :config
-  (setq git-link-open-in-browser t)
-  (global-set-key (kbd "C-x l g") 'git-link)
-  )
+     (use-package git-link
+       :ensure t
+       :config
+       (setq git-link-open-in-browser t)
+       (global-set-key (kbd "C-x l g") 'git-link)
+       )
    #+end_src
 
 ** TODO Warn if username and useremail are not set
@@ -1606,6 +1606,7 @@ sudo gem install puppet-lint
          )
   )
 (add-to-list 'exec-path "/home/felix/.bun/bin")
+(add-to-list 'exec-path "/home/felix/.bun/install/cache/typescript@5.4.2@@@1/bin")
 (defun setup-tide-mode ()
     (interactive)
     (tide-setup)
@@ -1641,8 +1642,8 @@ sudo gem install puppet-lint
   ;; configure javascript-tide checker to run after your default javascript checker
 
 ;;(setq tide-tsserver-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
-(setq tide-tsserver-executable "/home/felix/.emacs.d/elpa/tide-20241019.2101/tsserver")
-(setq tide-tsserver-executable "/home/felix/.bun/install/cache/typescript@5.4.2@@@1/bin/tsserver")
+;(setq tide-tsserver-executable "/home/felix/.emacs.d/elpa/tide-20241019.2101/tsserver")
+(setq tide-tsserver-executable "/home/felix/.bun/install/cache/typescript@5.8.3@@@1/bin/tsserver")
    #+end_src
 
    #+begin_src emacs-lisp
