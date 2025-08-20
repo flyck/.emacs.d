@@ -127,34 +127,6 @@
 (all-the-icons-install-fonts)
    #+end_src
 
-** Recentf
-  I hate browsing for files (I frequently use), this package is supposed to help me out with that.
-
-  Enriches the recentf view in helm browsing and enables crazy-fast file openings in combination
-  with idos `C-x C-r`. Personally I only use helm though.
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package recentf
-      :ensure t
-      :config
-      ;; When using TrampMode with recentf.el, it’s advisable to turn off the cleanup feature
-      ;; of recentf that attempts to stat all the files and remove them from the recently accessed
-      ;; list if they are readable. Tramp means that this requires recentf to open up a remote site
-      ;; which will block your emacs process at the most inopportune times.
-      (setq recentf-auto-cleanup 'never)
-      (recentf-mode 1)
-      (setq recentf-max-saved-items 0)
-      ;; get rid of `find-file-read-only' and replace it with something more useful.
-      (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-      (defun ido-recentf-open ()
-        "Use `ido-completing-read' to \\[find-file] a recent file"
-        (interactive)
-        (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-            (message "Opening file...")
-          (message "Aborting")))
-      )
-  #+END_SRC
-
 ** Helm
   A convenient interface to select about anything from a list: Browse files, select themes, show
   and select search-results and much more.
@@ -203,6 +175,35 @@
   (setq helm-posframe-border-width 2)
   )
   #+end_src
+
+** Recentf                                                    :unused:
+  I dislike browsing for files (I frequently use). This package is one way to solve this problem,
+  though I do not actively use it, and just rely on Helm.
+
+  Enriches the recentf view in helm browsing and enables crazy-fast file openings in combination
+  with idos `C-x C-r`. Personally I only use helm though.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package recentf
+      :ensure t
+      :config
+      ;; When using TrampMode with recentf.el, it’s advisable to turn off the cleanup feature
+      ;; of recentf that attempts to stat all the files and remove them from the recently accessed
+      ;; list if they are readable. Tramp means that this requires recentf to open up a remote site
+      ;; which will block your emacs process at the most inopportune times.
+      (setq recentf-auto-cleanup 'never)
+      (recentf-mode 1)
+      (setq recentf-max-saved-items 0)
+      ;; get rid of `find-file-read-only' and replace it with something more useful.
+      (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+      (defun ido-recentf-open ()
+        "Use `ido-completing-read' to \\[find-file] a recent file"
+        (interactive)
+        (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+            (message "Opening file...")
+          (message "Aborting")))
+      )
+  #+END_SRC
 
 ** Projectile
 #+begin_src emacs-lisp
