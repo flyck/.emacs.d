@@ -444,7 +444,7 @@
    #+END_SRC
 
 ** Rainbow delimiters
-   This package is kind of a useless extension since the colors it uses are way too subtle
+   Alternates the color of braces to make them easier to match visually
    #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
   :ensure t
