@@ -669,32 +669,6 @@ sudo apt-get install aspell-de
     (setq tramp-remote-coding-commands '(b64 "base64" "base64 -d -i"))
     #+END_SRC
 
-** Elfeed                                                     :sysenv:
-   #+BEGIN_SRC emacs-lisp
-     (use-package elfeed
-       :ensure t
-       :bind (:map elfeed-search-mode-map
-                   ("m" . elfeed-toggle-star)
-                   ("U" . elfeed-update)
-                   )
-       )
-       :config
-       (setq elfeed-search-filter "@6-months-ago")
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package elfeed-org
-       :ensure t
-       :config
-       (elfeed-org)
-       (if (equal "home" (getenv "SYSENV"))
-       (setq rmh-elfeed-org-files (list (concat "C:\\Users\\" (getenv "USERNAME") "\\Dropbox\\org\\hobby\\elfeed.org")) ))
-       )
-       (if (equal "work" (getenv "SYSENV"))
-       (setq rmh-elfeed-org-files (list "~/Dropbox/org/hobby/elfeed.org"))
-       )
-   #+END_SRC
-
 ** SQL
    Thanks to baron42bba and https://truongtx.me/2014/08/23/setup-emacs-as-an-sql-database-client
    I yet have to actually test this config.
