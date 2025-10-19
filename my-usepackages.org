@@ -145,7 +145,8 @@
   (setq helm-move-to-line-cycle-in-source nil)
   (helm-mode 1)
   (global-set-key (kbd "M-x") 'helm-M-x)
-  (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep)
+  (define-key global-map "\C-c\C-s" 'helm-do-ag-project-root)
+  ;; (define-key global-map "\C-c\C-s" 'helm-grep-do-git-grep) ; work-around when helm-ag is broken
   ;;(define-key global-map "\C-s" 'isearch-forward)
   ;; automatically resize the search window based on results (feels convenient)
   ;; (helm-autoresize-mode 1) ;; currently disabled since i keep using track of it due to the resizing
