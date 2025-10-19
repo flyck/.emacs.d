@@ -961,15 +961,22 @@ sudo apt-get install aspell-de
    Needs first a manual installation:
      #+begin_src sh
 npm i -g @astrojs/language-server @astrojs/ts-plugin
+sudo apt install direnv # otherwise the lsp workspace wont start
      #+end_src
 
 
    #+begin_src emacs-lisp
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
+(add-hook 'web-mode-hook #'lsp-deferred)
+(setq web-mode-engines-alist
+        '(("astro" . "\\.astro\\'")))
+
 ;;(add-to-list 'auto-mode-alist '("\\.astro\\'" . lsp-mode))
    #+end_src
 
 *** Astro LSP Workaround
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
       (use-package web-mode
         :ensure t
         :custom
@@ -992,7 +999,7 @@ npm i -g @astrojs/language-server @astrojs/ts-plugin
 #+end_src
 
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
 (add-hook 'astro-mode-hook 'my-astro-mode-hook)
 (defun my-astro-mode-hook ()
   (lsp-mode 1))
@@ -1597,6 +1604,21 @@ sudo gem install puppet-lint
 ;(setq tide-tsserver-executable "/home/felix/.emacs.d/elpa/tide-20241019.2101/tsserver")
 (setq tide-tsserver-executable "/home/felix/.bun/install/cache/typescript@5.8.3@@@1/bin/tsserver")
    #+end_src
+
+
+   For tsx files this gives better navigation / usability of html tags
+   - con: make tide errors disappear
+   - con: marks stuff as errors which arent, like the for="" prop, or even object inputs to
+     functional components
+   #+begin_src emacs-lisp :tangle no
+  (use-package rjsx-mode
+    :ensure t
+    :mode "\\.tsx?$"
+    :hook (rjsx-mode . (lambda ()
+                        (tide-setup)
+                        (tide-hl-identifier-mode +1))))
+   #+end_src
+
 
    #+begin_src emacs-lisp
      (use-package biomejs-format
