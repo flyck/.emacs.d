@@ -138,6 +138,7 @@
   :init
   (define-key global-map "\C-xb" 'helm-mini)
   :config
+  (setq helm-buffer-max-length 60)
   (setq helm-mini-default-sources '(helm-source-buffers-list
 				    helm-source-recentf
 				    helm-source-bookmarks
