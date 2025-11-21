@@ -163,11 +163,6 @@
 (global-set-key (kbd "C-s") 'swiper)
   #+END_SRC
 
-  #+begin_src emacs-lisp
-(use-package helm-ag
-  :ensure t)
-  #+end_src
-
   looks kind of sexy but is a bit buggy (helm-ag not closeable, sometimes shows random tabs)
   #+begin_src emacs-lisp :tangle no
 (use-package helm-posframe
@@ -213,13 +208,15 @@
   :ensure t
   :config
   (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-x p s") 'helm-projectile-ag)
   (projectile-mode +1)
   (setq helm-ag-ignore-patterns '("node_modules" "dist" "build" "package-lock.json"))
   )
 
 (use-package helm-projectile
   :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-x p s") 'helm-projectile-grep)
+  (setq helm-projectile-set-input-automatically nil)
 )
 
 ;; needed for projectile
