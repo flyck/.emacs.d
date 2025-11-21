@@ -2102,6 +2102,7 @@ Helm is poorly stylized, this makes it a bit better:
        ;; when i narrow down to the current subsection using `org-tree-to-indirect-buffer' i dont want
        ;; to create a new window, but rather open the new buffer at the current position
        (setq org-indirect-buffer-display 'current-window)
+       (setq org-adapt-indentation t)
        )
    #+END_SRC
 
