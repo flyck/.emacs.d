@@ -740,27 +740,24 @@ sudo apt-get install aspell-de
    Another modeline config taken from here: https://github.com/prassee/prassee-emacs-theme
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package spaceline
+       :ensure t
        :init
        (progn
          (require 'spaceline-config)
          (setq powerline-default-separator 'slant)
-         (setq spaceline-workspace-numbers-unicode t)
-         (setq spaceline-separator-dir-left '(left . left))
-         (setq spaceline-separator-dir-right '(right . right))
+         (setq spaceline-workspace-numbers-unicode nil)
          (setq powerline-height 27)
          (spaceline-toggle-window-number-on)
          (spaceline-toggle-buffer-modified-on)
+         (spaceline-toggle-buffer-encoding-off)
+         (spaceline-toggle-battery-on)
          (spaceline-toggle-major-mode-on)
          (spaceline-toggle-battery-off)
          (spaceline-toggle-hud-on)
          (spaceline-toggle-projectile-root-off)
-         (spaceline-emacs-theme)
+         (spaceline-helm-mode)
          (spaceline-toggle-minor-modes-off)
          ))
-     ;; first try to make the inactive face more readable
-     ;; (custom-set-faces
-     ;;  `(mode-line-inactive
-     ;;    ((t (:background "grey40")))))
      #+END_SRC
 
 *** Modeline helpers
