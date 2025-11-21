@@ -1785,14 +1785,12 @@ layout python3
   - toxi-theme
 
 
+  https://gitlab.com/jessieh/adwaita-dark-theme TODO look into enabling this
+
+
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'doom-henna t)
-  ;; (use-package dichromacy-theme
-  ;; :ensure t
-  ;; :config
-  ;; (load-theme 'dichromacy t)
-  ;; )
+  (load-theme 'doom-shades-of-purple t)
   #+END_SRC
 
 ** Theme Looper
