@@ -216,7 +216,7 @@
     #+BEGIN_SRC emacs-lisp
       (tooltip-mode 0)
       (tool-bar-mode 0)
-      (menu-bar-mode 1)
+      (menu-bar-mode 0)
       (scroll-bar-mode 0)
     #+END_SRC
 
