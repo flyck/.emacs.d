@@ -2382,10 +2382,10 @@ Helm is poorly stylized, this makes it a bit better:
       #+BEGIN_SRC emacs-lisp
 (if (equal "work" (getenv "SYSENV"))
     (progn
-      (setq org-agenda-files
-            (list (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
+      ;; (setq org-agenda-files
+      ;;      (list (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
       ;; org-capture setup
-      (setq org-default-notes-file (concat fbr/home-dir "/Dropbox/work/org/projects.org"))
+      ;; (setq org-default-notes-file (concat fbr/home-dir "/Dropbox/work/org/projects.org"))
       (setq org-capture-templates
             '(("t" "todo" entry (file+headline org-default-notes-file "Aufgaben")
                "* TODO %?\n  New task appeared on: %u\n  Interrupted from doing: %a. Click to get back.\n" :clock-in t :clock-resume t)
@@ -2406,7 +2406,7 @@ Helm is poorly stylized, this makes it a bit better:
          (interactive)
          (case (intern (getenv "SYSENV"))
            (home (find-file (concat fbr/home-dir "/Dropbox/org/gtd/tasks.org")))
-           (work (find-file (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
+           ;;(work (find-file (concat fbr/home-dir "/Dropbox/work/org/projects.org")))
            (otherwise (message "No SYSENV found. Don't know what to open."))
            )
          )
