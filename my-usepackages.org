@@ -842,6 +842,20 @@ sudo apt-get install aspell-de
 (use-package forge
   :ensure t
   :after magit)
+
+(defun magit-open-pull-request-pr ()
+  "Open the pull request URL from the git push output in browser."
+  (interactive)
+  (save-excursion
+    (set-buffer (magit-process-buffer t))
+    (goto-char (point-max))
+    (magit-section-backward)
+    (if (search-backward-regexp "remote: \\(To create a merge\\|Create pull\\|View pull\\) request" nil t)
+        (progn
+          (forward-line 1)
+          (re-search-forward "remote: +" (line-end-position) t)
+          (browse-url-at-point))
+      (message "No pull request URL found in push history"))))
    #+END_SRC
 
 
@@ -867,7 +881,13 @@ sudo apt-get install aspell-de
        :ensure t
        :config
        (setq git-link-open-in-browser t)
-       (global-set-key (kbd "C-x l g") 'git-link)
+       (defun my-git-link-or-pr ()
+         "Open git-link, or PR URL if in magit buffer."
+         (interactive)
+         (if (derived-mode-p 'magit-mode)
+             (magit-open-pull-request-pr)
+           (call-interactively 'git-link)))
+       (global-set-key (kbd "C-x l g") 'my-git-link-or-pr)
        )
    #+end_src
 
