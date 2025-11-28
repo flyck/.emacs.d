@@ -279,7 +279,11 @@
 
     Clean up unnecessary spaces on save and show them while they are still there.
     #+BEGIN_SRC emacs-lisp
-      (add-hook 'before-save-hook 'delete-trailing-whitespace)
+      ;; Delete trailing whitespace, except in Python mode (to avoid corrupting multiline SQL strings)
+      (add-hook 'before-save-hook
+                (lambda ()
+                  (unless (derived-mode-p 'python-mode)
+                    (delete-trailing-whitespace))))
       (toggle-indicate-empty-lines t)
       (setq show-trailing-whitespace t)
     #+END_SRC
