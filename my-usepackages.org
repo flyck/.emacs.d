@@ -1497,55 +1497,6 @@ sudo gem install puppet-lint
   (convert-to-template-string))
 #+end_src
 
-*** Typescript programing (LSP-Mode)
-    I'm attempting to move to LSP-mode but it is giving me issues on my work laptop with many big
-    projects. Tide still seems more battle-tested.
-
-
-    Helpful:
-    - https://www.reddit.com/r/emacs/comments/11ojgek/companymode_hook_with_lspmodemap_binding/
-
-    #+begin_src emacs-lisp :tangle no
-(use-package lsp-mode
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :after company
-  :config
-  (local-set-key (kbd "TAB") #'company-indent-or-complete-common)
-  :after (typescript-mode company flycheck)
-  :bind
-  (:map lsp-mode-map
-  ("<tab>" . company-indent-or-complete-common))
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (typescript-mode . lsp)
-         (js-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration)
-         (lsp-mode . display-line-numbers-mode))
-  :commands lsp)
-
-;; optionally
-(use-package lsp-ui :commands lsp-ui-mode)
-;; if you are helm user
-(use-package helm-lsp :commands helm-lsp-workspace-symbol)
-;; if you are ivy user
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
-
-;; optionally if you want to use debugger
-(use-package dap-mode)
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-
-;; optional if you want which-key integration
-(use-package which-key
-    :config
-    (which-key-mode))
-
-(with-eval-after-load 'lsp-mode
-  (define-key company-active-map (kbd "<tab>") #'company-indent-or-complete-common))
-    #+end_src
-
 *** Typescript programming (Tide, inactive)
    :LOGBOOK:
    CLOCK: [2022-01-30 Sun 11:58]--[2022-01-30 Sun 12:08] =>  0:10
@@ -1604,14 +1555,12 @@ sudo gem install puppet-lint
   ;; javascript
   (add-hook 'js2-mode-hook #'setup-tide-mode)
   (add-hook 'js-mode-hook #'setup-tide-mode)
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-  (add-to-list 'auto-mode-alist '("\\.mjs\\'" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . tide-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tide-mode))
+  (add-to-list 'auto-mode-alist '("\\.mjs\\'" . tide-mode))
   ;; configure javascript-tide checker to run after your default javascript checker
 
-;;(setq tide-tsserver-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
-;(setq tide-tsserver-executable "/home/felix/.emacs.d/elpa/tide-20241019.2101/tsserver")
-(setq tide-tsserver-executable "/home/felix/.bun/install/cache/typescript@5.8.3@@@1/bin/tsserver")
+(setq tide-tsserver-executable "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
    #+end_src
 
 
@@ -1662,17 +1611,121 @@ sudo gem install puppet-lint
 (setq company-idle-delay "0")
    #+end_src
 
+** LSP-Mode (multiple)
+   I'm attempting to move to LSP-mode but it is giving me issues on my work laptop with many big
+   projects. Tide still seems more battle-tested.
+
+
+   Helpful:
+   - https://www.reddit.com/r/emacs/comments/11ojgek/companymode_hook_with_lspmodemap_binding/
+
+   #+begin_src emacs-lisp
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-enable-suggest-server-download nil)  ;; Disable auto-install prompts
+  :after company
+  :config
+  (local-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  :bind
+  (:map lsp-mode-map
+  ("<tab>" . company-indent-or-complete-common)
+  ("C-x l r" . lsp-find-references))
+  :hook (;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration)
+         (lsp-mode . display-line-numbers-mode))
+  :commands lsp)
+
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+
+;; Python LSP - install pyright: npm install -g pyright
+(use-package lsp-pyright
+  :ensure t
+  :config
+  (setq lsp-pyright-disable-language-services nil)
+  (setq lsp-pyright-disable-organize-imports nil)
+  (setq lsp-pyright-type-checking-mode "off")  ;; "off", "basic", or "strict"
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         ;; Enable only pyright for this buffer
+                         (setq-local lsp-enabled-clients '(pyright))
+                         (lsp-deferred))))
+
+;; if you are helm user
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; optional if you want which-key integration
+(use-package which-key
+    :config
+    (which-key-mode))
+
+(with-eval-after-load 'lsp-mode
+  (define-key company-active-map (kbd "<tab>") #'company-indent-or-complete-common))
+
+;; Configure xref to display results in a window below
+(add-to-list 'display-buffer-alist
+             '("\\*xref\\*"
+               (display-buffer-at-bottom)
+               (window-height . 0.3)))
+   #+end_src
+
 ** Python programming
+
+   Python LSP setup inspired by Doom Emacs configuration:
+   https://github.com/doomemacs/doomemacs/blob/master/modules/lang/python/config.el
+
+   Uses Pyright (Microsoft's Python language server) which provides:
+   - Go to definition (M-.)
+   - Find references (M-?)
+   - Hover documentation
+   - Code completion
+   - Type checking
+   - Auto-imports
+
+   *PREREQUISITES*: Install Pyright before using this config:
+   #+begin_src sh
+npm install -g pyright
+   #+end_src
+
+   To verify LSP is working:
+   - Open a Python file
+   - Run M-x lsp-describe-session
+   - Check that capabilities are populated (not empty)
+
+   Alternative language server (not recommended, pyright is better):
+   - https://github.com/python-lsp/python-lsp-server
+     #+begin_src sh
+pip install --user python-lsp-server
+     #+end_src
 
    Disable the eldoc-mode which brings up that python-help buffer everytime:
    #+BEGIN_SRC emacs-lisp
 (global-eldoc-mode -1)
+(add-to-list 'auto-mode-alist '("\\Pipfile\\'" . conf-mode))
    #+END_SRC
 
+   System Crafters approach (archived, replaced by lsp-pyright config above):
+   #+begin_src emacs-lisp
+     (use-package python-mode
+       :ensure t
+       :hook (python-mode . lsp-deferred)
+       :custom
+       (python-shell-interpreter "python3"))
+   #+end_src
 
+*** Archive
    My attempt at linting.
    Based on this blog post: https://blog.ironboundsoftware.com/2016/12/05/improving-your-python-pylint-and-flake8-emacs/
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package elpy
   :ensure t
   :init
