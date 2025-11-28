@@ -181,6 +181,11 @@
     (setq dired-listing-switches "-alh")
     #+END_SRC
 
+    Make sure to keep the screen at the same scroll location when reloading a file
+    #+begin_src emacs-lisp
+    (save-place-mode 1)
+    #+end_src
+
     No splash screen please ... jeez
     #+BEGIN_SRC emacs-lisp
     (setq inhibit-startup-message t)
