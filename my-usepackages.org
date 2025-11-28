@@ -1791,7 +1791,16 @@ layout python3
     #+end_src
 
 #+begin_src emacs-lisp
-  (use-package python-pytest)
+  (use-package python-pytest
+    :config
+    ;; Dynamically find pytest in .venv if it exists
+    (defun my-python-pytest-executable-advice (orig-fun &rest args)
+      (let* ((venv-pytest (concat (file-name-as-directory default-directory) ".venv/bin/pytest"))
+             (python-pytest-executable (if (file-exists-p venv-pytest)
+                                           venv-pytest
+                                         python-pytest-executable)))
+        (apply orig-fun args)))
+    (advice-add 'python-pytest :around #'my-python-pytest-executable-advice))
   (use-package tree-sitter)
   ;; (treesit-install-language-grammar 'python)
 
