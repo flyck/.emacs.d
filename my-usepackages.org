@@ -47,6 +47,16 @@
 * PATH Setup
   Set up exec-path early so packages can find executables during initialization.
   #+BEGIN_SRC emacs-lisp
+    ;; linux paths
+    (if (string-equal system-type "gnu/linux")
+        (progn
+          (add-to-list 'exec-path "/run/user/1000/fnm_multishells/12769_1764498061664/bin")
+          (setenv "PATH" (concat "/run/user/1000/fnm_multishells/12769_1764498061664/bin" ":" (getenv "PATH")))
+          (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
+          (setenv "PATH" (concat (expand-file-name "~/.local/bin") ":" (getenv "PATH")))
+          )
+        )
+    ;; mac-os paths
     (if (string-equal system-type "darwin")
         (progn
           (add-to-list 'exec-path "/usr/bin")
@@ -1664,19 +1674,6 @@ sudo gem install puppet-lint
 ;; optionally
 (use-package lsp-ui :commands lsp-ui-mode)
 
-;; Python LSP - install pyright: npm install -g pyright
-(use-package lsp-pyright
-  :ensure t
-  :config
-  (setq lsp-pyright-disable-language-services nil)
-  (setq lsp-pyright-disable-organize-imports nil)
-  (setq lsp-pyright-type-checking-mode "off")  ;; "off", "basic", or "strict"
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-pyright)
-                         ;; Enable only pyright for this buffer
-                         (setq-local lsp-enabled-clients '(pyright))
-                         (lsp-deferred))))
-
 ;; if you are helm user
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 ;; if you are ivy user
@@ -1710,26 +1707,54 @@ sudo gem install puppet-lint
    Uses Pyright (Microsoft's Python language server) which provides:
    - Go to definition (M-.)
    - Find references (M-?)
+   - Renaming (M-x lsp-rename)
    - Hover documentation
    - Code completion
    - Type checking
    - Auto-imports
 
-   *PREREQUISITES*: Install Pyright before using this config:
+   Ruff provides:
+   - Linting (style checks, best practices)
+   - Formatting
+   - Quick fixes
+
+   *PREREQUISITES*: Install both tools:
    #+begin_src sh
-npm install -g pyright
+uv tool install pyright
+uv tool install ruff
+   #+end_src
+
+
+   Simply use the lsp-mode (official package, as those fix the local lsp timeout issue):
+   #+begin_src emacs-lisp
+;; Python LSP using pyright + ruff
+;; Pyright: type checking, navigation, renaming (uv tool install pyright)
+;; Ruff: linting and formatting (uv tool install ruff)
+(use-package lsp-pyright
+  :ensure t
+  :config
+  (setq lsp-pyright-disable-language-services nil)
+  (setq lsp-pyright-disable-organize-imports nil)
+  (setq lsp-pyright-type-checking-mode "off")  ;; "off", "basic", or "strict"
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp-deferred))))
+
+;; Add ruff server for linting alongside pyright
+(with-eval-after-load 'lsp-mode
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("ruff" "server"))
+                    :activation-fn (lsp-activate-on "python")
+                    :server-id 'ruff
+                    :priority -1  ;; Lower priority than pyright
+                    :add-on? t    ;; Run alongside other servers
+                    :major-modes '(python-mode))))
    #+end_src
 
    To verify LSP is working:
    - Open a Python file
    - Run M-x lsp-describe-session
    - Check that capabilities are populated (not empty)
-
-   Alternative language server (not recommended, pyright is better):
-   - https://github.com/python-lsp/python-lsp-server
-     #+begin_src sh
-pip install --user python-lsp-server
-     #+end_src
 
    Disable the eldoc-mode which brings up that python-help buffer everytime:
    #+BEGIN_SRC emacs-lisp
@@ -1745,42 +1770,6 @@ pip install --user python-lsp-server
        :custom
        (python-shell-interpreter "python3"))
    #+end_src
-
-*** Archive
-   My attempt at linting.
-   Based on this blog post: https://blog.ironboundsoftware.com/2016/12/05/improving-your-python-pylint-and-flake8-emacs/
-   #+BEGIN_SRC emacs-lisp :tangle no
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable)
-  :config
-  (when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-  )
-  (setq elpy-formatter "flake8")
-  (define-key elpy-mode-map (kbd "C-x lr") #'xref-find-references)
-   #+END_SRC
-
-   Config based off of https://gist.github.com/habamax/290cda0e0cdc6118eb9a06121b9bc0d7
-   #+begin_src emacs-lisp :tangle no
-(setq major-mode-remap-alist
-      '((python-mode . python-ts-mode)))
-(add-hook 'python-mode-hook (lambda () (eglot-enable)))
-(add-hook 'python-mode-hook (lambda () (corfu-mode)))
-(setq tab-always-indent t)
-(setq tab-always-indent 'complete)
-
-(use-package jedi
-  :ensure t
-  :config
-   (add-hook 'python-mode-hook 'jedi:setup)
-   (setq jedi:setup-keys t)                      ; optional
-   (setq jedi:complete-on-dot t)
-  )
-   #+end_src
-
 
 *** Pytest & Virtualenv
     Requires direnv binary. `brew install direnv`
@@ -1818,6 +1807,42 @@ layout python3
     :config
     (setq direnv-always-show-summary nil))
 #+end_src
+
+*** Archive
+   My attempt at linting.
+   Based on this blog post: https://blog.ironboundsoftware.com/2016/12/05/improving-your-python-pylint-and-flake8-emacs/
+   #+BEGIN_SRC emacs-lisp :tangle no
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable)
+  :config
+  (when (require 'flycheck nil t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode))
+  )
+  (setq elpy-formatter "flake8")
+  (define-key elpy-mode-map (kbd "C-x lr") #'xref-find-references)
+   #+END_SRC
+
+   Config based off of https://gist.github.com/habamax/290cda0e0cdc6118eb9a06121b9bc0d7
+   #+begin_src emacs-lisp :tangle no
+(setq major-mode-remap-alist
+      '((python-mode . python-ts-mode)))
+(add-hook 'python-mode-hook (lambda () (eglot-enable)))
+(add-hook 'python-mode-hook (lambda () (corfu-mode)))
+(setq tab-always-indent t)
+(setq tab-always-indent 'complete)
+
+(use-package jedi
+  :ensure t
+  :config
+   (add-hook 'python-mode-hook 'jedi:setup)
+   (setq jedi:setup-keys t)                      ; optional
+   (setq jedi:complete-on-dot t)
+  )
+   #+end_src
+
 
 ** C Lang                                                     :sysenv:
   The main thing i use from the following is the "jump to definition" function, which is otherwise
