@@ -1704,11 +1704,12 @@ sudo gem install puppet-lint
    #+end_src
 
 ** Python programming
-
-   Python LSP setup inspired by Doom Emacs configuration:
+   Python LSP setup, originally inspired by Doom Emacs configuration:
    https://github.com/doomemacs/doomemacs/blob/master/modules/lang/python/config.el
 
-   Uses Pyright (Microsoft's Python language server) which provides:
+   My adaption uses Pyright + Ruff language servers together.
+
+   Pyright provides:
    - Go to definition (M-.)
    - Find references (M-?)
    - Renaming (M-x lsp-rename)
