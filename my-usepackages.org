@@ -498,12 +498,13 @@ sudo apt-get install aspell-de
    #+BEGIN_SRC emacs-lisp
 (use-package flyspell
   :if (or (equal "home" (getenv "SYSENV")) (equal "work" (getenv "SYSENV")))
+  :hook ((markdown-mode . flyspell-mode)
+         (gfm-mode . flyspell-mode))
   :config
   (if (string-equal system-type "windows-nt") (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/"))
-  (setq ispell-program-name "aspell")
+  (setq ispell-program-name "hunspell")
   (global-set-key (kbd "<f8>") 'ispell-word)
-  (global-set-key (kbd "C-<f8>") 'flyspell-mode)
-  )
+  (global-set-key (kbd "C-<f8>") 'flyspell-mode))
    #+END_SRC
 
 
@@ -1393,6 +1394,7 @@ the mode, respectively."
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
+         ("\\.mdx\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
    #+END_SRC
