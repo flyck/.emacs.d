@@ -1916,7 +1916,7 @@ layout python3
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'doom-shades-of-purple t)
+  (load-theme 'modus-vivendi-tinted t)
   #+END_SRC
 
 ** Theme Looper
