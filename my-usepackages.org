@@ -2642,7 +2642,7 @@ Helm is poorly stylized, this makes it a bit better:
     This section is a work-in-progress. It works in some places, it throws no errors but thats it.
 
     This  allows me to have super-cool appointment-reminders (sometimes causes error on start).
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle no
        ;; Make appt aware of appointments from the agenda
        (defun fbr/org-agenda-to-appt ()
          "Activate appointments found in `org-agenda-files'."
@@ -2672,7 +2672,8 @@ Helm is poorly stylized, this makes it a bit better:
        (org-agenda-to-appt)
     #+END_SRC
 
-*** Org-mode alert extension
+
+*** Org-mode alert extension org-alert
     This is a package on top of the original =alert.el=
 
 
@@ -2696,7 +2697,6 @@ Helm is poorly stylized, this makes it a bit better:
         (org-alert-enable)
         )
     #+END_SRC
-
 
 *** Org-mode notifications
      #+BEGIN_SRC emacs-lisp
