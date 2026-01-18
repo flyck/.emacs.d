@@ -5,13 +5,10 @@
   SYSENV is an env variable i set to enable environment specific config (work / uni /
   private). Copied from the great [[https://github.com/baron42bba][baron42bba]].
 
-  Set a ~SYSENV~ default.
+  Set a ~SYSENV~ default, if not already set by the environment.
   #+BEGIN_SRC emacs-lisp
-(setenv "SYSENV" "work")
-
-;; useful for non-mac systems where such kind of env variables can be easily set outside of emacs.
-(if (equal (getenv "SYSENV") nil)
-    (setenv "SYSENV" "home"))
+(unless (getenv "SYSENV")
+  (setenv "SYSENV" "work"))
   #+END_SRC
 
 
