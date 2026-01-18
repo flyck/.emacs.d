@@ -1009,13 +1009,14 @@ sudo apt install direnv # otherwise the lsp workspace wont start
 
 
    #+begin_src emacs-lisp
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
-(add-hook 'web-mode-hook #'lsp-deferred)
-(setq web-mode-engines-alist
-        '(("astro" . "\\.astro\\'")))
+     (use-package web-mode
+       :ensure t)
+     (add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
+     (add-hook 'web-mode-hook #'lsp-deferred)
+     (setq web-mode-engines-alist
+             '(("astro" . "\\.astro\\'")))
 
-;;(add-to-list 'auto-mode-alist '("\\.astro\\'" . lsp-mode))
+     ;;(add-to-list 'auto-mode-alist '("\\.astro\\'" . lsp-mode))
    #+end_src
 
 *** Astro LSP Workaround
