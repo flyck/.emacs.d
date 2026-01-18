@@ -2701,15 +2701,20 @@ Helm is poorly stylized, this makes it a bit better:
 
 
 *** Org-mode notifications
-     Disabled since it gives error "not compiled with dbus support".
-     #+BEGIN_SRC emacs-lisp :tangle no
-       (require 'notifications)
+     #+BEGIN_SRC emacs-lisp
+       (use-package notifications
+         :ensure nil
+         :if (featurep 'dbusbind))
+     #+END_SRC
 
+
+     Example Usage:
+     #+begin_src emacs-lisp :tangle no
        (notifications-notify :title "Achtung!"
                              :body (format "You have an appointment in %d minutes" 10)
                              :app-name "Emacs: Org"
                              :sound-name "alarm-clock-elapsed")
-     #+END_SRC
+     #+end_src
 
 ** Org-mode sourceblocks / org-babel
     Languages to load
