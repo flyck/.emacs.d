@@ -326,31 +326,21 @@
                    (error "Font not found")))))
      #+END_SRC
 
-**** Font settings for Linux
+**** Font settings
      Installation instructions:
-     https://askubuntu.com/questions/193072/how-to-use-the-adobe-source-code-pro-font
+     - Linux: https://askubuntu.com/questions/193072/how-to-use-the-adobe-source-code-pro-font
+     - Mac: https://github.com/belluzj/fantasque-sans
 
-     #+BEGIN_SRC emacs-lisp
-(setq myfont "-ADBO-Source Code Pro-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1")
-(if (string-equal system-type "gnu/linux")
-    (progn (set-frame-font "-ADBO-Source Code Pro-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1" nil t) ;; current frame and future frames
-           (add-to-list 'default-frame-alist '(font . "-ADBO-Source Code Pro-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1" )) ;; default font for new frames
-           (set-face-attribute 'default t :font "-ADBO-Source Code Pro-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1" ) ;; default font for new frames
-           )
-  )
+     #+BEGIN_SRC emacs-lisp :tangle no
+(let ((myfont (pcase system-type
+                ('gnu/linux "-PfEd-omarchy-regular-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                ;; ('gnu/linux "-ADBO-Source Code Pro-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                ('darwin "-*-Fantasque Sans Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1"))))
+  (when myfont
+    (set-frame-font myfont nil t)
+    (add-to-list 'default-frame-alist `(font . ,myfont))
+    (set-face-attribute 'default t :font myfont)))
      #+END_SRC
-
-**** Font settings for Mac
-     How to install: https://github.com/belluzj/fantasque-sans
-
-     #+begin_src emacs-lisp :tangle no
-(if (string-equal system-type "darwin")
-    (progn (set-frame-font "-*-Fantasque Sans Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1" nil t) ;; current frame and future frames
-           (add-to-list 'default-frame-alist '(font . "-*-Fantasque Sans Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1" )) ;; default font for new frames
-           (set-face-attribute 'default t :font "-*-Fantasque Sans Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1" ) ;; default font for new frames
-           )
-  )
-     #+end_src
 
 **** Increase font setting globally
      The default binding for increasing the font-size only increases it for the current
