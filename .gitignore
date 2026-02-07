@@ -1,5 +1,6 @@
 # the installed packages
 /elpa/
+/eln-cache/
 
 # all the temporary stuff which I'm okay with losing
 /var/
