@@ -1,15 +1,16 @@
 * If you are new here
   This config is highly customized, and is probably not a good starting point for a beginner. If
-  you're just starting out with emacs, consider using [[https://github.com/doomemacs/doomemacs][doom emacs]] or [[https://prelude.emacsredux.com/][emacs prelude]] as a base. While
-  customising my own config over the years, I also found some nice tutorials on emacs in general
-  which I'd like to point out:
+  you're just starting out with emacs, consider using [[https://github.com/doomemacs/doomemacs][doom emacs]] or [[https://prelude.emacsredux.com/][emacs prelude]] as a base.
+
+  While customising my own config over the years, I also found some nice tutorials on emacs in
+  general which I'd like to point out:
   - https://www.inkandben.com/org-mode-resources for a nice collection of tutorials
   - http://emacs.sexy/ a well done advertisement-like site on emacs
   - https://emacsthemes.com/
   - https://github.com/emacs-tw/awesome-emacs
 
 
-  For the experienced user, feel free to dig through. I hope you will find some gems!
+  In any case, I greet all the tinkerers. Feel free to dig through!
 
 * About this repository
   Started to maintain my emacs-config here on github when I noticed there were more than a handful
