@@ -2696,7 +2696,7 @@ Helm is poorly stylized, this makes it a bit better:
         :config
         (setq alert-default-style 'libnotify)
         (setq org-alert-interval 300)
-        (org-alert-enable)
+        ;;(org-alert-enable)
         )
     #+END_SRC
 
