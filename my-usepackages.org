@@ -1807,6 +1807,12 @@ layout python3
    (direnv-mode))
   (add-hook 'python-mode-hook 'direnv-update-environment)
 
+  ;; 120-character column indicator for Python
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq fill-column 120)
+              (display-fill-column-indicator-mode 1)))
+
   (use-package direnv
     :demand t
     :hook
