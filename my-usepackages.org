@@ -1790,14 +1790,23 @@ layout python3
 #+begin_src emacs-lisp
   (use-package python-pytest
     :config
-    ;; Dynamically find pytest in .venv if it exists
-    (defun my-python-pytest-executable-advice (orig-fun &rest args)
-      (let* ((venv-pytest (concat (file-name-as-directory default-directory) ".venv/bin/pytest"))
-             (python-pytest-executable (if (file-exists-p venv-pytest)
-                                           venv-pytest
-                                         python-pytest-executable)))
-        (apply orig-fun args)))
-    (advice-add 'python-pytest :around #'my-python-pytest-executable-advice))
+    (setq python-pytest-executable ".venv/bin/pytest")
+    (setenv "POSTGRES_HOST" "localhost")
+    (defun my/python-pytest-dwim ()
+      "Run the narrowest pytest scope containing point.
+Falls through: test def -> test class -> test file."
+      (interactive)
+      (cond
+       ((python-pytest--point-is-inside-def-treesit)
+        (python-pytest-run-def-at-point-treesit))
+       ((python-pytest--point-is-inside-class-treesit)
+        (python-pytest-run-class-at-point-treesit))
+       (t
+        (python-pytest-file))))
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (local-set-key (kbd "<f5>") #'my/python-pytest-dwim))))
+
   (use-package tree-sitter)
   ;; (treesit-install-language-grammar 'python)
 
