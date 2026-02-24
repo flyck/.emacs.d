@@ -1542,8 +1542,12 @@ sudo gem install puppet-lint
 
    Tide: typescript mode for emacs
    #+begin_src emacs-lisp
+(use-package typescript-mode
+  :ensure t)
+
 (use-package tide
   :ensure t
+  :requires typescript-mode
   :config
   (define-key company-mode-map (kbd "TAB") #'company-indent-or-complete-common)
   (define-key tide-mode-map (kbd "C-x f") #'tide-fix)
