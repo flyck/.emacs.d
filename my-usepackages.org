@@ -338,6 +338,13 @@
   )
    #+end_src
 
+** ANSI Colors
+   #+begin_src emacs-lisp
+(require 'ansi-color)
+  (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+   #+end_src
+
 ** Undo-tree
    Undo-tree provides a graphical representation of recent changes made to the file. When I first
    starting to use it it felt terrible, since a whole new window opens every time i call it. With
