@@ -906,6 +906,23 @@ sudo apt-get install aspell-de
        )
    #+end_src
 
+** Autofix commit at point
+   Creates a fixup commit and auto-squashes it immediately
+   #+begin_src emacs-lisp
+(with-eval-after-load 'magit
+    (transient-append-suffix 'magit-commit "f"
+      '("F" "Instant fixup"
+        (lambda ()
+          (interactive)
+          (let ((commit (magit-commit-at-point)))
+            (if commit
+                (progn
+                  (magit-commit-fixup commit)
+                  (let ((process-environment (cons "GIT_SEQUENCE_EDITOR=true" process-environment)))
+                    (magit-rebase-interactive (concat commit "~1") "--autosquash")))
+              (user-error "Point is not on a commit")))))))
+   #+end_src
+
 ** TODO Warn if username and useremail are not set
 
 ** Define emacs shutdown function (taken from baron42bba)
