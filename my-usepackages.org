@@ -1964,7 +1964,7 @@ Falls through: test def -> test class -> test file."
 
   Current theme:
   #+BEGIN_SRC emacs-lisp
-  (load-theme 'modus-vivendi-tinted t)
+  (load-theme 'kaolin-ocean t)
   #+END_SRC
 
 ** Theme Looper
