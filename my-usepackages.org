@@ -774,8 +774,15 @@ sudo apt-get install aspell-de
 
   Former problem: use-package doesnt find spaceline-config or spaceline, doest this still exist?
 
+*** Doom Modeline
+    #+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+    #+end_src
+
 *** Telephone Line
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
 (use-package telephone-line
   :ensure t
   :config
