@@ -57,21 +57,26 @@
     (if (string-equal system-type "darwin")
         (progn
           (add-to-list 'exec-path "/usr/bin")
+
           (add-to-list 'exec-path "/opt/homebrew/bin")
           (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
-          (setenv "PATH" (concat "/opt/homebrew/opt/node@14/bin" ":" (getenv "PATH")))
-          (add-to-list 'exec-path "/opt/homebrew/opt/node@14/bin")
+
           (setenv "PATH" (concat "/opt/homebrew/bin" ":" (getenv "PATH")))
           (add-to-list 'exec-path "/opt/homebrew/bin")
+
           (setenv "PATH" (concat "/opt/homebrew/sbin" ":" (getenv "PATH")))
           (add-to-list 'exec-path "/opt/homebrew/sbin")
+
           ;; Add fnm default node to path (stable symlink)
           (add-to-list 'exec-path "/Users/Felix/.local/share/fnm/aliases/default/bin")
           (setenv "PATH" (concat "/Users/Felix/.local/share/fnm/aliases/default/bin" ":" (getenv "PATH")))
+
           (add-to-list 'exec-path "/Users/felix.brilej/.cargo/bin")
+          (setenv "PATH" (concat "/Users/felix.brilej/.cargo/bin" ":" (getenv "PATH")))
+
           (add-to-list 'exec-path "/Users/Felix/.local/bin")
           (setenv "PATH" (concat "/Users/Felix/.local/bin" ":" (getenv "PATH")))
-          (setenv "PATH" (concat "/Users/felix.brilej/.cargo/bin" ":" (getenv "PATH")))
+
           (setenv "PATH" (concat "/Users/Felix/.bun/bin" ":" (getenv "PATH")))
           (add-to-list 'exec-path "/Users/Felix/.bun/bin")
           )
@@ -1639,7 +1644,7 @@ sudo gem install puppet-lint
 
    (setq tide-tsserver-executable
          (pcase (getenv "SYSENV")
-           ("work" "/Users/felix.brilej/.nvm/versions/node/v14.19.1/lib/node_modules/ts-node/node_modules/.bin/tsserver")
+           ("work" "/Users/Felix/.bun/bin/tsserver")
            ("home" "/home/felix/.bun/bin/tsserver")))
    #+end_src
 
