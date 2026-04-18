@@ -113,6 +113,16 @@
       :background "DarkOrange1" :foreground "White")
     #+end_src
 
+*** Window Borders
+    Make the vertical border between split windows wider and more visible.
+    #+begin_src emacs-lisp
+(custom-set-faces
+ '(vertical-border ((t (:inherit mode-line-inactive)))))
+(setq window-divider-default-right-width 3)
+(setq window-divider-default-bottom-width 3)
+(window-divider-mode 1)
+    #+end_src
+
 *** Coding style
     #+BEGIN_SRC emacs-lisp
       (setq prefer-coding-system 'utf-8-unix)
