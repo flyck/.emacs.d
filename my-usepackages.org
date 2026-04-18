@@ -1842,11 +1842,11 @@ Falls through: test def -> test class -> test file."
       (interactive)
       (cond
        ((python-pytest--point-is-inside-def-treesit)
-        (python-pytest-run-def-at-point-treesit))
+        (call-interactively #'python-pytest-run-def-at-point-treesit))
        ((python-pytest--point-is-inside-class-treesit)
-        (python-pytest-run-class-at-point-treesit))
+        (call-interactively #'python-pytest-run-class-at-point-treesit))
        (t
-        (python-pytest-file))))
+        (call-interactively #'python-pytest-file))))
     (add-hook 'python-mode-hook
               (lambda ()
                 (local-set-key (kbd "<f5>") #'my/python-pytest-dwim))))
