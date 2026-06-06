@@ -1723,7 +1723,28 @@ sudo gem install puppet-lint
   :commands lsp)
 
 ;; optionally
-(use-package lsp-ui :commands lsp-ui-mode)
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode
+    :bind (:map lsp-ui-mode-map
+                ("C-c h" . lsp-ui-doc-glance))
+    :custom
+    (lsp-ui-doc-enable t)
+    (lsp-ui-doc-show-with-cursor t)
+    (lsp-ui-doc-show-with-mouse nil)
+    (lsp-ui-doc-position 'at-point)
+    (lsp-ui-doc-delay 0.5)
+    (lsp-ui-doc-max-width 100)
+    (lsp-ui-doc-max-height 8)
+    :config
+    ;; Shift the at-point doc frame upward so it doesn't overlap the
+    ;; line under point. Advises the internal positioning function.
+    (defvar fbr/lsp-ui-doc-y-offset -20
+      "Extra pixels to shift the at-point doc frame vertically.
+Negative values move it upward (away from the line under point).")
+    (defun fbr/lsp-ui-doc--shift-y (pos)
+      (cons (car pos) (+ (cdr pos) fbr/lsp-ui-doc-y-offset)))
+    (advice-add 'lsp-ui-doc--mv-at-point :filter-return #'fbr/lsp-ui-doc--shift-y))
 
 ;; if you are helm user
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
