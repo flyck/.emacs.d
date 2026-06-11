@@ -1896,6 +1896,33 @@ Falls through: test def -> test class -> test file."
     (setq direnv-always-show-summary nil))
 #+end_src
 
+
+Fix missing escaping for python-pytest shell output
+#+begin_src emacs-lisp
+(defvar-local my-python-pytest-osc-9-4-fragment ""
+  "Unfinished pytest OSC 9;4 escape sequence fragment.")
+
+(defun my-python-pytest-strip-osc-9-4 (s)
+  "Strip pytest OSC 9;4 progress sequences from comint output S."
+  (let* ((text (concat my-python-pytest-osc-9-4-fragment s))
+         (pattern "\e]9;4;[0-9];?[0-9]*\\(?:\e\\\\\\|\a\\)"))
+    (setq text (replace-regexp-in-string pattern "" text))
+    (if (string-match "\e]9;4;[0-9;]*\\'" text)
+        (prog1 (substring text 0 (match-beginning 0))
+          (setq my-python-pytest-osc-9-4-fragment (match-string 0 text)))
+      (setq my-python-pytest-osc-9-4-fragment "")
+      text)))
+
+(defun my-python-pytest-install-output-filter ()
+  "Install pytest OSC cleanup in the current python-pytest buffer."
+  (setq-local my-python-pytest-osc-9-4-fragment "")
+  (add-hook 'comint-preoutput-filter-functions
+            #'my-python-pytest-strip-osc-9-4
+            nil t))
+
+(add-hook 'python-pytest-setup-hook #'my-python-pytest-install-output-filter)
+#+end_src
+
 *** Archive
    My attempt at linting.
    Based on this blog post: https://blog.ironboundsoftware.com/2016/12/05/improving-your-python-pylint-and-flake8-emacs/
