@@ -1716,7 +1716,8 @@ sudo gem install puppet-lint
   :bind
   (:map lsp-mode-map
   ("<tab>" . company-indent-or-complete-common)
-  ("C-x l r" . lsp-find-references))
+  ("C-x l r" . lsp-find-references)
+  ("C-x l a" . lsp-execute-code-action))
   :hook (;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
          (lsp-mode . display-line-numbers-mode))
@@ -1791,24 +1792,35 @@ Negative values move it upward (away from the line under point).")
    - Formatting
    - Quick fixes
 
-   *PREREQUISITES*: Install both tools:
+   pylsp (with pylsp-rope) provides:
+   - Extract function / extract variable / inline refactorings (C-x l a on a
+     region or expression), which basedpyright doesn't implement (Pylance-only)
+   - pylint diagnostics
+
+   *PREREQUISITES*: Install the tools:
    #+begin_src sh
 uv tool install pyright
 uv tool install ruff
+pip install python-lsp-server pylsp-rope pylint
    #+end_src
 
 
    Simply use the lsp-mode (official package, as those fix the local lsp timeout issue):
    #+begin_src emacs-lisp
-;; Python LSP using pyright + ruff
-;; Pyright: type checking, navigation, renaming (uv tool install pyright)
+;; Python LSP using basedpyright + ruff
+;; basedpyright: type checking, navigation, renaming (pip install basedpyright)
 ;; Ruff: linting and formatting (uv tool install ruff)
 (use-package lsp-pyright
   :ensure t
+  :custom (lsp-pyright-langserver-command "basedpyright")
   :config
   (setq lsp-pyright-disable-language-services nil)
   (setq lsp-pyright-disable-organize-imports nil)
-  (setq lsp-pyright-type-checking-mode "off")  ;; "off", "basic", or "strict"
+  (setq lsp-pyright-type-checking-mode "off")  ;; "off", "basic", "standard", "strict", or "all" (basedpyright only)
+  ;; Keep type checking on, but allow subscripting possibly-None values
+  ;; (e.g. match["key"] after re.match) — a runtime KeyError/TypeError is acceptable.
+  (setq lsp-pyright-diagnostic-severity-overrides
+        '(("reportOptionalSubscript" . "none")))
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp-deferred))))
@@ -1822,6 +1834,40 @@ uv tool install ruff
                     :priority -1  ;; Lower priority than pyright
                     :add-on? t    ;; Run alongside other servers
                     :major-modes '(python-mode))))
+
+;; Add pylsp with pylsp-rope for refactorings (extract function/variable,
+;; inline, ...) which basedpyright doesn't implement (Pylance-only feature),
+;; plus pylint diagnostics. Everything that would duplicate basedpyright/ruff
+;; is disabled.
+(with-eval-after-load 'lsp-mode
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("pylsp"))
+    :activation-fn (lsp-activate-on "python")
+    :server-id 'pylsp-rope
+    :priority -2
+    :add-on? t
+    :major-modes '(python-mode)
+    :initialization-options
+    '(:pylsp
+      (:plugins
+       (:pylint (:enabled t)
+        :autopep8 (:enabled :json-false)
+        :flake8 (:enabled :json-false)
+        :jedi_completion (:enabled :json-false)
+        :jedi_definition (:enabled :json-false)
+        :jedi_hover (:enabled :json-false)
+        :jedi_references (:enabled :json-false)
+        :jedi_signature_help (:enabled :json-false)
+        :jedi_symbols (:enabled :json-false)
+        :mccabe (:enabled :json-false)
+        :preload (:enabled :json-false)
+        :pycodestyle (:enabled :json-false)
+        :pydocstyle (:enabled :json-false)
+        :pyflakes (:enabled :json-false)
+        :rope_autoimport (:enabled :json-false)
+        :rope_completion (:enabled :json-false)
+        :yapf (:enabled :json-false)))))))
    #+end_src
 
    To verify LSP is working:
