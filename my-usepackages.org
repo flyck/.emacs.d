@@ -883,6 +883,48 @@ sudo apt-get install aspell-de
   :ensure t
   :after magit)
 
+;; Syntax-highlighted diffs in Magit via delta (needs the `git-delta'
+;; binary: `brew install git-delta').  Only enables when delta is present,
+;; so a machine without it still works.
+(use-package magit-delta
+  :ensure t
+  :after magit
+  :if (executable-find "delta")
+  :config
+  (defun my/magit-delta-theme-args ()
+    "Build delta args that follow the current Emacs theme.
+
+Delta's syntax highlighting uses its own (bat/syntect) themes, not
+Emacs themes, so we only pick a dark/light syntax theme to match
+the frame background.  We deliberately do NOT set --plus-style /
+--minus-style foregrounds: a foreground there overrides delta's
+per-token syntax colors on changed lines (turning all added code
+one flat green).  We tint only the line *background* from the
+theme's `diff-added'/`diff-removed' faces when they define one."
+    (let* ((dark (eq (frame-parameter nil 'background-mode) 'dark))
+           (plus-bg  (face-background 'diff-added nil t))
+           (minus-bg (face-background 'diff-removed nil t)))
+      (append
+       (list "--max-line-distance" "0.6"
+             "--true-color" "always"
+             "--color-only"
+             "--syntax-theme" (if dark "Nord" "GitHub"))
+       ;; "syntax" keeps per-token colors; add a bg only if the theme has one
+       (when plus-bg  (list "--plus-style"  (concat "syntax " plus-bg)))
+       (when minus-bg (list "--minus-style" (concat "syntax " minus-bg))))))
+
+  (defun my/magit-delta-sync-theme (&rest _)
+    "Recompute `magit-delta-delta-args' from the current theme."
+    (setq magit-delta-delta-args (my/magit-delta-theme-args)))
+  (my/magit-delta-sync-theme)
+  (add-hook 'enable-theme-functions #'my/magit-delta-sync-theme)
+
+  ;; Turn it on now for existing magit buffers and for all future ones.
+  (add-hook 'magit-mode-hook #'magit-delta-mode)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (derived-mode-p 'magit-mode) (magit-delta-mode 1)))))
+
 (defun magit-open-pull-request-pr ()
   "Open the pull request URL from the git push output in browser."
   (interactive)
