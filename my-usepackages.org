@@ -990,7 +990,38 @@ theme's `diff-added'/`diff-removed' faces when they define one."
               (user-error "Point is not on a commit")))))))
    #+end_src
 
-** TODO Warn if username and useremail are not set
+** Bitbucket PRs
+   The =helm-git-platform= package (installed via =:vc= from
+   [[https://github.com/flyck/helm-git-platform][github.com/flyck/helm-git-platform]]) for
+   managing Bitbucket Cloud pull requests: a Helm front-end lists my open PRs and the ones
+   awaiting my review across the whole workspace, drills into changed files / comments, checks
+   out the PR branch into the matching local clone under =~/git= (auto-stashing dirty work
+   first), shows inline comments as overlays, and keeps a =BB reviewing/mine= counter in the
+   mode line that polls every few minutes.
+   #+BEGIN_SRC emacs-lisp
+  (use-package helm-git-platform
+    :vc (:url "https://github.com/flyck/helm-git-platform" :rev :newest)
+    ;; magit (diff / open-in-IDE) and emojify (emoji shortcodes/autocomplete)
+    ;; are required; markdown-mode and helm are used by the UI.
+    :after (magit emojify)
+    :commands (gp-helm gp-list gp-watch-mode)
+    :bind ("C-c b" . gp-helm)
+    :custom
+    ;; workspace + token are read from $BITBUCKET_WORKSPACE / _USER_EMAIL / _API_TOKEN
+    (gp-local-git-root "~/git")
+    (gp-open-function #'magit-status)
+    (gp-checkout-clone-base "git@bitbucket.org:")
+    :init
+    (require 'bitbucket-env)
+    (bitbucket-env-load)            ;; import BITBUCKET_* from ~/.zshrc
+    :config
+    ;; per-repo open-PR counter in the mode line + auto comment overlays +
+    ;; inline-comment keys when on a PR branch.  (The workspace-wide
+    ;; counter is available too, but left off.)
+    (gp-watch-mode 1)
+    (gp-magit-mode 1)            ;; PR comments inside magit diffs
+    )
+   #+end_src
 
 ** Define emacs shutdown function (taken from baron42bba)
     Emacs is a powerful tool, so powerfull that i need to protect myself from deleting huge
