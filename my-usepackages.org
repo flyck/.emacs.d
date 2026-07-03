@@ -79,6 +79,11 @@
 
           (setenv "PATH" (concat "/Users/Felix/.bun/bin" ":" (getenv "PATH")))
           (add-to-list 'exec-path "/Users/Felix/.bun/bin")
+
+          ;; pyenv's active python bindir (basedpyright-langserver lives here)
+          (add-to-list 'exec-path "/Users/Felix/.pyenv/versions/3.13.4/versions/3.13.4/bin")
+          (setenv "PATH" (concat "/Users/Felix/.pyenv/versions/3.13.4/versions/3.13.4/bin"
+                                 ":" (getenv "PATH")))
           )
       )
   #+END_SRC
