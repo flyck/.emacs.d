@@ -1192,6 +1192,7 @@ sudo apt install direnv # otherwise the lsp workspace wont start
    (add-hook 'bash-mode-hook (lambda () (display-line-numbers-mode)))
    (add-hook 'yaml-mode-hook (lambda () (display-line-numbers-mode)))
    (add-hook 'go-mode-hook (lambda () (display-line-numbers-mode)))
+   (add-hook 'emacs-lisp-mode-hook (lambda () (display-line-numbers-mode)))
    #+END_SRC
 
 ** Highlight todo, fixme, etc.
