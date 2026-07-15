@@ -360,20 +360,22 @@
      Taken from here: http://emacsninja.com/posts/making-emacs-more-presentable.html
 
      #+BEGIN_SRC emacs-lisp
-       (defun my-alter-frame-font-size (fn)
-         (let* ((current-font-name (frame-parameter nil 'font))
-                (decomposed-font-name (x-decompose-font-name current-font-name))
-                (font-size (string-to-number (aref decomposed-font-name 5))))
-           (aset decomposed-font-name 5 (int-to-string (funcall fn font-size)))
-           (set-frame-font (x-compose-font-name decomposed-font-name))))
+       (defun my-alter-frame-font-size (delta)
+         "Change the `default' face height by DELTA tenths of a point.
+Operating on the face (not the frame font) means child frames such
+as the lsp-ui-doc popup inherit the new size."
+         (let ((new-height (+ (face-attribute 'default :height) delta)))
+           (set-face-attribute 'default nil :height new-height)
+           (when (fboundp 'lsp-ui-doc-hide) (lsp-ui-doc-hide))
+           (message "default face height: %d" new-height)))
 
        (defun my-inc-frame-font-size ()
          (interactive)
-         (my-alter-frame-font-size '1+))
+         (my-alter-frame-font-size 10))
 
        (defun my-dec-frame-font-size ()
          (interactive)
-         (my-alter-frame-font-size '1-))
+         (my-alter-frame-font-size -10))
 
        (global-set-key (kbd "C-+") 'my-inc-frame-font-size)
        (global-set-key (kbd "C-=") 'my-inc-frame-font-size)
