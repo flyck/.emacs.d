@@ -484,7 +484,7 @@ as the lsp-ui-doc popup inherit the new size."
            (async-shell-command (concat "alacritty --working-directory " (file-name-directory (buffer-file-name))))
            )
          (if (string-equal system-type "darwin")
-    	  (async-shell-command (concat "open -a iTerm " (file-name-directory (buffer-file-name))))
+    	  (async-shell-command (concat "open -a ghostty " (file-name-directory (buffer-file-name))))
            )
          )
     #+END_SRC

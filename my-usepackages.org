@@ -2008,6 +2008,36 @@ pip install python-lsp-server pylsp-rope pylint
 (add-to-list 'auto-mode-alist '("\\Pipfile\\'" . conf-mode))
    #+END_SRC
 
+   Highlight stale Pipfile dependencies and expose a click-to-update action. The
+   =pipenv-outdated= package is installed via =:vc= from
+   [[https://github.com/flyck/pipenv-outdated][github.com/flyck/pipenv-outdated]];
+   only the CodeArtifact specifics below stay in this private config:
+   #+begin_src emacs-lisp
+(use-package pipenv-outdated
+  :vc (:url "https://github.com/flyck/pipenv-outdated" :rev :newest)
+  :hook (conf-mode . pipenv-outdated-maybe-enable)
+  :config
+  ;; (dolist (var '("CODEARTIFACT_DOMAIN_NAME" "CODEARTIFACT_DOMAIN_OWNER" "CODEARTIFACT_REPOSITORY_NAME"))
+  ;;   (unless (getenv var)
+  ;;     (when-let* ((val (string-trim
+  ;;                       (shell-command-to-string
+  ;;                        (format "zsh -lc 'echo $%s'" var)))))
+  ;;       (unless (string-empty-p val)
+  ;;         (setenv var val)))))
+  (setenv "CODEARTIFACT_DOMAIN_NAME" "portal")
+  (setenv "CODEARTIFACT_DOMAIN_OWNER" "462493679694")
+  (setenv "CODEARTIFACT_REPOSITORY_NAME" "portal")
+  (setq pipenv-outdated-aws-login-snippet
+        "if ! aws sts get-caller-identity --profile portal-dev --output text &>/dev/null; then
+  export AWS_PROFILE=portal-dev; aws sso login;
+fi;
+export AWS_PROFILE=shared;
+export CODE_ARTIFACT_TOKEN=$(aws codeartifact get-authorization-token --domain portal --domain-owner 462493679694 --region eu-central-1 --query authorizationToken --output text);
+export CODEARTIFACT_TOKEN=$CODE_ARTIFACT_TOKEN;
+"))
+
+   #+end_src
+
    System Crafters approach (archived, replaced by lsp-pyright config above):
    #+begin_src emacs-lisp
      (use-package python-mode
