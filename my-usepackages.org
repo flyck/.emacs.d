@@ -1795,7 +1795,8 @@ sudo gem install puppet-lint
   (:map lsp-mode-map
   ("<tab>" . company-indent-or-complete-common)
   ("C-x l r" . lsp-find-references)
-  ("C-x l a" . lsp-execute-code-action))
+  ("C-x l a" . lsp-execute-code-action)
+  ("C-x r s" . lsp-rename))
   :hook (;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
          (lsp-mode . display-line-numbers-mode))
@@ -1848,6 +1849,16 @@ Negative values move it upward (away from the line under point).")
              '("\\*xref\\*"
                (display-buffer-at-bottom)
                (window-height . 0.3)))
+
+;; When there is exactly one reference, jump straight to it instead of
+;; opening an *xref* buffer (this show-function does that for any xref list).
+(setq xref-show-xrefs-function #'xref-show-definitions-buffer)
+
+;; When an *xref* buffer does open, put the cursor in it right away.
+(defun fbr/xref-focus-window ()
+  (when-let ((win (get-buffer-window (current-buffer))))
+    (select-window win)))
+(add-hook 'xref-after-update-hook #'fbr/xref-focus-window)
    #+end_src
 
 ** Python programming
@@ -1890,6 +1901,14 @@ pip install python-lsp-server pylsp-rope pylint
 ;; Ruff: linting and formatting (uv tool install ruff)
 (use-package lsp-pyright
   :ensure t
+  :init
+  ;; One basedpyright per project root. In the default multi-root mode
+  ;; lsp-mode hands EVERY folder ever imported into the lsp session (dozens
+  ;; of repos by now) to a single basedpyright, which indexes them all each
+  ;; time a python file is opened — heavy CPU, sluggish editor, and rename
+  ;; operations that consider unrelated repos. Must be set before the
+  ;; package loads because the client registration reads it at load time.
+  (setq lsp-pyright-multi-root nil)
   :custom (lsp-pyright-langserver-command "basedpyright")
   :config
   (setq lsp-pyright-disable-language-services nil)
@@ -1926,10 +1945,28 @@ pip install python-lsp-server pylsp-rope pylint
     :priority -2
     :add-on? t
     :major-modes '(python-mode)
+    ;; pylsp hardcodes renameProvider:t in its capabilities even with every
+    ;; rename plugin disabled. If it stays, lsp-mode sends textDocument/rename
+    ;; to pylsp AND basedpyright and the merged (list) response blows up
+    ;; lsp--apply-workspace-edit with wrong-type-argument hash-table-p.
+    ;; Strip the capability so only basedpyright handles renames.
+    :initialized-fn (lambda (workspace)
+                      (remhash "renameProvider"
+                               (lsp--workspace-server-capabilities workspace)))
     :initialization-options
-    '(:pylsp
-      (:plugins
-       (:pylint (:enabled t)
+    (lambda ()
+      `(:pylsp
+        (:plugins
+         ;; Run the project venv's own pylint (like pytest uses
+         ;; .venv/bin/pytest), not pylsp's interpreter — otherwise every
+         ;; venv dependency triggers a false E0401 import-error.
+         (:pylint (:enabled t
+                   :executable ,(let ((venv-pylint (expand-file-name
+                                                    ".venv/bin/pylint"
+                                                    (lsp-workspace-root))))
+                                  (if (file-executable-p venv-pylint)
+                                      venv-pylint
+                                    "pylint")))
         :autopep8 (:enabled :json-false)
         :flake8 (:enabled :json-false)
         :jedi_completion (:enabled :json-false)
@@ -1938,14 +1975,18 @@ pip install python-lsp-server pylsp-rope pylint
         :jedi_references (:enabled :json-false)
         :jedi_signature_help (:enabled :json-false)
         :jedi_symbols (:enabled :json-false)
+        ;; jedi_rename crashes ("No support for renaming in Python 2/3.5")
+        ;; and must never answer rename requests — basedpyright does that.
+        :jedi_rename (:enabled :json-false)
         :mccabe (:enabled :json-false)
         :preload (:enabled :json-false)
         :pycodestyle (:enabled :json-false)
         :pydocstyle (:enabled :json-false)
         :pyflakes (:enabled :json-false)
         :rope_autoimport (:enabled :json-false)
+        :rope_rename (:enabled :json-false)
         :rope_completion (:enabled :json-false)
-        :yapf (:enabled :json-false)))))))
+        :yapf (:enabled :json-false))))))))
    #+end_src
 
    To verify LSP is working:
