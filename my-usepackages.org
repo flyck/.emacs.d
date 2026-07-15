@@ -1264,7 +1264,10 @@ sudo apt install direnv # otherwise the lsp workspace wont start
    #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :ensure t
-  )
+  :config
+  ;; Info-level diagnostics (e.g. pylint convention/refactor hints via LSP)
+  ;; underline in yellow instead of the default green.
+  (set-face-attribute 'flycheck-info nil :underline '(:style wave :color "gold")))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
