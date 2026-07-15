@@ -183,6 +183,11 @@
   (define-key global-map "\C-xb" 'helm-mini)
   :config
   (setq helm-buffer-max-length 60)
+  ;; Default 'smart makes helm's own candidate re-filter case-SENSITIVE when the
+  ;; pattern contains uppercase. That re-filter runs on top of (rip)grep's output,
+  ;; so an uppercase query like "ON CONFLICT" could be found by rg yet hidden by
+  ;; helm. Force helm's matcher case-insensitive so it never contradicts the grep.
+  (setq helm-case-fold-search t)
   (setq helm-mini-default-sources '(helm-source-buffers-list
 				    helm-source-recentf
 				    helm-source-bookmarks
