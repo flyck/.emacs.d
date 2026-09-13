@@ -1006,25 +1006,29 @@ theme's `diff-added'/`diff-removed' faces when they define one."
    #+BEGIN_SRC emacs-lisp
   (use-package helm-git-platform
     :vc (:url "https://github.com/flyck/helm-git-platform" :rev :newest)
-    ;; magit (diff / open-in-IDE) and emojify (emoji shortcodes/autocomplete)
-    ;; are required; markdown-mode and helm are used by the UI.
     :after (magit emojify)
     :commands (gp-helm gp-list gp-watch-mode)
     :bind ("C-c b" . gp-helm)
     :custom
-    ;; workspace + token are read from $BITBUCKET_WORKSPACE / _USER_EMAIL / _API_TOKEN
+    ;; Bitbucket (default): workspace + token are read from
+    ;; $BITBUCKET_WORKSPACE / _USER_EMAIL / _API_TOKEN.  GitHub (home): the
+    ;; token is read from $GITHUB_TOKEN -- `bitbucket-env-load' below imports
+    ;; both prefixes, so no extra setup is needed.
     (gp-local-git-root "~/git")
     (gp-open-function #'magit-status)
     (gp-checkout-clone-base "git@bitbucket.org:")
     :init
     (require 'bitbucket-env)
-    (bitbucket-env-load)            ;; import BITBUCKET_* from ~/.zshrc
+    (bitbucket-env-load)            ;; import BITBUCKET_* and GITHUB_* from ~/.zshrc
     :config
-    ;; per-repo open-PR counter in the mode line + auto comment overlays +
-    ;; inline-comment keys when on a PR branch.  (The workspace-wide
-    ;; counter is available too, but left off.)
+    (when (equal "home" (getenv "SYSENV"))
+      (setq git-platform-default-backend 'github)
+      ;; drop any backend already built this session (e.g. bitbucket from a
+      ;; previous use), so the next call rebuilds it from the default above
+      (setq git-platform-current-backend nil)
+      (setq gp-checkout-clone-base "git@github.com:"))
     (gp-watch-mode 1)
-    (gp-magit-mode 1)            ;; PR comments inside magit diffs
+    (gp-magit-mode 1)
     )
    #+end_src
 
